@@ -1,0 +1,18 @@
+language: ruby
+cache:
+  - bundler
+install:
+  - bundle install
+rvm:
+  - 1.9.3
+  - 2.0
+  - 2.1
+notifications:
+  email:
+    recipients:
+      - mattjones@yieldbot.com
+    on_success: change
+    on_failure: always
+
+script:
+  - 'bundle exec rake default'
