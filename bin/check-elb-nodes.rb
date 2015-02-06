@@ -63,28 +63,28 @@ class CheckELBNodes < Sensu::Plugin::Check::CLI
          long: '--warn WARN_NUM',
          description: 'Minimum number of nodes InService on the ELB to be considered a warning',
          default: -1,
-         proc: proc { |a| a.to_i }
+         proc: proc(&:to_i)
 
   option :crit_under,
          short: '-c CRIT_NUM',
          long: '--crit CRIT_NUM',
          description: 'Minimum number of nodes InService on the ELB to be considered critical',
          default: -1,
-         proc: proc { |a| a.to_i }
+         proc: proc(&:to_i)
 
   option :warn_percent,
          short: '-W WARN_PERCENT',
          long: '--warn_perc WARN_PERCENT',
          description: 'Warn when the percentage of InService nodes is at or below this number',
          default: -1,
-         proc: proc { |a| a.to_i }
+         proc: proc(&:to_i)
 
   option :crit_percent,
          short: '-C CRIT_PERCENT',
          long: '--crit_perc CRIT_PERCENT',
          description: 'Minimum percentage of nodes needed to be InService',
          default: -1,
-         proc: proc { |a| a.to_i }
+         proc: proc(&:to_i)
 
   def aws_config
     hash = {}
