@@ -12,3 +12,4 @@
 * add irc integration
 * updated install instructions
 * added check-vpc-vpn.py (may be removed before first stable release)
+* pulled latest script version from community repo
