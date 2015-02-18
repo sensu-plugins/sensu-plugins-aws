@@ -75,16 +75,27 @@
 * /bin/check-redshift-events.rb
 * /bin/check-ses-limit.rb
 * /bin/check-sqs-messages.rb
-* /bin/ec2-count-metrics.rb
-* /bin/ec2-node.rb
-* /bin/elasticache-metrics.rb
-* /bin/elb-full-metrics.rb
-* /bin/elb-latency-metrics.rb
-* /bin/elb-metrics.rb
-* /bin/sqs-metrics.rb
+* /bin/metrics-ec2-count.rb
+* /bin/handler-ec2-node.rb
+* /bin/metrics-elasticache.rb
+* /bin/metrics-elb-full.rb
+* /bin/metrics-elb-latency.rb
+* /bin/metrics-elb.rb
+* /bin/metrics-sqs.rb
 
 ## Usage
 
+**handler-sns**
+```
+{
+  "sns": {
+    "topic_arn": "arn:aws:sns:us-east-1:111111111111:topic"
+    ,"use_ami_role": true
+    ,"access_key": "MY_KEY"
+    ,"secret_key": "MY_secret"
+  }
+}
+```
 ## Installation
 
 Add the public key (if you haven’t already) as a trusted certificate

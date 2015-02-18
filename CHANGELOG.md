@@ -13,3 +13,10 @@
 * updated install instructions
 * added check-vpc-vpn.py (may be removed before first stable release)
 * pulled latest script version from community repo
+
+#### 0.0.1.alpha.3
+
+* rename files to confirm to new naming scheme
+* pin development deps
+* update development docs
+* update README
