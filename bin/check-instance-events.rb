@@ -83,7 +83,6 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
     ec2 = AWS::EC2::Client.new(aws_config.merge!(region: config[:aws_region]))
     begin
       ec2.describe_instance_status[:instance_status_set].each do |i| # rubocop:disable Next
-
         unless i[:events_set].empty?
           # Exclude completed reboots since the events API appearently returns these even after they have been completed:
           # Example:
