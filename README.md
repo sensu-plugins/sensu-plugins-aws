@@ -127,7 +127,7 @@ end
 
 Using the Chef **gem_package** resource
 ```
-gem_package 'sensu-plugins-process-checks' do
+gem_package 'sensu-plugins-aws' do
   options('--prerelease')
   version '0.0.1.alpha.2'
 end

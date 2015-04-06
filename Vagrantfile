@@ -9,13 +9,8 @@ VAGRANTFILE_API_VERSION = '2'
 config_file = JSON.parse(File.read('../GIR/config/vagrant_config.json'))
 vagrant_config = config_file['config']
 
-# The vagrant boxes are provisioned by Chef.
-# If this is nothing something you want to deal with then comment out the
-# provisioner and chef and berkshelf lines.  The boxes as they stand are
-# fairly barebones but should contain enough for basic development and
-# initial testing.
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  # Standard configuration details
+  # Standard configurtaion details
   config.vm.box_download_checksum = true
   config.vm.box_download_checksum_type = 'md5'
   config.vm.hostname = 'sensu-plugins-dev'
@@ -91,7 +86,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     bsd9.ssh.shell = '/bin/sh'
     bsd9.vm.box = vagrant_config['bsd9']['box']
 
-    # Use rsync in place of shared folders
+    # Use rsync as a shared folder
     bsd9.vm.synced_folder '.', '/vagrant', type: 'rsync'
     bsd9.vm.provision 'chef_zero' do |chef|
       chef.synced_folder_type = 'rsync'
@@ -99,7 +94,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vagrant_config['bsd9']['role'].each do |r|
         chef.add_role(r)
       end
-      # chef.add_recipe 'apache2'
     end
   end
 
@@ -107,7 +101,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     bsd10.vm.guest = :freebsd
     bsd10.vm.box = vagrant_config['bsd10']['box']
 
-    # Use rsync in place of shared folders
+    # Use rsync as a shared folder
     bsd10.vm.synced_folder '.', '/vagrant', type: 'rsync'
     bsd10.vm.provision 'chef_zero' do |chef|
       chef.synced_folder_type = 'rsync'
@@ -115,7 +109,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vagrant_config['bsd10']['role'].each do |r|
         chef.add_role(r)
       end
-      # chef.add_recipe 'apache2'
     end
   end
 end
