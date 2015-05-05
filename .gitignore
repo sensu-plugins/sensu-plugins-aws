@@ -1,5 +1,6 @@
 /.bundle/
 /.yardoc
+/Gemfile.lock
 /_yardoc/
 /coverage/
 /doc/
@@ -15,4 +16,3 @@ mkmf.log
 .DS_Store
 .idea/*
 *.gem
-tooth.json
