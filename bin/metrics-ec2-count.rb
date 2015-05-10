@@ -92,7 +92,7 @@ class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
           end
         end
 
-        unless data.nil?
+        unless data.nil? # rubocop: disable Style/GuardClause
           # We only return data when we have some to return
           output config[:scheme] + '.total', total
           status.each do |name, count|
@@ -120,7 +120,7 @@ class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
           end
         end
 
-        unless data.nil?
+        unless data.nil? # rubocop: disable Style/GuardClause
           # We only return data when we have some to return
           data.each do |name, count|
             output config[:scheme] + ".#{name}", count

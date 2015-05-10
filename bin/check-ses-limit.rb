@@ -74,7 +74,7 @@ class CheckSESLimit < Sensu::Plugin::Check::CLI
       critical "An issue occured while communicating with the AWS SES API: #{e.message}"
     end
 
-    unless response.empty?
+    unless response.empty? # rubocop: disable Style/GuardClause
       percent = (response.sent_last_24_hours.to_i / response.max_24_hour_send.to_i) * 100
       message = "SES sending limit is at #{percent}%"
 

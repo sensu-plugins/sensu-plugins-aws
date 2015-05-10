@@ -130,12 +130,12 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
           r = cw.get_metric_statistics(options)
           result[key] = r[:datapoints][0] unless r[:datapoints][0].nil?
         end
-        unless result.nil?
-          # We only return data when we have some to return
-          result.each do |key, value|
-            puts key, value
-            output graphitepath + ".#{key}", value.to_a.last[1], value[:timestamp].to_i
-          end
+
+        # We only return data when we have some to return
+        next if result.nil?
+        result.each do |key, value|
+          puts key, value
+          output graphitepath + ".#{key}", value.to_a.last[1], value[:timestamp].to_i
         end
       end
     rescue => e
