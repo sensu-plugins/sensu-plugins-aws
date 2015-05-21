@@ -188,30 +188,30 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def check_cpu(severity, expected_lower_than)
-    @cpu_metric       ||= cloud_watch_metric 'CPUUtilization'
+    @cpu_metric ||= cloud_watch_metric 'CPUUtilization'
     @cpu_metric_value ||= latest_value @cpu_metric, 'Percent'
     return if @cpu_metric_value < expected_lower_than
-    flag_alert severity, "; CPUUtilization is #{sprintf '%.2f', @cpu_metric_value}% (expected lower than #{expected_lower_than}%)"
+    flag_alert severity, "; CPUUtilization is #{sprintf '%.2f', @cpu_metric_value}% (expected lower than #{expected_lower_than}%)" # rubocop:disable all
   end
 
   def check_memory(severity, expected_lower_than)
-    @memory_metric           ||= cloud_watch_metric 'FreeableMemory'
-    @memory_metric_value     ||= latest_value @memory_metric, 'Bytes'
-    @memory_total_bytes      ||= memory_total_bytes @db_instance.db_instance_class
-    @memory_usage_bytes      ||= @memory_total_bytes - @memory_metric_value
+    @memory_metric ||= cloud_watch_metric 'FreeableMemory'
+    @memory_metric_value ||= latest_value @memory_metric, 'Bytes'
+    @memory_total_bytes ||= memory_total_bytes @db_instance.db_instance_class
+    @memory_usage_bytes ||= @memory_total_bytes - @memory_metric_value
     @memory_usage_percentage ||= @memory_usage_bytes / @memory_total_bytes * 100
     return if @memory_usage_percentage < expected_lower_than
-    flag_alert severity, "; Memory usage is #{sprintf '%.2f', @memory_usage_percentage}% (expected lower than #{expected_lower_than}%)"
+    flag_alert severity, "; Memory usage is #{sprintf '%.2f', @memory_usage_percentage}% (expected lower than #{expected_lower_than}%)" # rubocop:disable all
   end
 
   def check_disk(severity, expected_lower_than)
-    @disk_metric           ||= cloud_watch_metric 'FreeStorageSpace'
-    @disk_metric_value     ||= latest_value @disk_metric, 'Bytes'
-    @disk_total_bytes      ||= @db_instance.allocated_storage * 1024**3
-    @disk_usage_bytes      ||= @disk_total_bytes - @disk_metric_value
+    @disk_metric ||= cloud_watch_metric 'FreeStorageSpace'
+    @disk_metric_value ||= latest_value @disk_metric, 'Bytes'
+    @disk_total_bytes ||= @db_instance.allocated_storage * 1024**3
+    @disk_usage_bytes ||= @disk_total_bytes - @disk_metric_value
     @disk_usage_percentage ||= @disk_usage_bytes / @disk_total_bytes * 100
     return if @disk_usage_percentage < expected_lower_than
-    flag_alert severity, "; Disk usage is #{sprintf '%.2f', @disk_usage_percentage}% (expected lower than #{expected_lower_than}%)"
+    flag_alert severity, "; Disk usage is #{sprintf '%.2f', @disk_usage_percentage}% (expected lower than #{expected_lower_than}%)" # rubocop:disable all
   end
 
   def run
