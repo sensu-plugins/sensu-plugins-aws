@@ -1,27 +1,11 @@
-Change Log
+#Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-#### 0.0.1.alpha.3
+This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
-* rename files to confirm to new naming scheme
-* pin development deps
-* update development docs
-* update README
+## Unreleased][unreleased]
 
-#### 0.0.1.alpha.2
+## 0.0.1 - 2015-05-21
 
-* add pry as a development dependency
-* add new badge for dependencies
-* add irc integration
-* updated install instructions
-* added check-vpc-vpn.py (may be removed before first stable release)
-* pulled latest script version from community repo
-
-#### 0.1.0.alpha.1
-
-* baseline release identical to **sensu-community-plugins** repo
-* removed check-vpc-vpn.py
-* built against 1.9.3, 2.0, 2.1
-* change the ec2_node.rb to ec2-node.rb
-
-
+### Added
+- initial release
