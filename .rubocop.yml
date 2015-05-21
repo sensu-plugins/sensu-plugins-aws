@@ -1,27 +1,27 @@
 
 MethodLength:
-  Max: 200
+    Max: 200
 
 LineLength:
-  Max: 160
+    Max: 160
 
 AbcSize:
   Max: 75
 
 FileName:
-  Enabled: false
+    Enabled: false
 
 PerceivedComplexity:
-  Enabled: false
+    Enabled: false
 
 CyclomaticComplexity:
-  Enabled: false
+    Enabled: false
 
 ClassLength:
-  Enabled: false
+    Enabled: false
 
 IfUnlessModifier:
-  Enabled: false
+    Enabled: false
 
 RegexpLiteral:
   Enabled: false

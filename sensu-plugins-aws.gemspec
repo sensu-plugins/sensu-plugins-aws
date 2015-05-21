@@ -23,7 +23,9 @@ Gem::Specification.new do |s|
   s.license                = 'MIT'
   s.metadata               = { 'maintainer'         => '',
                                'development_status' => 'active',
-                               'production_status'  => 'unstable - testing recommended'
+                               'production_status'  => 'unstable - testing recommended',
+                               'release_draft'      => 'false',
+                               'release_prerelease' => 'false'
   }
   s.name                   = 'sensu-plugins-sensu-plugins-aws'
   s.platform               = Gem::Platform::RUBY
