@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
                                'production_status'  => 'unstable - testing recommended',
                                'release_draft'      => 'false',
                                'release_prerelease' => 'false'
-  }
+                              }
   s.name                   = 'sensu-plugins-aws'
   s.platform               = Gem::Platform::RUBY
   s.post_install_message   = 'You can use the embedded Ruby by setting EMBEDDED_RUBY=true in /etc/default/sensu'
@@ -39,7 +39,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'sensu-plugin',      '1.1.0'
   s.add_runtime_dependency 'aws-sdk',           '2.0.22'
-  s.add_runtime_dependency 'timeout',           '0.0.1'
   s.add_runtime_dependency 'fog',               '1.27.0'
   s.add_runtime_dependency 'right_aws',         '3.1.0'
   s.add_runtime_dependency 'openssl',           '1.0.0.beta'
