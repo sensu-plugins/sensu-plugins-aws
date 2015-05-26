@@ -31,7 +31,6 @@
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
 #
-#
 
 require 'sensu-plugin/metric/cli'
 require 'aws-sdk'
