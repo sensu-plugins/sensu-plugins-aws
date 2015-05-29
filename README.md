@@ -43,6 +43,8 @@
 
 **check-sqs-messages.rb**
 
+**check-instance-count.rb**
+
 **ec2-count-metrics.rb**
 
 **ec2-node.rb**
@@ -76,6 +78,7 @@
 * /bin/check-redshift-events.rb
 * /bin/check-ses-limit.rb
 * /bin/check-sqs-messages.rb
+# /bin/check-instance-count.rb
 * /bin/metrics-ec2-count.rb
 * /bin/handler-ec2-node.rb
 * /bin/metrics-elasticache.rb
