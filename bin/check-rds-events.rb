@@ -31,7 +31,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 class CheckRDSEvents < Sensu::Plugin::Check::CLI
   option :aws_access_key,

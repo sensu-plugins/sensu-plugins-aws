@@ -14,7 +14,7 @@
 # for details
 
 require 'sensu-handler'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 class SnsNotifier < Sensu::Handler
   def topic_arn

@@ -27,7 +27,7 @@
 require 'sensu-plugin/check/cli'
 require 'net/http'
 require 'uri'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 class ELBHealth < Sensu::Plugin::Check::CLI
   option :aws_access_key,

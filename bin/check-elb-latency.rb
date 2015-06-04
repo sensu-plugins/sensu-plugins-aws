@@ -32,7 +32,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 class CheckELBLatency < Sensu::Plugin::Check::CLI
   option :access_key_id,
