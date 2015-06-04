@@ -41,7 +41,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'aws-sdk',           '~> 2.0.45'
   s.add_runtime_dependency 'fog',               '~> 1.27.0'
   s.add_runtime_dependency 'right_aws',         '3.1.0'
-  s.add_runtime_dependency 'openssl',           '1.0.0.beta'
 
   s.add_development_dependency 'codeclimate-test-reporter', '~> 0.4'
   s.add_development_dependency 'rubocop',                   '~> 0.30'
