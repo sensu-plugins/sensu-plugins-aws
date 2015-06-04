@@ -28,7 +28,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 #
 # Check SQS Messages

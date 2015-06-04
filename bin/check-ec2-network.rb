@@ -29,7 +29,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 class CheckEc2Network < Sensu::Plugin::Check::CLI
   option :access_key_id,

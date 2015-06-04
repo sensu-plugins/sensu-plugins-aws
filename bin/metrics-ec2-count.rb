@@ -27,7 +27,7 @@
 #
 
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
   option :scheme,

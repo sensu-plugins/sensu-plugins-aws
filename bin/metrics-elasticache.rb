@@ -32,7 +32,7 @@
 #
 
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 class ElastiCacheMetrics < Sensu::Plugin::Metric::CLI::Graphite
   option :cacheclusterid,

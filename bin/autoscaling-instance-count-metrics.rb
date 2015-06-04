@@ -26,7 +26,7 @@
 #
 
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 class AutoScalingInstanceCountMetrics < Sensu::Plugin::Metric::CLI::Graphite
   option :groupname,
