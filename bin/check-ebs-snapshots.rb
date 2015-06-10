@@ -82,7 +82,7 @@ class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
         errors << " #{tags['Name']} has no snapshots for #{volume[:volume_id]}"
       end
     end
-    
+
     if !errors.empty?
       ok
     else
