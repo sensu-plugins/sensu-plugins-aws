@@ -93,7 +93,8 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
           #         "not_after": "2015-01-05 18:00:00 UTC"
           #     }
           # ]
-          unless i[:events_set].select { |x| x[:code] == 'system-reboot' && x[:description] =~ /\[Completed\]/ }
+          useful_events = i[:events_set].reject { |x| x[:code] == 'system-reboot' && x[:description] =~ /\[Completed\]/ }
+          unless useful_events.empty?
             event_instances << i[:instance_id]
           end
         end
