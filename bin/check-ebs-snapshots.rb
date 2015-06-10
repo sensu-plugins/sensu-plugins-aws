@@ -77,15 +77,13 @@ class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
       sorted_times = snapshots[:snapshots].sort_by { |i| i[:start_time].to_i }
       if !sorted_times.empty?
         latest_snapshot = sorted_times[-1][:start_time]
-        if (Date.today - config[:period].to_i).to_time > latest_snapshot
-          errors << "#{tags['Name']} latest snapshot is #{latest_snapshot} for #{volume[:volume_id]}"
-        end
+        errors << "#{tags['Name']} latest snapshot is #{latest_snapshot} for #{volume[:volume_id]}" if (Date.today - config[:period]).to_time > latest_snapshot
       else
         errors << " #{tags['Name']} has no snapshots for #{volume[:volume_id]}"
       end
     end
-
-    if errors.empty?
+    
+    if !errors.empty?
       ok
     else
       warning errors.join("\n")
