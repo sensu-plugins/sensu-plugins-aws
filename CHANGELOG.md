@@ -10,6 +10,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [0.0.2] - 2015-06-02
 ### Fixed
 - added binstubs
+
 ### Changed
 - removed cruft from /lib
 
