@@ -29,7 +29,6 @@
 
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
-require_relative 'common'
 
 class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
   include Common
