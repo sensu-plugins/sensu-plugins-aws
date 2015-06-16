@@ -37,6 +37,9 @@
 # `ec2_node_should_be_deleted?` in your own organization-specific handler, or modify this
 # handler to suit your needs.
 #
+# Requires the following Rubygems (`gem install $GEM`):
+#   - sensu-plugin
+#   - fog
 #
 # Optional a Sensu configuration snippet:
 #   {
