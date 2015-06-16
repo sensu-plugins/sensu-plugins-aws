@@ -8,6 +8,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Access key and secret key should be optional
 - Added 3XX metric collection to the ELB metrics plugins
 - Fixed the metric type for SurgeQueueLength ELB metrics
+- Fixed logic for ec2 instance event inclusion
 
 ## [0.0.2] - 2015-06-02
 ### Fixed
