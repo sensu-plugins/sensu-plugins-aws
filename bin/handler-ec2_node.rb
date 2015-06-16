@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 #
 # CHANGELOG:
+# * 0.5.0:
+#   - Adds configuration to filter by state reason
 # * 0.4.0:
 #   - Adds ability to specify a list of states an individual client can have in
 #     EC2. If none is specified, it filters out 'terminated' and 'stopped'
@@ -22,18 +24,24 @@
 # Optionally, you may specify a client attribute `ec2_states`, a list of valid
 # states an instance may have.
 #
+# You may also specify a client attribute `ec2_state_reasons`, a list of regular
+# expressions to match state reasons against. This is useful if you want to fail
+# on any `Client.*` state reason or on `Server.*` state reason. The default is
+# to match any state reason `.*` Regardless, eventually a client will be
+# deleted once AWS stops responding that the instance id exists.
+#
 # NOTE: The implementation for correlating Sensu clients to EC2 instances may
 # need to be modified to fit your organization. The current implementation
 # assumes that Sensu clients' names are the same as their instance IDs in EC2.
 # If this is not the case, you can either sub-class this handler and override
-# `ec2_node_exists?` in your own organization-specific handler, or modify this
+# `ec2_node_should_be_deleted?` in your own organization-specific handler, or modify this
 # handler to suit your needs.
 #
 # Requires the following Rubygems (`gem install $GEM`):
 #   - sensu-plugin
 #   - fog
 #
-# Requires a Sensu configuration snippet:
+# Optional a Sensu configuration snippet:
 #   {
 #     "aws": {
 #       "access_key": "adsafdafda",
@@ -46,6 +54,9 @@
 #   - AWS_ACCESS_KEY_ID
 #   - AWS_SECRET_ACCESS_KEY
 #   - EC2_REGION
+#
+# If none of the settings are found it will then attempt to
+# generate temporary credentials from the IAM instance profile
 #
 #
 # To use, you can set it as the keepalive handler for a client:
@@ -92,6 +103,8 @@
 
 require 'timeout'
 require 'sensu-handler'
+require 'net/http'
+require 'uri'
 require 'fog'
 
 class Ec2Node < Sensu::Handler
@@ -99,7 +112,7 @@ class Ec2Node < Sensu::Handler
 
   def handle
     # #YELLOW
-    unless ec2_node_exists? # rubocop:disable UnlessElse
+    unless ec2_node_should_be_deleted? # rubocop:disable UnlessElse
       delete_sensu_client!
     else
       puts "[EC2 Node] #{@event['client']['name']} appears to exist in EC2"
@@ -111,46 +124,52 @@ class Ec2Node < Sensu::Handler
     deletion_status(response)
   end
 
-  def ec2_node_exists?
-    states = acquire_valid_states
-    filtered_instances = ec2.servers.select { |s| states.include?(s.state) }
-    instance_ids = filtered_instances.map(&:id)
-    instance_ids.each do |id|
-      return true if id == @event['client']['name']
+  def ec2_node_should_be_deleted?
+    states = @event['client']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
+    instance = ec2.servers.get(@event['client']['name'])
+    unless instance.nil?
+      state_reason = instance.state_reason['code']
+      state_name = instance.state
+      states.include?(state_name) && state_reasons.any? { |reason| Regexp.new(reason) =~ state_reason }
     end
-    false # no match found, node doesn't exist
+    # If this is used as a keep alive on warning or error then we should
+    # remove the node if it doesn't exist
+    true
   end
 
   def ec2
-    @ec2 ||= begin
-      key = settings['aws']['access_key'] || ENV['AWS_ACCESS_KEY_ID']
-      secret = settings['aws']['secret_key'] || ENV['AWS_SECRET_ACCESS_KEY']
-      region = settings['aws']['region'] || ENV['EC2_REGION']
-      Fog::Compute.new(provider: 'AWS',
-                       aws_access_key_id: key,
-                       aws_secret_access_key: secret,
-                       region: region)
+    @ec2 ||= Fog::Compute.new(provider: 'AWS', use_iam_profile: true, region: region)
+  end
+
+  def region
+    @region ||= begin
+      region_check = settings['aws']['region'] || ENV['EC2_REGION']
+      if region_check.nil? || region_check.empty?
+        region_check = Net::HTTP.get(URI('http://169.254.169.254/latest/meta-data/placement/availability-zone'))
+        matches = /(\w+\-\w+\-\d+)/.match(region_check)
+        if !matches.nil? && !matches.captures.empty?
+          region_check = matches.captures[0]
+        end
+      end
+      region_check
     end
+  end
+
+  def state_reasons
+    reasons = @event['client']['ec2_state_reasons'] || ['\\w+\\.InternalError', 'Client\\.VolumeLimitExceeded', 'Client\\.InvalidSnapshot\\.NotFound']
+    @state_reasons ||= reasons.each { |reason| Regexp.new(reason) }
   end
 
   def deletion_status(code)
     case code
     when '202'
-      puts "[EC2 Node] 202: Successfully deleted Sensu client: #{node}"
+      puts "[EC2 Node] 202: Successfully deleted Sensu client: #{@event['client']['name']}"
     when '404'
-      puts "[EC2 Node] 404: Unable to delete #{node}, doesn't exist!"
+      puts "[EC2 Node] 404: Unable to delete #{@event['client']['name']}, doesn't exist!"
     when '500'
-      puts "[EC2 Node] 500: Miscellaneous error when deleting #{node}"
+      puts "[EC2 Node] 500: Miscellaneous error when deleting #{@event['client']['name']}"
     else
-      puts "[EC2 Node] #{res}: Completely unsure of what happened!"
-    end
-  end
-
-  def acquire_valid_states
-    if @event['client'].key?('ec2_states')
-      return @event['client']['ec2_states']
-    else
-      return ['running']
+      puts "[EC2 Node] #{code}: Completely unsure of what happened!"
     end
   end
 end
