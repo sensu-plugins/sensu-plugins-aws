@@ -127,7 +127,7 @@ class Ec2Node < Sensu::Handler
   end
 
   def ec2_node_should_be_deleted?
-    ec2 = Aws::EC2::Client.new
+    ec2 = Aws::EC2::Client.new(region: region)
     states = @event['client']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
     begin
       instance = ec2.describe_instances(instance_ids: [@event['client']['name']]).reservations[0].instances[0]
