@@ -105,17 +105,19 @@ require 'timeout'
 require 'sensu-handler'
 require 'net/http'
 require 'uri'
-require 'fog'
+require 'aws-sdk'
+require_relative 'common'
 
 class Ec2Node < Sensu::Handler
+  include Common
+
   def filter; end
 
   def handle
-    # #YELLOW
-    unless ec2_node_should_be_deleted? # rubocop:disable UnlessElse
-      delete_sensu_client!
-    else
+    if ec2_node_should_be_deleted?
       puts "[EC2 Node] #{@event['client']['name']} appears to exist in EC2"
+    else
+      delete_sensu_client!
     end
   end
 
@@ -125,20 +127,16 @@ class Ec2Node < Sensu::Handler
   end
 
   def ec2_node_should_be_deleted?
+    ec2 = Aws::EC2::Client.new
     states = @event['client']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
-    instance = ec2.servers.get(@event['client']['name'])
-    unless instance.nil?
-      state_reason = instance.state_reason['code']
-      state_name = instance.state
-      states.include?(state_name) && state_reasons.any? { |reason| Regexp.new(reason) =~ state_reason }
-    end
-    # If this is used as a keep alive on warning or error then we should
-    # remove the node if it doesn't exist
-    true
-  end
+    begin
+      instance = ec2.describe_instances(instance_ids: [@event['client']['name']]).reservations[0].instances[0]
 
-  def ec2
-    @ec2 ||= Fog::Compute.new(provider: 'AWS', use_iam_profile: true, region: region)
+      state_reason = instance.state_transition_reason
+      states.include?(instance.state) && state_reasons.any? { |reason| Regexp.new(reason) =~ state_reason }
+    rescue Aws::EC2::Errors::InvalidInstanceIDNotFound
+      false
+    end
   end
 
   def region
