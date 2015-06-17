@@ -29,7 +29,7 @@
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
-class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
+class CheckEipAllocation < Sensu::Plugin::Check::CLI
   include Common
   option :eips_allowed,
          short:       '-e EIPS_ALLOWED',
