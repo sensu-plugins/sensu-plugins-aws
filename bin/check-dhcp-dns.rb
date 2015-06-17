@@ -32,7 +32,7 @@ require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 require 'resolv'
 
-class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
+class CheckDnsDhcpSettings < Sensu::Plugin::Check::CLI
   include Common
   option :queries,
          short:       '-q queries',
