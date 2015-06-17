@@ -19,6 +19,8 @@
 
 **check-ec2-network.rb**
 
+**check-eip-allocation.rb**
+
 **check-elb-certs.rb**
 
 **check-elb-health-fog.rb**
