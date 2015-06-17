@@ -114,9 +114,9 @@ class Ec2Node < Sensu::Handler
 
   def handle
     if ec2_node_should_be_deleted?
-      puts "[EC2 Node] #{@event['client']['name']} appears to exist in EC2"
-    else
       delete_sensu_client!
+    else
+      puts "[EC2 Node] #{@event['client']['name']} is in an invalid state"
     end
   end
 
@@ -131,14 +131,15 @@ class Ec2Node < Sensu::Handler
     begin
       instances = ec2.describe_instances(instance_ids: [@event['client']['name']]).reservations[0]
       if instances.nil?
-        false
+        true
       else
         instance = instances.instances[0]
         state_reason = instance.state_transition_reason
-        !(states.include?(instance.state) && state_reasons.any? { |reason| Regexp.new(reason) =~ state_reason })
+        state = instance.state.name
+        states.include?(state) && state_reasons.any? { |reason| Regexp.new(reason) =~ state_reason }
       end
     rescue Aws::EC2::Errors::InvalidInstanceIDNotFound
-      false
+      true
     end
   end
 
@@ -158,7 +159,7 @@ class Ec2Node < Sensu::Handler
   end
 
   def state_reasons
-    reasons = @event['client']['ec2_state_reasons'] || ['\\w+\\.InternalError', 'Client\\.VolumeLimitExceeded', 'Client\\.InvalidSnapshot\\.NotFound']
+    reasons = @event['client']['ec2_state_reasons'] || ['User\sinitiated']
     @state_reasons ||= reasons.each { |reason| Regexp.new(reason) }
   end
 
