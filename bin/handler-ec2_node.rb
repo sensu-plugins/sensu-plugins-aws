@@ -37,9 +37,6 @@
 # `ec2_node_should_be_deleted?` in your own organization-specific handler, or modify this
 # handler to suit your needs.
 #
-# Requires the following Rubygems (`gem install $GEM`):
-#   - sensu-plugin
-#   - fog
 #
 # Optional a Sensu configuration snippet:
 #   {
@@ -58,6 +55,8 @@
 # If none of the settings are found it will then attempt to
 # generate temporary credentials from the IAM instance profile
 #
+# If region is not specified in either of the above 2 mechanisms
+# we will make a request for the EC2 instances current region.
 #
 # To use, you can set it as the keepalive handler for a client:
 #   {
@@ -130,10 +129,14 @@ class Ec2Node < Sensu::Handler
     ec2 = Aws::EC2::Client.new(region: region)
     states = @event['client']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
     begin
-      instance = ec2.describe_instances(instance_ids: [@event['client']['name']]).reservations[0].instances[0]
-
-      state_reason = instance.state_transition_reason
-      states.include?(instance.state) && state_reasons.any? { |reason| Regexp.new(reason) =~ state_reason }
+      instances = ec2.describe_instances(instance_ids: [@event['client']['name']]).reservations[0]
+      if instances.nil?
+        false
+      else
+        instance = instances.instances[0]
+        state_reason = instance.state_transition_reason
+        !(states.include?(instance.state) && state_reasons.any? { |reason| Regexp.new(reason) =~ state_reason })
+      end
     rescue Aws::EC2::Errors::InvalidInstanceIDNotFound
       false
     end
