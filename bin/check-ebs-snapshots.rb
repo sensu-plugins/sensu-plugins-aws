@@ -28,6 +28,7 @@
 #
 
 require 'sensu-plugin/check/cli'
+require 'sensu-plugins-aws'
 require 'aws-sdk'
 
 class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
