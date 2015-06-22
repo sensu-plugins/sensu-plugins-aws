@@ -27,6 +27,7 @@
 #
 
 require 'sensu-plugin/check/cli'
+require 'sensu-plugins-aws'
 require 'aws-sdk'
 
 class CheckEipAllocation < Sensu::Plugin::Check::CLI
