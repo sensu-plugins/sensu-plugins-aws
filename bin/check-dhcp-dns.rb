@@ -29,6 +29,7 @@
 #
 
 require 'sensu-plugin/check/cli'
+require 'sensu-plugins-aws'
 require 'aws-sdk'
 require 'resolv'
 
