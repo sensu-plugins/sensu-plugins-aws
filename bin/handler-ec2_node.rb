@@ -105,7 +105,7 @@ require 'sensu-handler'
 require 'net/http'
 require 'uri'
 require 'aws-sdk'
-require_relative '../lib/sensu-plugins-aws/common'
+require 'sensu-plugins-aws'
 
 class Ec2Node < Sensu::Handler
   include Common
