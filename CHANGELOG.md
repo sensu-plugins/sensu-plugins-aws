@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased][unreleased]
+
+## [0.0.3] - 2015-06-26
 ### Fixed
 - Access key and secret key should be optional
 - Added 3XX metric collection to the ELB metrics plugins
@@ -20,7 +22,3 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [0.0.1] - 2015-05-21
 ### Added
 - initial release
-
-
-
-
