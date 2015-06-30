@@ -105,7 +105,7 @@ require 'sensu-handler'
 require 'net/http'
 require 'uri'
 require 'aws-sdk'
-require_relative 'common'
+require 'sensu-plugins-aws'
 
 class Ec2Node < Sensu::Handler
   include Common
@@ -127,14 +127,14 @@ class Ec2Node < Sensu::Handler
 
   def ec2_node_should_be_deleted?
     ec2 = Aws::EC2::Client.new(region: region)
-    states = @event['client']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
+    states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
     begin
       instances = ec2.describe_instances(instance_ids: [@event['client']['name']]).reservations[0]
       if instances.nil?
         true
       else
         instance = instances.instances[0]
-        state_reason = instance.state_transition_reason
+        state_reason = instance.state_reason.code
         state = instance.state.name
         states.include?(state) && state_reasons.any? { |reason| Regexp.new(reason) =~ state_reason }
       end
@@ -159,7 +159,7 @@ class Ec2Node < Sensu::Handler
   end
 
   def state_reasons
-    reasons = @event['client']['ec2_state_reasons'] || ['User\sinitiated']
+    reasons = @event['client']['ec2_state_reasons'] || settings['ec2_node']['ec2_state_reasons'] || ['UserInitiatedShutdown', 'SpotInstanceTermination', 'InstanceInitiatedShutdown']
     @state_reasons ||= reasons.each { |reason| Regexp.new(reason) }
   end
 
