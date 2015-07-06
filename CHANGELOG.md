@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased][unreleased]
+### Added
+- Added the ability to alert on un-snapshotted ebs volumes
 
 ## [0.0.3] - 2015-06-26
 ### Fixed
