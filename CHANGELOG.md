@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased][unreleased]
+### Added
+- EC2 node handler will now remove nodes terminated by a user
+- Transitioned EC2 node handler from fog to aws sdk v2
 
 ## [0.0.4] - 2015-07-05
 ### Added
