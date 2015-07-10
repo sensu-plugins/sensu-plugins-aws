@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## Unreleased][unreleased]
 
+## [0.0.4] - 2015-07-05
+### Added
+- Added the ability to alert on un-snapshotted ebs volumes
+
 ## [0.0.3] - 2015-06-26
 ### Fixed
 - Access key and secret key should be optional
