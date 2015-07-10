@@ -159,7 +159,8 @@ class Ec2Node < Sensu::Handler
   end
 
   def state_reasons
-    reasons = @event['client']['ec2_state_reasons'] || settings['ec2_node']['ec2_state_reasons'] || ['UserInitiatedShutdown', 'SpotInstanceTermination', 'InstanceInitiatedShutdown']
+    default_reasons = %w('UserInitiatedShutdown', 'SpotInstanceTermination', 'InstanceInitiatedShutdown')
+    reasons = @event['client']['ec2_state_reasons'] || settings['ec2_node']['ec2_state_reasons'] || default_reasons
     @state_reasons ||= reasons.each { |reason| Regexp.new(reason) }
   end
 
