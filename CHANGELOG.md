@@ -3,7 +3,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
-## Unreleased[unreleased]
+## Unreleased
 ### Added
 - EC2 node handler will now remove nodes terminated by a user
 - Transitioned EC2 node handler from fog to aws sdk v2
@@ -12,7 +12,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Fixed
 - Renamed autoscaling-instance-count-metrics.rb -> metrics-autoscaling-instance-count.rb to match our naming scheme
 - Reworked check-rds-events.rb to avoid the ABCSize warning from rubocop
-
+- Corrected the list of plugins / files in the readme
 
 ## [0.0.4] - 2015-07-05
 ### Added

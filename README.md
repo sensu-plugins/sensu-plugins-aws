@@ -9,13 +9,11 @@
 
 ## Functionality
 
-**check_vpc_vpn**
-
-**autoscaling-instance-count-metrics.rb**
-
 **check-dynamodb-capacity.rb**
 
 **check-dynamodb-throttle.rb**
+
+**check-ebs-snapshots.rb**
 
 **check-ec2-network.rb**
 
@@ -24,6 +22,8 @@
 **check-elb-health-fog.rb**
 
 **check-elb-health-sdk.rb**
+
+**check-elb-health.rb**
 
 **check-elb-latency.rb**
 
@@ -43,30 +43,34 @@
 
 **check-sqs-messages.rb**
 
-**ec2-count-metrics.rb**
+**check_vpc_vpn.py**
 
-**ec2-node.rb**
+**handler-ec2_node.rb**
 
-**elasticache-metrics.rb**
+**handler-sns.rb**
 
-**elb-full-metrics.rb**
+**metrics-autoscaling-instance-count.rb**
 
-**elb-latency-metrics.rb**
+**metrics-ec2-count.rb**
 
-**elb-metrics.rb**
+**metrics-elasticache.rb**
 
-**sqs-metrics.rb**
+**metrics-elb-full.rb**
+
+**metrics-elb.rb**
+
+**metrics-sqs.rb**
 
 ## Files
 
-* /bin/check_vpc_vpn
-* /bin/autoscaling-instance-count-metrics.rb
 * /bin/check-dynamodb-capacity.rb
 * /bin/check-dynamodb-throttle.rb
+* /bin/check-ebs-snapshots.rb
 * /bin/check-ec2-network.rb
 * /bin/check-elb-certs.rb
 * /bin/check-elb-health-fog.rb
 * /bin/check-elb-health-sdk.rb
+* /bin/check-elb-health.rb
 * /bin/check-elb-latency.rb
 * /bin/check-elb-nodes.rb
 * /bin/check-elb-sum-requests.rb
@@ -76,11 +80,13 @@
 * /bin/check-redshift-events.rb
 * /bin/check-ses-limit.rb
 * /bin/check-sqs-messages.rb
+* /bin/check_vpc_vpn.py
+* /bin/handler-ec2_node.rb
+* /bin/handler-sns.rb
+* /bin/metrics-autoscaling-instance-count.rb
 * /bin/metrics-ec2-count.rb
-* /bin/handler-ec2-node.rb
 * /bin/metrics-elasticache.rb
 * /bin/metrics-elb-full.rb
-* /bin/metrics-elb-latency.rb
 * /bin/metrics-elb.rb
 * /bin/metrics-sqs.rb
 
