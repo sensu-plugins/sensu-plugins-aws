@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-# elb-latency-metrics
+# elb-metrics
 #
 # DESCRIPTION:
 #   Gets latency metrics from CloudWatch and puts them in Graphite for longer term storage
