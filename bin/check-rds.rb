@@ -12,7 +12,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-v1
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -34,6 +34,9 @@
 #
 #   You can check multiple metrics simultaneously. Highest severity will be reported
 #   check-rds -i sensu-admin-db --cpu-warning-over 80 --cpu-critical-over 90 --memory-warning-over 60 --memory-critical-over 80
+#
+#   You can ignore accept nil values returned for a time periods from Cloudwatch as being an OK.  Amazon falls behind in their metrics from time to time and this prevents false positives
+#   check-rds -i sensu-admin-db --cpu-critical-over 90 -a
 #
 # NOTES:
 #
@@ -93,6 +96,12 @@ class CheckRDS < Sensu::Plugin::Check::CLI
          proc:        proc { |a| a.downcase.intern },
          description: 'CloudWatch statistics method'
 
+  option :accept_nil,
+       short: '-a',
+       long: '--accept_nil',
+       description: "Continue if CloudWatch provides no metrics for the time period",
+       default: false
+
   %w(warning critical).each do |severity|
     option :"availability_zone_#{severity}",
            long:        "--availability-zone-#{severity} AZ",
@@ -145,8 +154,12 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   def latest_value(metric, unit)
     values = metric.statistics(statistics_options.merge unit: unit).datapoints.sort_by { |datapoint| datapoint[:timestamp] }
 
-    # handle time periods that are too small to return usable values
-    values.empty? ? unknown('Requested time period did not return values from Cloudwatch. Try increasing your time period.') : values.last[config[:statistics]]
+    # handle time periods that are too small to return usable values.  # this is a cozy addition that wouldn't port upstream.
+    if values.empty?
+      config[:accept_nil] ? ok('Cloudwatch returned no results for time period. Accept nil passed so OK') :  unknown('Requested time period did not return values from Cloudwatch. Try increasing your time period.')
+    else
+      values.last[config[:statistics]]
+    end
   end
 
   def flag_alert(severity, message)
