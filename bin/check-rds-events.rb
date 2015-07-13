@@ -52,7 +52,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
          description: 'AWS Region (such as eu-west-1).',
          default: 'us-east-1'
 
-  def run # rubocop:disable AbcSize
+  def run
     rds = AWS::RDS::Client.new(
       access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],

@@ -93,7 +93,7 @@ class CheckELBNodes < Sensu::Plugin::Check::CLI
     hash
   end
 
-  def run # rubocop:disable all
+  def run
     AWS.start_memoizing
     elb = AWS::ELB.new aws_config
 
