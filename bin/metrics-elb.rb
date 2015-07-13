@@ -83,12 +83,12 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
   option :aws_region,
          short: '-r AWS_REGION',
          long: '--aws-region REGION',
-         description: 'AWS Region (such as eu-west-1).',
+         description: 'AWS Region (defaults to us-east-1).',
          default: 'us-east-1'
 
   def aws_config
     hash = {}
-    hash.update access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key] if config[:access_key_id] && config[:secret_access_key]
+    hash.update access_key_id: config[:aws_access_key], secret_access_key: config[:aws_secret_access_key] if config[:aws_access_key] && config[:aws_secret_access]
     hash.update region: config[:aws_region]
     hash
   end
