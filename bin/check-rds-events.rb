@@ -53,6 +53,15 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
          default: 'us-east-1'
 
   def run
+    clusters = maint_clusters
+    if clusters.empty?
+      ok
+    else
+      critical("Clusters w/ critical events: #{clusters.join(',')}")
+    end
+  end
+
+  def maint_clusters
     rds = AWS::RDS::Client.new(
       access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
@@ -74,11 +83,6 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
     rescue => e
       unknown "An error occurred processing AWS RDS API: #{e.message}"
     end
-
-    if maint_clusters.empty?
-      ok
-    else
-      critical("Clusters w/ critical events: #{maint_clusters.join(',')}")
-    end
+    maint_clusters
   end
 end
