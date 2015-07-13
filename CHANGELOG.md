@@ -3,12 +3,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
-## Unreleased][unreleased]
+## Unreleased[unreleased]
 ### Added
 - EC2 node handler will now remove nodes terminated by a user
 - Transitioned EC2 node handler from fog to aws sdk v2
 - Allowed ignoring nil values returned from Cloudwatch in the check-rds plugin. Previously if Cloudwatch fell behind you would be alerted
-### Fixed:
+### Fixed
 - Renamed autoscaling-instance-count-metrics.rb -> metrics-autoscaling-instance-count.rb to match our naming scheme
 - Reworked check-rds-events.rb to avoid the ABCSize warning from rubocop
 
