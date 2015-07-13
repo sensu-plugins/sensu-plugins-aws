@@ -13,6 +13,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Renamed autoscaling-instance-count-metrics.rb -> metrics-autoscaling-instance-count.rb to match our naming scheme
 - Reworked check-rds-events.rb to avoid the ABCSize warning from rubocop
 - Corrected the list of plugins / files in the readme
+- Make ELB name a required flag for the metrics ELB plugins to prevent nil class errors when it isn't provided
 
 ## [0.0.4] - 2015-07-05
 ### Added

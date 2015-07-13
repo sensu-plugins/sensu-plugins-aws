@@ -40,7 +40,8 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
   option :elbname,
          description: 'Name of the Elastic Load Balancer',
          short: '-n ELB_NAME',
-         long: '--name ELB_NAME'
+         long: '--name ELB_NAME',
+         required: true
 
   option :scheme,
          description: 'Metric naming scheme, text to prepend to metric',
