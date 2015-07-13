@@ -13,6 +13,7 @@
 #
 # DEPENDENCIES:
 #   gem: sensu-plugin
+#   gem: aws-sdk-v1
 #
 # USAGE:
 #   #YELLOW

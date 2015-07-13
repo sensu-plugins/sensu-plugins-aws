@@ -12,8 +12,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
-#   gem: time
+#   gem: aws-sdk-v1
 #   gem: sensu-plugin
 #
 # USAGE:

@@ -12,13 +12,13 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-v1
 #   gem: sensu-plugin
 #
 # needs example command
 # USAGE:
 #   #YELLOW
-
+#
 # NOTES:
 #   Redis: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/CacheMetrics.Redis.html
 #   Memcached: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/CacheMetrics.Memcached.html

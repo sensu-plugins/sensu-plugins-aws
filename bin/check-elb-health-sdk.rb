@@ -14,9 +14,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
-#   gem: uri
-#   gem: net/http
+#   gem: aws-sdk-v1
 #   gem: sensu-plugin
 #
 # Copyright (c) 2015, Benjamin Kett <bkett@umn.edu>
