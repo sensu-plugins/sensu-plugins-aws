@@ -97,10 +97,10 @@ class CheckRDS < Sensu::Plugin::Check::CLI
          description: 'CloudWatch statistics method'
 
   option :accept_nil,
-       short: '-a',
-       long: '--accept_nil',
-       description: "Continue if CloudWatch provides no metrics for the time period",
-       default: false
+         short: '-a',
+         long: '--accept_nil',
+         description: 'Continue if CloudWatch provides no metrics for the time period',
+         default: false
 
   %w(warning critical).each do |severity|
     option :"availability_zone_#{severity}",
@@ -156,7 +156,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
 
     # handle time periods that are too small to return usable values.  # this is a cozy addition that wouldn't port upstream.
     if values.empty?
-      config[:accept_nil] ? ok('Cloudwatch returned no results for time period. Accept nil passed so OK') :  unknown('Requested time period did not return values from Cloudwatch. Try increasing your time period.')
+      config[:accept_nil] ? ok('Cloudwatch returned no results for time period. Accept nil passed so OK') : unknown('Requested time period did not return values from Cloudwatch. Try increasing your time period.')
     else
       values.last[config[:statistics]]
     end
