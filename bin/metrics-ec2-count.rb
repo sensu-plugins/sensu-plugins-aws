@@ -3,7 +3,7 @@
 # ec2-count-metrics
 #
 # DESCRIPTION:
-#   This plugin retrives number of EC2 status
+#   This plugin retrives number of EC2 instances
 #
 # OUTPUT:
 #   plain-text
