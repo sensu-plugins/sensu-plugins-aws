@@ -38,7 +38,7 @@ require 'aws-sdk-v1'
 
 class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
   option :elbname,
-         description: 'Name of the Elastic Load Balancer',
+         description: 'Name of the Elastic Load Balancer (separate with commas for multiple ELBs)',
          short: '-n ELB_NAME',
          long: '--name ELB_NAME',
          required: true
@@ -120,10 +120,10 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
       result = {}
       graphitepath = config[:scheme]
 
-      config[:elbname].split(' ').each do |elbname|
+      config[:elbname].split(',').each do |elbname|
         statistic_type.each do |key, value|
           if config[:scheme] == ''
-            graphitepath = "#{config[:elbname]}.#{key.downcase}"
+            graphitepath = "#{elbname}.#{key.downcase}"
           end
           options['metric_name'] = key
           options['dimensions'][0]['value'] = elbname
