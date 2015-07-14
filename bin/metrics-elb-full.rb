@@ -118,13 +118,15 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
       }
 
       result = {}
-      graphitepath = config[:scheme]
 
       config[:elbname].split(',').each do |elbname|
+        if config[:scheme] == ''
+          graphitepath = "#{elbname}"
+        else
+          graphitepath = "#{config[:scheme]}.#{elbname}"
+        end
+
         statistic_type.each do |key, value|
-          if config[:scheme] == ''
-            graphitepath = "#{elbname}.#{key.downcase}"
-          end
           options['metric_name'] = key
           options['dimensions'][0]['value'] = elbname
           options['statistics'] = [value]

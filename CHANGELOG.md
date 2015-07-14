@@ -8,6 +8,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - EC2 node handler will now remove nodes terminated by a user
 - Transitioned EC2 node handler from fog to aws sdk v2
 - Allowed ignoring nil values returned from Cloudwatch in the check-rds plugin. Previously if Cloudwatch fell behind you would be alerted
+- Added support for checking multiple ELB instances at once by passing a comma separated list of ELB instance names in metrics-elb-full.rb
 
 ### Fixed
 - Renamed autoscaling-instance-count-metrics.rb -> metrics-autoscaling-instance-count.rb to match our naming scheme
@@ -16,6 +17,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Make ELB name a required flag for the metrics ELB plugins to prevent nil class errors when it isn't provided
 - Properly document that ELB metrics plugins default to us-east-1
 - Fix the ELB metrics plugins to properly use the passed auth data
+- Fixed the metrics-elb-full plugin to still add the ELB instance name when a graphite schema is appended
 
 ## [0.0.4] - 2015-07-05
 ### Added
