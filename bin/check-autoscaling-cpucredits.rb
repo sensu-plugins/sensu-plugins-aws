@@ -27,7 +27,6 @@
 #   for details.
 #
 
-require 'rubygems' if RUBY_VERSION < '1.9.0'
 require 'sensu-plugin/check/cli'
 require 'aws-sdk-v1'
 
@@ -35,17 +34,20 @@ class CheckEc2CpuCredits < Sensu::Plugin::Check::CLI
   option :access_key_id,
          short:       '-k N',
          long:        '--access-key-id ID',
-         description: 'AWS access key ID'
+         description: 'AWS access key ID',
+         required:    true
 
   option :secret_access_key,
          short:       '-s N',
          long:        '--secret-access-key KEY',
-         description: 'AWS secret access key'
+         description: 'AWS secret access key',
+         required:    true
 
   option :region,
          short:       '-r R',
          long:        '--region REGION',
-         description: 'AWS region'
+         description: 'AWS region (defaults to us-east-1)'
+         default:     'us-east-1'
 
   option :group,
          short:       '-g G',
@@ -81,10 +83,10 @@ class CheckEc2CpuCredits < Sensu::Plugin::Check::CLI
          description: 'Issue a critical if the CloudWatch _Count_ based metric (Status Check / CPU Credits) is below this value'
 
   def aws_config
-    hash = {}
-    hash.update access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key] if config[:access_key_id] && config[:secret_access_key]
-    hash.update region: config[:region] if config[:region]
-    hash
+    { access_key_id: config[:access_key_id], 
+      secret_access_key: config[:secret_access_key], 
+      region: config[:region]
+    }
   end
 
   def asg
