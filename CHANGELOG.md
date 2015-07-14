@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## UNRELEASED
 ### Added
 - Added check-ec2-filter to compare filter results to given thresholds
+- Given a vpc it now queries the dhcp options to validate the DNS servers are functional
 
 ## [1.1.0] - 2015-07-24
 ### Added

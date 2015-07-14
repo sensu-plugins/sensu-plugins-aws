@@ -49,6 +49,8 @@
 
 **check-sqs-messages.rb**
 
+**check-vpc-nameservers**
+
 **check_vpc_vpn.py**
 
 **handler-ec2_node.rb**
@@ -93,6 +95,7 @@
 * /bin/check-redshift-events.rb
 * /bin/check-ses-limit.rb
 * /bin/check-sqs-messages.rb
+* /bin/check-vpc-nameservers.rb
 * /bin/check_vpc_vpn.py
 * /bin/handler-ec2_node.rb
 * /bin/handler-ses.rb
