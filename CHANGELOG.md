@@ -9,6 +9,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Transitioned EC2 node handler from fog to aws sdk v2
 - Allowed ignoring nil values returned from Cloudwatch in the check-rds plugin. Previously if Cloudwatch fell behind you would be alerted
 - Added support for checking multiple ELB instances at once by passing a comma separated list of ELB instance names in metrics-elb-full.rb
+- Add check-autoscaling-cpucredits.rb for checking T2 instances in autoscaling groups that are running low on CPU credits
 
 ### Fixed
 - Renamed autoscaling-instance-count-metrics.rb -> metrics-autoscaling-instance-count.rb to match our naming scheme
