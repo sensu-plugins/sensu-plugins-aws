@@ -35,7 +35,8 @@
 #   You can check multiple metrics simultaneously. Highest severity will be reported
 #   check-rds -i sensu-admin-db --cpu-warning-over 80 --cpu-critical-over 90 --memory-warning-over 60 --memory-critical-over 80
 #
-#   You can ignore accept nil values returned for a time periods from Cloudwatch as being an OK.  Amazon falls behind in their metrics from time to time and this prevents false positives
+#   You can ignore accept nil values returned for a time periods from Cloudwatch as being an OK.  Amazon falls behind in their
+#   metrics from time to time and this prevents false positives
 #   check-rds -i sensu-admin-db --cpu-critical-over 90 -a
 #
 # NOTES:
@@ -66,7 +67,6 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   option :region,
          short:       '-r R',
          long:        '--region REGION',
-         description: 'AWS region',
          description: 'AWS Region (such as eu-west-1).',
          default: 'us-east-1'
 
@@ -156,7 +156,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
 
     # handle time periods that are too small to return usable values.  # this is a cozy addition that wouldn't port upstream.
     if values.empty?
-      config[:accept_nil] ? ok('Cloudwatch returned no results for time period. Accept nil passed so OK') : unknown('Requested time period did not return values from Cloudwatch. Try increasing your time period.')
+      config[:accept_nil] ? ok('Cloudwatch returned no results for time period. Accept nil passed so OK') : unknown('Requested time period did not return values from Cloudwatch. Try increasing your time period.') # rubocop:disable all
     else
       values.last[config[:statistics]]
     end
@@ -204,7 +204,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
     @cpu_metric ||= cloud_watch_metric 'CPUUtilization'
     @cpu_metric_value ||= latest_value @cpu_metric, 'Percent'
     return if @cpu_metric_value < expected_lower_than
-    flag_alert severity, "; CPUUtilization is #{sprintf '%.2f', @cpu_metric_value}% (expected lower than #{expected_lower_than}%)"
+    flag_alert severity, "; CPUUtilization is #{sprintf '%.2f', @cpu_metric_value}% (expected lower than #{expected_lower_than}%)" # rubocop:disable all
   end
 
   def check_memory(severity, expected_lower_than)
@@ -214,7 +214,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
     @memory_usage_bytes ||= @memory_total_bytes - @memory_metric_value
     @memory_usage_percentage ||= @memory_usage_bytes / @memory_total_bytes * 100
     return if @memory_usage_percentage < expected_lower_than
-    flag_alert severity, "; Memory usage is #{sprintf '%.2f', @memory_usage_percentage}% (expected lower than #{expected_lower_than}%)"
+    flag_alert severity, "; Memory usage is #{sprintf '%.2f', @memory_usage_percentage}% (expected lower than #{expected_lower_than}%)" # rubocop:disable all
   end
 
   def check_disk(severity, expected_lower_than)
@@ -224,7 +224,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
     @disk_usage_bytes ||= @disk_total_bytes - @disk_metric_value
     @disk_usage_percentage ||= @disk_usage_bytes / @disk_total_bytes * 100
     return if @disk_usage_percentage < expected_lower_than
-    flag_alert severity, "; Disk usage is #{sprintf '%.2f', @disk_usage_percentage}% (expected lower than #{expected_lower_than}%)"
+    flag_alert severity, "; Disk usage is #{sprintf '%.2f', @disk_usage_percentage}% (expected lower than #{expected_lower_than}%)" # rubocop:disable all
   end
 
   def run

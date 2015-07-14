@@ -46,7 +46,7 @@ class CheckEc2CpuCredits < Sensu::Plugin::Check::CLI
   option :region,
          short:       '-r R',
          long:        '--region REGION',
-         description: 'AWS region (defaults to us-east-1)'
+         description: 'AWS region (defaults to us-east-1)',
          default:     'us-east-1'
 
   option :group,
@@ -83,8 +83,8 @@ class CheckEc2CpuCredits < Sensu::Plugin::Check::CLI
          description: 'Issue a critical if the CloudWatch _Count_ based metric (Status Check / CPU Credits) is below this value'
 
   def aws_config
-    { access_key_id: config[:access_key_id], 
-      secret_access_key: config[:secret_access_key], 
+    { access_key_id: config[:access_key_id],
+      secret_access_key: config[:secret_access_key],
       region: config[:region]
     }
   end
@@ -116,10 +116,7 @@ class CheckEc2CpuCredits < Sensu::Plugin::Check::CLI
 
   def latest_value(metric)
     value = metric.statistics(statistics_options.merge unit: 'Count')
-    # #YELLOW
-    unless value.datapoints[0].nil? # rubocop:disable IfUnlessModifier, GuardClause
-      value.datapoints[0][:average].to_f
-    end
+    value.datapoints[0][:average].to_f unless value.datapoints[0].nil?
   end
 
   def check_metric(group)
@@ -162,4 +159,3 @@ class CheckEc2CpuCredits < Sensu::Plugin::Check::CLI
     end
   end
 end
-

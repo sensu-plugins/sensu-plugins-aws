@@ -85,10 +85,10 @@ class CheckELBLatency < Sensu::Plugin::Check::CLI
   end
 
   def aws_config
-    hash = {}
-    hash.update access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key] if config[:access_key_id] && config[:secret_access_key]
-    hash.update region: config[:region] if config[:region]
-    hash
+    { access_key_id: config[:aws_access_key],
+      secret_access_key: config[:aws_secret_access_key],
+      region: config[:aws_region]
+    }
   end
 
   def elb
@@ -141,7 +141,7 @@ class CheckELBLatency < Sensu::Plugin::Check::CLI
       next unless threshold
       next if metric_value < threshold
       flag_alert severity,
-                 "; #{elbs.size == 1 ? nil : "#{elb.inspect}'s"} Latency is #{sprintf '%.3f', metric_value} seconds. (expected lower than #{sprintf '%.3f', threshold})"
+                 "; #{elbs.size == 1 ? nil : "#{elb.inspect}'s"} Latency is #{sprintf '%.3f', metric_value} seconds. (expected lower than #{sprintf '%.3f', threshold})" # rubocop:disable all
       break
     end
   end

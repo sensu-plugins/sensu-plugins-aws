@@ -65,68 +65,68 @@ class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
     hash
   end
 
+  def by_instances_status(client)
+    if config[:scheme] == 'sensu.aws.ec2'
+      config[:scheme] += '.count'
+    end
+
+    options = { include_all_instances: true }
+    data = client.describe_instance_status(options)
+
+    total = data[:instance_status_set].count
+    status = {}
+
+    unless total.nil?
+      data[:instance_status_set].each do |value|
+        stat = value[:instance_state][:name]
+        if status[stat].nil?
+          status[stat] = 1
+        else
+          status[stat] = status[stat] + 1
+        end
+      end
+    end
+
+    unless data.nil? # rubocop: disable Style/GuardClause
+      # We only return data when we have some to return
+      output config[:scheme] + '.total', total
+      status.each do |name, count|
+        output config[:scheme] + ".#{name}", count
+      end
+    end
+  end
+
+  def by_instances_type(client)
+    if config[:scheme] == 'sensu.aws.ec2'
+      config[:scheme] += '.types'
+    end
+
+    data = {}
+
+    instances = client.describe_instances
+    instances[:reservation_set].each do |i|
+      i[:instances_set].each do |instance|
+        type = instance[:instance_type]
+        if data[type].nil?
+          data[type] = 1
+        else
+          data[type] = data[type] + 1
+        end
+      end
+    end
+
+    unless data.nil? # rubocop: disable Style/GuardClause
+      # We only return data when we have some to return
+      data.each do |name, count|
+        output config[:scheme] + ".#{name}", count
+      end
+    end
+  end
+
   def run
     begin
 
       client = AWS::EC2::Client.new aws_config
-
-      def by_instances_status(client)
-        if config[:scheme] == 'sensu.aws.ec2'
-          config[:scheme] += '.count'
-        end
-
-        options = { include_all_instances: true }
-        data = client.describe_instance_status(options)
-
-        total = data[:instance_status_set].count
-        status = {}
-
-        unless total.nil?
-          data[:instance_status_set].each do |value|
-            stat = value[:instance_state][:name]
-            if status[stat].nil?
-              status[stat] = 1
-            else
-              status[stat] = status[stat] + 1
-            end
-          end
-        end
-
-        unless data.nil? # rubocop: disable Style/GuardClause
-          # We only return data when we have some to return
-          output config[:scheme] + '.total', total
-          status.each do |name, count|
-            output config[:scheme] + ".#{name}", count
-          end
-        end
-      end
-
-      def by_instances_type(client)
-        if config[:scheme] == 'sensu.aws.ec2'
-          config[:scheme] += '.types'
-        end
-
-        data = {}
-
-        instances = client.describe_instances
-        instances[:reservation_set].each do |i|
-          i[:instances_set].each do |instance|
-            type = instance[:instance_type]
-            if data[type].nil?
-              data[type] = 1
-            else
-              data[type] = data[type] + 1
-            end
-          end
-        end
-
-        unless data.nil? # rubocop: disable Style/GuardClause
-          # We only return data when we have some to return
-          data.each do |name, count|
-            output config[:scheme] + ".#{name}", count
-          end
-        end
-      end
 
       if config[:type] == 'instance'
         by_instances_type(client)

@@ -87,14 +87,13 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
          default: 'us-east-1'
 
   def aws_config
-    hash = {}
-    hash.update access_key_id: config[:aws_access_key], secret_access_key: config[:aws_secret_access_key]
-    hash.update region: config[:aws_region]
-    hash
+    { access_key_id: config[:aws_access_key],
+      secret_access_key: config[:aws_secret_access_key],
+      region: config[:aws_region]
+    }
   end
 
   def run
-    statistic = ''
     if config[:statistic] == ''
       default_statistic_per_metric = {
         'Latency' => 'Average',

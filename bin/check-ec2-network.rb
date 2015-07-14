@@ -106,10 +106,7 @@ class CheckEc2Network < Sensu::Plugin::Check::CLI
 
   def latest_value(metric)
     value = metric.statistics(statistics_options.merge unit: 'Bytes')
-    # #YELLOW
-    unless value.datapoints[0].nil? # rubocop:disable IfUnlessModifier, GuardClause
-      value.datapoints[0][:average].to_f
-    end
+    value.datapoints[0][:average].to_f unless value.datapoints[0].nil?
   end
 
   def check_metric(instance)

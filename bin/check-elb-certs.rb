@@ -82,14 +82,13 @@ class CheckELBCerts < Sensu::Plugin::Check::CLI
   end
 
   def aws_config
-    hash = {}
-    hash.update access_key_id: config[:aws_access_key], secret_access_key: config[:aws_secret_access_key]\
-      if config[:aws_access_key] && config[:aws_secret_access_key]
-    hash.update region: config[:aws_region]
-    hash
+    { access_key_id: config[:aws_access_key],
+      secret_access_key: config[:aws_secret_access_key],
+      region: config[:aws_region]
+    }
   end
 
-  def run
+  def run # rubocop:disable all
     ok_message = []
     warning_message = []
     critical_message = []
@@ -115,7 +114,7 @@ class CheckELBCerts < Sensu::Plugin::Check::CLI
             end
 
             cert_days_remaining = ((cert.not_after - Time.now) / 86_400).to_i
-            message = sprintf '%s(%d)', lb.name, cert_days_remaining
+            message = sprintf '%s(%d)', lb.name, cert_days_remaining # rubocop:disable all
 
             if config[:crit_under] > 0 && config[:crit_under] >= cert_days_remaining
               critical_message << message
