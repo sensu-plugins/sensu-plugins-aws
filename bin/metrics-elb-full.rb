@@ -109,7 +109,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
         'dimensions' => [
           {
             'name' => 'LoadBalancerName',
-            'value' => config[:elbname]
+            'value' => nil
           }
         ],
         'start_time' => st.iso8601,
