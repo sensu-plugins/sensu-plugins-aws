@@ -43,20 +43,29 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
          default: ''
 
   option :aws_access_key,
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY_ID'] or provide it as an option",
+         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
          short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY'
+         long: '--aws-access-key AWS_ACCESS_KEY',
+         default: ENV['AWS_ACCESS_KEY']
 
   option :aws_secret_access_key,
          description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_ACCESS_KEY'] or provide it as an option",
-         short: '-k AWS_SECRET_ACCESS_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_ACCESS_KEY'
+         short: '-k AWS_SECRET_KEY',
+         long: '--aws-secret-access-key AWS_SECRET_KEY',
+         default: ENV['AWS_SECRET_KEY']
 
   option :aws_region,
-         description: 'AWS Region (such as us-east-1)',
+         description: 'AWS Region (defaults to us-east-1).',
          short: '-r AWS_REGION',
          long: '--aws-region AWS_REGION',
          default: 'us-east-1'
+
+  def aws_config
+    { access_key_id: config[:aws_access_key],
+      secret_access_key: config[:aws_secret_access_key],
+      region: config[:aws_region]
+    }
+  end
 
   def run
     if config[:scheme] == ''
@@ -66,11 +75,7 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
     end
 
     begin
-      sqs = AWS::SQS.new(
-        access_key_id: config[:aws_access_key],
-        secret_access_key: config[:aws_secret_access_key],
-        region: config[:aws_region]
-      )
+      sqs = AWS::SQS.new aws_config
 
       messages = sqs.queues.named(config[:queue]).approximate_number_of_messages
       output scheme, messages

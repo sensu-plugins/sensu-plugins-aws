@@ -52,23 +52,23 @@ require 'aws-sdk-v1'
 require 'time'
 
 class CheckRDS < Sensu::Plugin::Check::CLI
-  option :access_key_id,
-         short:       '-k N',
-         long:        '--access-key-id ID',
-         description: 'AWS access key ID',
-         default: ENV['AWS_ACCESS_KEY_ID']
+  option :aws_access_key,
+         short:       '-a AWS_ACCESS_KEY',
+         long:        '--aws-access-key AWS_ACCESS_KEY',
+         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
+         default:     ENV['AWS_ACCESS_KEY']
 
-  option :secret_access_key,
-         short:       '-s N',
-         long:        '--secret-access-key KEY',
-         description: 'AWS secret access key',
-         default: ENV['AWS_SECRET_ACCESS_KEY']
+  option :aws_secret_access_key,
+         short:       '-k AWS_SECRET_KEY',
+         long:        '--aws-secret-access-key AWS_SECRET_KEY',
+         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
+         default:     ENV['AWS_SECRET_KEY']
 
-  option :region,
-         short:       '-r R',
-         long:        '--region REGION',
-         description: 'AWS Region (such as eu-west-1).',
-         default: 'us-east-1'
+  option :aws_region,
+         short:       '-r AWS_REGION',
+         long:        '--aws-region REGION',
+         description: 'AWS Region (defaults to us-east-1).',
+         default:     'us-east-1'
 
   option :db_instance_id,
          short:       '-i N',
@@ -116,10 +116,10 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def aws_config
-    hash = {}
-    hash.update access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key] if config[:access_key_id] && config[:secret_access_key]
-    hash.update region: config[:region] if config[:region]
-    hash
+    { access_key_id: config[:aws_access_key],
+      secret_access_key: config[:aws_secret_access_key],
+      region: config[:aws_region]
+    }
   end
 
   def rds

@@ -12,8 +12,8 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: sensu-plugin
 #   gem: aws-sdk-v1
+#   gem: sensu-plugin
 #
 # USAGE:
 #   #YELLOW
