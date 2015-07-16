@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased
+
+WARNING:  This release contains major breaking changes that will impact all users.  The flags used for access key and secret key have been standardized accross all plugins resulting in changed flags for the majority of plugins. The new flags are -a AWS_ACCESS_KEY and -k AWS_SECRET_KEY.
+
 ### Added
 - EC2 node handler will now remove nodes terminated by a user
 - Transitioned EC2 node handler from fog to aws sdk v2
@@ -16,9 +19,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Reworked check-rds-events.rb to avoid the ABCSize warning from rubocop
 - Corrected the list of plugins / files in the readme
 - Make ELB name a required flag for the metrics ELB plugins to prevent nil class errors when it isn't provided
-- Properly document that ELB metrics plugins default to us-east-1
+- Properly document that all plugins default to us-east-1 unless the region flag is passed
 - Fix the ELB metrics plugins to properly use the passed auth data
 - Fixed the metrics-elb-full plugin to still add the ELB instance name when a graphite schema is appended
+- Fixed all plugins to support passing the AWS access and secret keys from shell variables. Plugin help listed this as an option for all plugins, but the support wasn't actually there.
 
 ## [0.0.4] - 2015-07-05
 ### Added
