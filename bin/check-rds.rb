@@ -97,7 +97,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
          description: 'CloudWatch statistics method'
 
   option :accept_nil,
-         short: '-a',
+         short: '-n',
          long: '--accept_nil',
          description: 'Continue if CloudWatch provides no metrics for the time period',
          default: false
