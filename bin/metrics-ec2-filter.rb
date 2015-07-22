@@ -110,7 +110,7 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
 
       instance_ids = Set.new
       scheme = config[:scheme]
-      
+
       unless config[:name].empty?
         scheme += ".#{config[:name]}"
       end
