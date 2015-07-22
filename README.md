@@ -103,10 +103,10 @@
 ```
 {
   "sns": {
-    "topic_arn": "arn:aws:sns:us-east-1:111111111111:topic"
-    ,"use_ami_role": true
-    ,"access_key": "MY_KEY"
-    ,"secret_key": "MY_secret"
+    "topic_arn": "arn:aws:sns:us-east-1:111111111111:topic",
+    "use_ami_role": true,
+    "access_key": "MY_KEY",
+    "secret_key": "MY_secret"
   }
 }
 ```
