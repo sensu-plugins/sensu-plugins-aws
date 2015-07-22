@@ -55,6 +55,8 @@
 
 **metrics-ec2-count.rb**
 
+**metrics-ec2-filter.rb**
+
 **metrics-elasticache.rb**
 
 **metrics-elb-full.rb**
@@ -63,7 +65,6 @@
 
 **metrics-sqs.rb**
 
-**metrics-ec2-filter.rb**
 
 ## Files
 

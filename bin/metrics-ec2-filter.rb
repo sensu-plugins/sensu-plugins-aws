@@ -16,7 +16,8 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   #YELLOW
+#   ./metrics-ec2-filter.rb -f "{name:tag-value,values:[infrastructure]}"
+#   ./metrics-ec2-filter.rb -f "{name:tag-value,values:[infrastructure]} {name:instance-state-name,values:[running]}"
 #
 # NOTES:
 #
@@ -49,22 +50,22 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
          default: 'us-east-1'
 
   option :name,
-        description: 'Filter naming scheme, text to prepend to metric',
-        short: '-n NAME',
-        long: '--name NAME',
-        default: ''
+         description: 'Filter naming scheme, text to prepend to metric',
+         short: '-n NAME',
+         long: '--name NAME',
+         default: ''
 
   option :filter,
-        short: '-f FILTER',
-        long: '--filter FILTER',
-        description: 'String representation of the filter to apply',
-        default: '{}'
+         short: '-f FILTER',
+         long: '--filter FILTER',
+         description: 'String representation of the filter to apply',
+         default: '{}'
 
   option :scheme,
-        description: 'Metric naming scheme, text to prepend to metric',
-        short: '-s SCHEME',
-        long: '--scheme SCHEME',
-        default: 'sensu.aws.ec2'
+         description: 'Metric naming scheme, text to prepend to metric',
+         short: '-s SCHEME',
+         long: '--scheme SCHEME',
+         default: 'sensu.aws.ec2'
 
   def aws_config
     { access_key_id: config[:aws_access_key],
@@ -74,24 +75,24 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
   end
 
   def convert_filter(input)
-    filter = Array.new
+    filter = []
     items = input.scan(/{.*?}/)
 
     items.each do |item|
-      if item.strip().empty?
-        raise "Invalid filter syntax"
+      if item.strip.empty?
+        fail 'Invalid filter syntax'
       end
 
-      entry = Hash.new
+      entry = {}
       name = item.scan(/name:(.*?),/)
       value = item.scan(/values:\[(.*?)\]/)
 
       if name.nil? || name.empty? || value.nil? || value.empty?
-        raise "Unable to parse filter entry"
+        fail 'Unable to parse filter entry'
       end
 
-      entry[:name] = name[0][0].strip()
-      entry[:values] = value[0][0].split(",")
+      entry[:name] = name[0][0].strip
+      entry[:values] = value[0][0].split(',')
       filter << entry
     end
     return filter
@@ -103,22 +104,22 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
 
       filter = convert_filter(config[:filter])
 
-      options = {filters: filter}
+      options = { filters: filter }
 
       data = client.describe_instances(options)
 
       instance_ids = Set.new
       scheme = config[:scheme]
       unless config[:name].empty?
-        scheme = scheme + ".#{config[:name]}"
+        scheme =+ ".#{config[:name]}"
       end
       data[:reservations].each do |res|
         res[:instances].each do |i|
           instance_ids << i[:instance_id]
-          output scheme +".ids.#{i[:instance_id]}"
+          output scheme + ".ids.#{i[:instance_id]}"
         end
       end
-      output scheme +".count.#{instance_ids.count}"
+      output scheme + ".count.#{instance_ids.count}"
     rescue => e
       puts "Error: exception: #{e}"
       critical
