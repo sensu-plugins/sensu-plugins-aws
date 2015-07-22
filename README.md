@@ -55,6 +55,8 @@
 
 **metrics-ec2-count.rb**
 
+**metrics-ec2-filter.rb**
+
 **metrics-elasticache.rb**
 
 **metrics-elb-full.rb**
@@ -62,6 +64,7 @@
 **metrics-elb.rb**
 
 **metrics-sqs.rb**
+
 
 ## Files
 
@@ -88,6 +91,7 @@
 * /bin/handler-sns.rb
 * /bin/metrics-autoscaling-instance-count.rb
 * /bin/metrics-ec2-count.rb
+* /bin/metrics-ec2-filter.rb
 * /bin/metrics-elasticache.rb
 * /bin/metrics-elb-full.rb
 * /bin/metrics-elb.rb
