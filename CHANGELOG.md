@@ -13,6 +13,7 @@ WARNING:  This release contains major breaking changes that will impact all user
 - Allowed ignoring nil values returned from Cloudwatch in the check-rds plugin. Previously if Cloudwatch fell behind you would be alerted
 - Added support for checking multiple ELB instances at once by passing a comma separated list of ELB instance names in metrics-elb-full.rb
 - Add check-autoscaling-cpucredits.rb for checking T2 instances in autoscaling groups that are running low on CPU credits
+- Add metrics-ec2-filter to store node ids and count matching a given filter
 
 ### Fixed
 - Renamed autoscaling-instance-count-metrics.rb -> metrics-autoscaling-instance-count.rb to match our naming scheme

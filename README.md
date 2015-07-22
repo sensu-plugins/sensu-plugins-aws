@@ -63,6 +63,8 @@
 
 **metrics-sqs.rb**
 
+**metrics-ec2-filter.rb**
+
 ## Files
 
 * /bin/check-autoscaling-cpucredits.rb
@@ -88,6 +90,7 @@
 * /bin/handler-sns.rb
 * /bin/metrics-autoscaling-instance-count.rb
 * /bin/metrics-ec2-count.rb
+* /bin/metrics-ec2-filter.rb
 * /bin/metrics-elasticache.rb
 * /bin/metrics-elb-full.rb
 * /bin/metrics-elb.rb
