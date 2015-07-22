@@ -95,7 +95,7 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
       entry[:values] = value[0][0].split(',')
       filter << entry
     end
-    return filter
+    filter
   end
 
   def run
@@ -110,8 +110,9 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
 
       instance_ids = Set.new
       scheme = config[:scheme]
+      
       unless config[:name].empty?
-        scheme =+ ".#{config[:name]}"
+        scheme += ".#{config[:name]}"
       end
       data[:reservations].each do |res|
         res[:instances].each do |i|
