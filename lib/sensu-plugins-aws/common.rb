@@ -31,4 +31,28 @@ module Common
       region: config[:aws_region]
     )
   end
+
+  def convert_filter(input)
+    filter = []
+    items = input.scan(/{.*?}/)
+
+    items.each do |item|
+      if item.strip.empty?
+        fail 'Invalid filter syntax'
+      end
+
+      entry = {}
+      name = item.scan(/name:(.*?),/)
+      value = item.scan(/values:\[(.*?)\]/)
+
+      if name.nil? || name.empty? || value.nil? || value.empty?
+        fail 'Unable to parse filter entry'
+      end
+
+      entry[:name] = name[0][0].strip
+      entry[:values] = value[0][0].split(',')
+      filter << entry
+    end
+    filter
+  end
 end

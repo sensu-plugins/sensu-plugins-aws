@@ -1,9 +1,9 @@
 #! /usr/bin/env ruby
 #
-# metrics-ec2-filter
+# check-instance-reachability
 #
 # DESCRIPTION:
-#   This plugin retrieves EC2 instances matching a given filter
+#   This plugin looks up all instances from a filter set and pings
 #
 # OUTPUT:
 #   plain-text
@@ -16,22 +16,21 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   ./metrics-ec2-filter.rb -f "{name:tag-value,values:[infrastructure]}"
-#   ./metrics-ec2-filter.rb -f "{name:tag-value,values:[infrastructure]} {name:instance-state-name,values:[running]}"
+#   #YELLOW
 #
 # NOTES:
 #
 # LICENSE:
-#   Justin McCarty
+#   Copyright (c) 2014, Leon Gibat, brendan.gibat@gmail.com
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
 #
 
-require 'sensu-plugin/metric/cli'
+require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 require 'sensu-plugins-aws'
 
-class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
+class CheckInstanceReachability < Sensu::Plugin::Check::CLI
   include Common
   option :aws_access_key,
          short: '-a AWS_ACCESS_KEY',
@@ -51,23 +50,32 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
          description: 'AWS Region (defaults to us-east-1).',
          default: 'us-east-1'
 
-  option :name,
-         description: 'Filter naming scheme, text to prepend to metric',
-         short: '-n NAME',
-         long: '--name NAME',
-         default: ''
-
   option :filter,
          short: '-f FILTER',
          long: '--filter FILTER',
          description: 'String representation of the filter to apply',
          default: '{}'
 
-  option :scheme,
-         description: 'Metric naming scheme, text to prepend to metric',
-         short: '-s SCHEME',
-         long: '--scheme SCHEME',
-         default: 'sensu.aws.ec2'
+  option :timeout,
+         description: 'Ping timeout in seconds',
+         short: '-t TIMEOUT',
+         long: '--timeout TIMEOUT',
+         default: 5,
+         proc: proc(&:to_i)
+
+  option :count,
+         description: 'Ping count',
+         short: '-c COUNT',
+         long: '--count COUNT',
+         default: 1,
+         proc: proc(&:to_i)
+
+  option :critical_response,
+         description: 'Flag if the response should error on failures',
+         short: '-r',
+         long: '--critical-response',
+         boolean: true,
+         default: false
 
   def run
     begin
@@ -78,25 +86,32 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
 
       options = { filters: filter }
 
+      errors = []
+      instance_ids = []
       data = client.describe_instances(options)
 
-      instance_ids = Set.new
-      scheme = config[:scheme]
-
-      unless config[:name].empty?
-        scheme += ".#{config[:name]}"
-      end
       data[:reservations].each do |res|
         res[:instances].each do |i|
           instance_ids << i[:instance_id]
-          output scheme + ".ids.#{i[:instance_id]}"
+          `ping -c #{config[:count]} -W #{config[:timeout]} #{i[:private_ip_address]}`
+          if $?.to_i > 0
+              errors << "Could not reach #{i[:instance_id]}"
+          end
         end
       end
-      output scheme + ".count.#{instance_ids.count}"
     rescue => e
       puts "Error: exception: #{e}"
       critical
     end
-    ok
+    if errors.empty?
+      ok "Instances checked: #{instance_ids.join(",")}"
+    else
+      message = errors.join(",")
+      if config[:critical_response]
+        critical message
+      else
+        warning message
+      end
+    end
   end
 end
