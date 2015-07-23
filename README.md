@@ -49,6 +49,8 @@
 
 **handler-ec2_node.rb**
 
+**handler-ses.rb**
+
 **handler-sns.rb**
 
 **metrics-autoscaling-instance-count.rb**
@@ -88,6 +90,7 @@
 * /bin/check-sqs-messages.rb
 * /bin/check_vpc_vpn.py
 * /bin/handler-ec2_node.rb
+* /bin/handler-ses.rb
 * /bin/handler-sns.rb
 * /bin/metrics-autoscaling-instance-count.rb
 * /bin/metrics-ec2-count.rb
@@ -98,6 +101,25 @@
 * /bin/metrics-sqs.rb
 
 ## Usage
+
+**handler-ses**
+```
+{
+  "ses": {
+    "mail_from": "sensu@example.com",
+    "mail_to": "monitor@example.com",
+    "use_ami_role": true,
+    "access_key": "myaccesskey",
+    "secret_key": "mysecretkey",
+    "region": "us-east-1",
+    "subscriptions": {
+      "subscription_name": {
+        "mail_to": "teamemail@example.com"
+      }
+    }
+  }
+}
+```
 
 **handler-sns**
 ```
