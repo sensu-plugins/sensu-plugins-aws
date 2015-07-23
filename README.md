@@ -17,6 +17,8 @@
 
 **check-ebs-snapshots.rb**
 
+**check-ec2-filter.rb**
+
 **check-ec2-network.rb**
 
 **check-elb-certs.rb**

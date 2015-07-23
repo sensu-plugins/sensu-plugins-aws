@@ -1,9 +1,10 @@
 #! /usr/bin/env ruby
 #
-# metrics-ec2-filter
+# check-ec2-filter
 #
 # DESCRIPTION:
-#   This plugin retrieves EC2 instances matching a given filter
+#   This plugin retrieves EC2 instances matching a given filter and
+#   returns the number matched
 #
 # OUTPUT:
 #   plain-text
@@ -16,8 +17,8 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   ./metrics-ec2-filter.rb -f "{name:tag-value,values:[infrastructure]}"
-#   ./metrics-ec2-filter.rb -f "{name:tag-value,values:[infrastructure]} {name:instance-state-name,values:[running]}"
+#   ./check-ec2-filter.rb -f "{name:tag-value,values:[infrastructure]}"
+#   ./check-ec2-filter.rb -f "{name:tag-value,values:[infrastructure]} {name:instance-state-name,values:[running]}"
 #
 # NOTES:
 #
@@ -27,11 +28,11 @@
 #   for details.
 #
 
-require 'sensu-plugin/metric/cli'
+require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 require 'sensu-plugins-aws/filter'
 
-class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
+class EC2Filter < Sensu::Plugin::Check::CLI
   include Filter
   option :aws_access_key,
          short: '-a AWS_ACCESS_KEY',
@@ -63,17 +64,41 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
          description: 'String representation of the filter to apply',
          default: '{}'
 
-  option :scheme,
-         description: 'Metric naming scheme, text to prepend to metric',
-         short: '-s SCHEME',
-         long: '--scheme SCHEME',
-         default: 'sensu.aws.ec2'
+  option :warning,
+         description: 'Warning threshold for filter',
+         short: '-w COUNT',
+         long: '--warning COUNT'
+
+  option :critical,
+         description: 'Critical threshold for filter',
+         short: '-c COUNT',
+         long: '--critical COUNT'
+
+  option :compare,
+         description: 'Comparision operator for threshold: equal, not, greater, less',
+         short: '-o OPERATION',
+         long: '--opertor OPERATION',
+         default: 'equal'
 
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
       region: config[:aws_region]
     }
+  end
+
+  def convert_operator
+    op = lambda { |c, t| c == t }
+
+    if config[:compare] == 'greater'
+      op = lambda { |c, t| c > t }
+    elsif config[:compare] == 'less'
+      op = lambda { |c, t| c < t }
+    elsif config[:compare] == 'not'
+      op = lambda { |c, t| c != t }
+    end
+
+    op
   end
 
   def run
@@ -87,22 +112,33 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
       data = client.describe_instances(options)
 
       instance_ids = Set.new
-      scheme = config[:scheme]
 
-      unless config[:name].empty?
-        scheme += ".#{config[:name]}"
-      end
       data[:reservations].each do |res|
         res[:instances].each do |i|
           instance_ids << i[:instance_id]
-          output scheme + ".ids.#{i[:instance_id]}"
         end
       end
-      output scheme + ".count.#{instance_ids.count}"
+
+      count = instance_ids.count
+      op = convert_operator
+      message = "Current count: #{count}"
+
+      unless config[:critical].nil?
+        if op.call count, config[:critical].to_i
+          critical message
+        end
+      end
+
+      unless config[:warning].nil?
+        if op.call count, config[:warning].to_i
+          warning message
+        end
+      end
+
+      ok message
     rescue => e
       puts "Error: exception: #{e}"
       critical
     end
-    ok
   end
 end
