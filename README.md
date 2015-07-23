@@ -17,6 +17,8 @@
 
 **check-ebs-snapshots.rb**
 
+**check-ec2-filter.rb**
+
 **check-ec2-network.rb**
 
 **check-elb-certs.rb**
@@ -103,15 +105,13 @@
 ```
 {
   "sns": {
-    "topic_arn": "arn:aws:sns:us-east-1:111111111111:topic"
-    ,"use_ami_role": true
-    ,"access_key": "MY_KEY"
-    ,"secret_key": "MY_secret"
+    "topic_arn": "arn:aws:sns:us-east-1:111111111111:topic",
+    "use_ami_role": true,
+    "access_key": "MY_KEY",
+    "secret_key": "MY_secret"
   }
 }
 ```
 ## Installation
 
 [Installation and Setup](https://github.com/sensu-plugins/documentation/blob/master/user_docs/installation_instructions.md)
-
-## Notes

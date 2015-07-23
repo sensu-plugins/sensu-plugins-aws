@@ -32,6 +32,8 @@ require 'sensu-plugins-aws'
 
 class CheckRoute < Sensu::Plugin::Check::CLI
   include Common
+  include Filter
+
   option :aws_access_key,
          short: '-a AWS_ACCESS_KEY',
          long: '--aws-access-key AWS_ACCESS_KEY',
@@ -97,7 +99,7 @@ class CheckRoute < Sensu::Plugin::Check::CLI
       aws_config
       client = Aws::EC2::Client.new
 
-      filter = convert_filter(config[:filter])
+      filter = parse(config[:filter])
 
       options = { filters: filter }
 

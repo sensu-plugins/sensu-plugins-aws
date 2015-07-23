@@ -1,9 +1,9 @@
 #! /usr/bin/env ruby
 #
-# check-instance-reachability
+# check-instance-count
 #
 # DESCRIPTION:
-#   This plugin looks up all instances from a filter set and pings
+#   This plugin checks that the filtered instance list is above a threshold
 #
 # OUTPUT:
 #   plain-text
@@ -30,7 +30,7 @@ require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 require 'sensu-plugins-aws'
 
-class CheckInstanceReachability < Sensu::Plugin::Check::CLI
+class CheckInstanceCount < Sensu::Plugin::Check::CLI
   include Common
   include Filter
 
@@ -65,19 +65,26 @@ class CheckInstanceReachability < Sensu::Plugin::Check::CLI
          default: 5,
          proc: proc(&:to_i)
 
-  option :count,
-         description: 'Ping count',
+  option :critical,
+         description: 'Count to critical at or below',
          short: '-c COUNT',
-         long: '--count COUNT',
-         default: 1,
+         long: '--critical COUNT',
+         default: 0,
          proc: proc(&:to_i)
 
-  option :critical_response,
-         description: 'Flag if the response should error on failures',
-         short: '-r',
-         long: '--critical-response',
-         boolean: true,
-         default: false
+  option :warning,
+         description: 'Count to warn at or below',
+         short: '-w WARNING',
+         long: '--warning WARNING',
+         default: 0,
+         proc: proc(&:to_i)
+
+  option :invert,
+         description: 'Invert thresholds to be maximums instead of minimums',
+         short: '-i',
+         long: '--invert',
+         default: false,
+         boolean: true
 
   def run
     begin
@@ -92,13 +99,17 @@ class CheckInstanceReachability < Sensu::Plugin::Check::CLI
       instance_ids = []
       data = client.describe_instances(options)
 
-      data[:reservations].each do |res|
-        res[:instances].each do |i|
-          instance_ids << i[:instance_id]
-          `ping -c #{config[:count]} -W #{config[:timeout]} #{i[:private_ip_address]}`
-          if $?.to_i > 0
-              errors << "Could not reach #{i[:instance_id]}"
-          end
+      count = data[:reservations].map {|r| r[:instances].count}.sum
+      if config[:invert]
+        if count > config[:critical]
+          critical "Count #{count} was above critical threshold"
+        elsif count > warning[:critical]
+          warning "Count #{count} was above warning threshold"
+      else
+        if count <= config[:critical]
+          critical "Count #{count} was below or at critical threshold"
+        elsif count <= config[:warning]
+          warning "Count #{count} was below or at warning threshold"
         end
       end
     rescue => e
