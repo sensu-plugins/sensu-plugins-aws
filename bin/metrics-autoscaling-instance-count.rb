@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-# autoscaling-instance-count-metrics
+# metrics-autoscaling-instance-count
 #
 # DESCRIPTION:
 #   Get a count of instances in a given AutoScaling group
@@ -12,10 +12,11 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-v1
 #   gem: sensu-plugin
 #
 # USAGE:
+#   #YELLOW
 #
 # NOTES:
 #
@@ -44,27 +45,26 @@ class AutoScalingInstanceCountMetrics < Sensu::Plugin::Metric::CLI::Graphite
   option :aws_access_key,
          short: '-a AWS_ACCESS_KEY',
          long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY_ID'] or provide it as an option",
+         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
          default: ENV['AWS_ACCESS_KEY']
 
   option :aws_secret_access_key,
-         short: '-k AWS_SECRET_ACCESS_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_ACCESS_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_ACCESS_KEY'] or provide it as an option",
+         short: '-k AWS_SECRET_KEY',
+         long: '--aws-secret-access-key AWS_SECRET_KEY',
+         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
          default: ENV['AWS_SECRET_KEY']
 
   option :aws_region,
          short: '-r AWS_REGION',
          long: '--aws-region REGION',
-         description: 'AWS Region (such as eu-west-1).',
+         description: 'AWS Region (defaults to us-east-1).',
          default: 'us-east-1'
 
   def aws_config
-    hash = {}
-    hash.update aws_access_key_id: config[:aws_access_key], aws_secret_access_key: config[:aws_secret_access_key]\
-      if config[:aws_access_key] && config[:aws_secret_access_key]
-    hash.update region: config[:aws_region]
-    hash
+    { access_key_id: config[:aws_access_key],
+      secret_access_key: config[:aws_secret_access_key],
+      region: config[:aws_region]
+    }
   end
 
   def run

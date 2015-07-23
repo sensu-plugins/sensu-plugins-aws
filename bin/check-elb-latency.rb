@@ -13,7 +13,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-v1
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -35,20 +35,23 @@ require 'sensu-plugin/check/cli'
 require 'aws-sdk-v1'
 
 class CheckELBLatency < Sensu::Plugin::Check::CLI
-  option :access_key_id,
-         short:       '-k N',
-         long:        '--access-key-id ID',
-         description: 'AWS access key ID'
+  option :aws_access_key,
+         short:       '-a AWS_ACCESS_KEY',
+         long:        '--aws-access-key AWS_ACCESS_KEY',
+         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
+         default:     ENV['AWS_ACCESS_KEY']
 
-  option :secret_access_key,
-         short:       '-s N',
-         long:        '--secret-access-key KEY',
-         description: 'AWS secret access key'
+  option :aws_secret_access_key,
+         short:       '-k AWS_SECRET_KEY',
+         long:        '--aws-secret-access-key AWS_SECRET_KEY',
+         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
+         default:     ENV['AWS_SECRET_KEY']
 
-  option :region,
-         short:       '-r R',
-         long:        '--region REGION',
-         description: 'AWS region'
+  option :aws_region,
+         short:       '-r AWS_REGION',
+         long:        '--aws-region REGION',
+         description: 'AWS Region (defaults to us-east-1).',
+         default:     'us-east-1'
 
   option :elb_names,
          short:       '-l N',
@@ -85,10 +88,10 @@ class CheckELBLatency < Sensu::Plugin::Check::CLI
   end
 
   def aws_config
-    hash = {}
-    hash.update access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key] if config[:access_key_id] && config[:secret_access_key]
-    hash.update region: config[:region] if config[:region]
-    hash
+    { access_key_id: config[:aws_access_key],
+      secret_access_key: config[:aws_secret_access_key],
+      region: config[:aws_region]
+    }
   end
 
   def elb
@@ -141,7 +144,7 @@ class CheckELBLatency < Sensu::Plugin::Check::CLI
       next unless threshold
       next if metric_value < threshold
       flag_alert severity,
-                 "; #{elbs.size == 1 ? nil : "#{elb.inspect}'s"} Latency is #{sprintf '%.3f', metric_value} seconds. (expected lower than #{sprintf '%.3f', threshold})"  # rubocop:disable all
+                 "; #{elbs.size == 1 ? nil : "#{elb.inspect}'s"} Latency is #{sprintf '%.3f', metric_value} seconds. (expected lower than #{sprintf '%.3f', threshold})" # rubocop:disable all
       break
     end
   end

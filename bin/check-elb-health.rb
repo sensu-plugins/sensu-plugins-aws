@@ -13,7 +13,6 @@
 #
 # DEPENDENCIES:
 #   gem: right-aws
-#   gem: uri
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -38,16 +37,14 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   option :aws_access_key,
          short: '-a AWS_ACCESS_KEY',
          long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY_ID'] or provide it as an option",
-         required: true,
-         default: ENV['AWS_ACCESS_KEY_ID']
+         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
+         default: ENV['AWS_ACCESS_KEY']
 
   option :aws_secret_access_key,
-         short: '-s AWS_SECRET_ACCESS_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_ACCESS_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_ACCESS_KEY'] or provide it as an option",
-         required: true,
-         default: ENV['AWS_SECRET_ACCESS_KEY']
+         short: '-k AWS_SECRET_KEY',
+         long: '--aws-secret-access-key AWS_SECRET_KEY',
+         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
+         default: ENV['AWS_SECRET_KEY']
 
   option :aws_region,
          short: '-r AWS_REGION',

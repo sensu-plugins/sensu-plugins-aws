@@ -15,7 +15,6 @@
 # DEPENDENCIES:
 #   gem: fog
 #   gem: sensu-plugin
-#   gem: uri
 #
 # USAGE:
 #  ./check-ec2-network.rb -r ${you_region} -i ${your_instance_id} --warning-over 1000000 --critical-over 1500000
@@ -39,16 +38,14 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   option :aws_access_key,
          short: '-a AWS_ACCESS_KEY',
          long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY_ID'] or provide it as an option",
-         required: true,
-         default: ENV['AWS_ACCESS_KEY_ID']
+         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
+         default: ENV['AWS_ACCESS_KEY']
 
   option :aws_secret_access_key,
-         short: '-s AWS_SECRET_ACCESS_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_ACCESS_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_ACCESS_KEY'] or provide it as an option",
-         required: true,
-         default: ENV['AWS_SECRET_ACCESS_KEY']
+         short: '-k AWS_SECRET_KEY',
+         long: '--aws-secret-access-key AWS_SECRET_KEY',
+         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
+         default: ENV['AWS_SECRET_KEY']
 
   option :aws_region,
          short: '-r AWS_REGION',
@@ -84,10 +81,10 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   end
 
   def aws_config
-    hash = {}
-    hash.update access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key] if config[:access_key_id] && config[:secret_access_key]
-    hash.update region: config[:region]
-    hash
+    { access_key_id: config[:aws_access_key],
+      secret_access_key: config[:aws_secret_access_key],
+      region: config[:aws_region]
+    }
   end
 
   def run
@@ -108,7 +105,7 @@ class ELBHealth < Sensu::Plugin::Check::CLI
         ok "All instances on ELB #{aws_region}::#{config[:elb_name]} healthy!"
       else
         if config[:verbose]
-          critical "Unhealthy instances detected: #{unhealthy_instances.map { |id, state| '[' + id + '::' + state + ']' }.join(' ') }"
+          critical "Unhealthy instances detected: #{unhealthy_instances.map { |id, state| '[' + id + '::' + state + ']' }.join(' ')}"
         else
           critical "Detected [#{unhealthy_instances.size}] unhealthy instances"
         end

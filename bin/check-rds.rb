@@ -12,7 +12,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-v1
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -35,6 +35,10 @@
 #   You can check multiple metrics simultaneously. Highest severity will be reported
 #   check-rds -i sensu-admin-db --cpu-warning-over 80 --cpu-critical-over 90 --memory-warning-over 60 --memory-critical-over 80
 #
+#   You can ignore accept nil values returned for a time periods from Cloudwatch as being an OK.  Amazon falls behind in their
+#   metrics from time to time and this prevents false positives
+#   check-rds -i sensu-admin-db --cpu-critical-over 90 -a
+#
 # NOTES:
 #
 # LICENSE:
@@ -48,24 +52,23 @@ require 'aws-sdk-v1'
 require 'time'
 
 class CheckRDS < Sensu::Plugin::Check::CLI
-  option :access_key_id,
-         short:       '-k N',
-         long:        '--access-key-id ID',
-         description: 'AWS access key ID',
-         default: ENV['AWS_ACCESS_KEY_ID']
+  option :aws_access_key,
+         short:       '-a AWS_ACCESS_KEY',
+         long:        '--aws-access-key AWS_ACCESS_KEY',
+         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
+         default:     ENV['AWS_ACCESS_KEY']
 
-  option :secret_access_key,
-         short:       '-s N',
-         long:        '--secret-access-key KEY',
-         description: 'AWS secret access key',
-         default: ENV['AWS_SECRET_ACCESS_KEY']
+  option :aws_secret_access_key,
+         short:       '-k AWS_SECRET_KEY',
+         long:        '--aws-secret-access-key AWS_SECRET_KEY',
+         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
+         default:     ENV['AWS_SECRET_KEY']
 
-  option :region,
-         short:       '-r R',
-         long:        '--region REGION',
-         description: 'AWS region',
-         description: 'AWS Region (such as eu-west-1).',
-         default: 'us-east-1'
+  option :aws_region,
+         short:       '-r AWS_REGION',
+         long:        '--aws-region REGION',
+         description: 'AWS Region (defaults to us-east-1).',
+         default:     'us-east-1'
 
   option :db_instance_id,
          short:       '-i N',
@@ -93,6 +96,12 @@ class CheckRDS < Sensu::Plugin::Check::CLI
          proc:        proc { |a| a.downcase.intern },
          description: 'CloudWatch statistics method'
 
+  option :accept_nil,
+         short: '-n',
+         long: '--accept_nil',
+         description: 'Continue if CloudWatch provides no metrics for the time period',
+         default: false
+
   %w(warning critical).each do |severity|
     option :"availability_zone_#{severity}",
            long:        "--availability-zone-#{severity} AZ",
@@ -107,10 +116,10 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def aws_config
-    hash = {}
-    hash.update access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key] if config[:access_key_id] && config[:secret_access_key]
-    hash.update region: config[:region] if config[:region]
-    hash
+    { access_key_id: config[:aws_access_key],
+      secret_access_key: config[:aws_secret_access_key],
+      region: config[:aws_region]
+    }
   end
 
   def rds
@@ -145,8 +154,12 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   def latest_value(metric, unit)
     values = metric.statistics(statistics_options.merge unit: unit).datapoints.sort_by { |datapoint| datapoint[:timestamp] }
 
-    # handle time periods that are too small to return usable values
-    values.empty? ? unknown('Requested time period did not return values from Cloudwatch. Try increasing your time period.') : values.last[config[:statistics]]
+    # handle time periods that are too small to return usable values.  # this is a cozy addition that wouldn't port upstream.
+    if values.empty?
+      config[:accept_nil] ? ok('Cloudwatch returned no results for time period. Accept nil passed so OK') : unknown('Requested time period did not return values from Cloudwatch. Try increasing your time period.') # rubocop:disable all
+    else
+      values.last[config[:statistics]]
+    end
   end
 
   def flag_alert(severity, message)
