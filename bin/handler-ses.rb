@@ -103,7 +103,7 @@ class SESNotifier < Sensu::Handler
         ses.send_email(
           subject: subject,
           from: mail_from,
-          to: [mail_to.split(",")],
+          to: [mail_to.split(',')],
           body_text: body
         )
 
