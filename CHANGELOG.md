@@ -3,7 +3,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
-## [1.1.0] - 2015-07-24 
+## UNRELEASED
+### Added
+- Added check-ec2-filter to compare filter results to given thresholds
+
+## [1.1.0] - 2015-07-24
 ### Added
 - Added new AWS SES handler - handler-ses.rb
 - Add metrics-ec2-filter to store node ids and count matching a given filter
@@ -20,6 +24,7 @@ WARNING:  This release contains major breaking changes that will impact all user
 - Added support for checking multiple ELB instances at once by passing a comma separated list of ELB instance names in metrics-elb-full.rb
 - Added check-autoscaling-cpucredits.rb for checking T2 instances in autoscaling groups that are running low on CPU credits
 - Updated the fog and aws-sdk gems to the latest versions to improve performance, reduce 3rd party gem dependencies, and add support for newer AWS features.
+- Add metrics-ec2-filter to store node ids and count matching a given filter
 
 ### Fixed
 - Renamed autoscaling-instance-count-metrics.rb -> metrics-autoscaling-instance-count.rb to match our naming scheme
