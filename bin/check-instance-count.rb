@@ -105,6 +105,7 @@ class CheckInstanceCount < Sensu::Plugin::Check::CLI
           critical "Count #{count} was above critical threshold"
         elsif count > warning[:critical]
           warning "Count #{count} was above warning threshold"
+        end
       else
         if count <= config[:critical]
           critical "Count #{count} was below or at critical threshold"
