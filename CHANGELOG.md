@@ -3,7 +3,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
-## UNRELEASED
+## [1.1.0] - 2015-07-24 
 ### Added
 - Added new AWS SES handler - handler-ses.rb
 - Add metrics-ec2-filter to store node ids and count matching a given filter
