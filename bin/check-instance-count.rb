@@ -99,7 +99,10 @@ class CheckInstanceCount < Sensu::Plugin::Check::CLI
       instance_ids = []
       data = client.describe_instances(options)
 
-      count = data[:reservations].map {|r| r[:instances].count}.sum
+      count = data[:reservations].map {|r| r[:instances].count}.inject{|sum,x| sum + x }
+      if count.nil?
+        count = 0
+      end
       if config[:invert]
         if count > config[:critical]
           critical "Count #{count} was above critical threshold"
