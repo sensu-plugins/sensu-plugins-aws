@@ -7,6 +7,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - Added new AWS SES handler - handler-ses.rb
 - Add metrics-ec2-filter to store node ids and count matching a given filter
+- Check to alert on unlisted EIPs
 
 ## [1.0.0] - 2015-07-22
 
