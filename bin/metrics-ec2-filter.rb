@@ -29,8 +29,10 @@
 
 require 'sensu-plugin/metric/cli'
 require 'aws-sdk'
+require 'sensu-plugins-aws/filter'
 
 class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
+  include Filter
   option :aws_access_key,
          short: '-a AWS_ACCESS_KEY',
          long: '--aws-access-key AWS_ACCESS_KEY',
@@ -74,35 +76,11 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
     }
   end
 
-  def convert_filter(input)
-    filter = []
-    items = input.scan(/{.*?}/)
-
-    items.each do |item|
-      if item.strip.empty?
-        fail 'Invalid filter syntax'
-      end
-
-      entry = {}
-      name = item.scan(/name:(.*?),/)
-      value = item.scan(/values:\[(.*?)\]/)
-
-      if name.nil? || name.empty? || value.nil? || value.empty?
-        fail 'Unable to parse filter entry'
-      end
-
-      entry[:name] = name[0][0].strip
-      entry[:values] = value[0][0].split(',')
-      filter << entry
-    end
-    filter
-  end
-
   def run
     begin
       client = Aws::EC2::Client.new aws_config
 
-      filter = convert_filter(config[:filter])
+      filter = Filter.parse(config[:filter])
 
       options = { filters: filter }
 
