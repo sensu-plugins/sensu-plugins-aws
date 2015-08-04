@@ -16,9 +16,13 @@
 #
 
 module Filter
-  module_function
-  def parse(input)
+  def self.parse(input)
     filter = []
+
+    if input == '{}'
+      return filter
+    end
+
     items = input.scan(/{.*?}/)
 
     items.each do |item|

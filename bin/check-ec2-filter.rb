@@ -4,7 +4,8 @@
 #
 # DESCRIPTION:
 #   This plugin retrieves EC2 instances matching a given filter and
-#   returns the number matched
+#   returns the number matched. Warning and Critical thresholds may be set as needed.
+#   Thresholds may be compared to the count using [equal, not, greater, less] operators.
 #
 # OUTPUT:
 #   plain-text
@@ -17,8 +18,8 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   ./check-ec2-filter.rb -f "{name:tag-value,values:[infrastructure]}"
-#   ./check-ec2-filter.rb -f "{name:tag-value,values:[infrastructure]} {name:instance-state-name,values:[running]}"
+#   ./check-ec2-filter.rb -w 20 -f "{name:tag-value,values:[infrastructure]}"
+#   ./check-ec2-filter.rb -w 10 -c 5 -o less -f "{name:tag-value,values:[infrastructure]} {name:instance-state-name,values:[running]}"
 #
 # NOTES:
 #
@@ -88,57 +89,59 @@ class EC2Filter < Sensu::Plugin::Check::CLI
   end
 
   def convert_operator
-    op = lambda { |c, t| c == t }
+    op =  ->(c, t) { c == t }
 
     if config[:compare] == 'greater'
-      op = lambda { |c, t| c > t }
+      op = ->(c, t) { c > t }
     elsif config[:compare] == 'less'
-      op = lambda { |c, t| c < t }
+      op = ->(c, t) { c < t }
     elsif config[:compare] == 'not'
-      op = lambda { |c, t| c != t }
+      op = ->(c, t) { c != t }
     end
 
     op
   end
 
   def run
-    begin
-      client = Aws::EC2::Client.new aws_config
+    client = Aws::EC2::Client.new aws_config
 
-      filter = Filter.parse(config[:filter])
+    filter = Filter.parse(config[:filter])
 
+    if filter.empty?
+      options = {}
+    else
       options = { filters: filter }
-
-      data = client.describe_instances(options)
-
-      instance_ids = Set.new
-
-      data[:reservations].each do |res|
-        res[:instances].each do |i|
-          instance_ids << i[:instance_id]
-        end
-      end
-
-      count = instance_ids.count
-      op = convert_operator
-      message = "Current count: #{count}"
-
-      unless config[:critical].nil?
-        if op.call count, config[:critical].to_i
-          critical message
-        end
-      end
-
-      unless config[:warning].nil?
-        if op.call count, config[:warning].to_i
-          warning message
-        end
-      end
-
-      ok message
-    rescue => e
-      puts "Error: exception: #{e}"
-      critical
     end
+
+    data = client.describe_instances(options)
+
+    instance_ids = Set.new
+
+    data[:reservations].each do |res|
+      res[:instances].each do |i|
+        instance_ids << i[:instance_id]
+      end
+    end
+
+    count = instance_ids.count
+    op = convert_operator
+    message = "Current count: #{count}"
+
+    unless config[:critical].nil?
+      if op.call count, config[:critical].to_i
+        critical message
+      end
+    end
+
+    unless config[:warning].nil?
+      if op.call count, config[:warning].to_i
+        warning message
+      end
+    end
+
+    ok message
+  rescue => e
+    puts "Error: exception: #{e}"
+    critical
   end
 end
