@@ -7,6 +7,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - Added check-ec2-filter to compare filter results to given thresholds
 
+### Fixed
+- handler-ec2_node accounts for an empty instances array
+
 ## [1.1.0] - 2015-07-24
 ### Added
 - Added new AWS SES handler - handler-ses.rb

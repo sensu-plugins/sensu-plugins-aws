@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 #
 # CHANGELOG:
+# * 0.6.0:
+#   - Fixed ec2_node_should_be_deleted to account for an empty insances array
 # * 0.5.0:
 #   - Adds configuration to filter by state reason
 # * 0.4.0:
@@ -130,7 +132,7 @@ class Ec2Node < Sensu::Handler
     states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
     begin
       instances = ec2.describe_instances(instance_ids: [@event['client']['name']]).reservations[0]
-      if instances.nil?
+      if instances.nil? || instances.empty?
         true
       else
         instance = instances.instances[0]
