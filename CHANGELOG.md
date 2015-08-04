@@ -6,7 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## UNRELEASED
 ### Added
 - Added check-ec2-filter to compare filter results to given thresholds
-- Given a vpc it now queries the dhcp options to validate the DNS servers are functional
+- Added check-vpc-nameservers, which given a VPC will validate the name servers in the DHCP option set.
 
 ### Fixed
 - handler-ec2_node accounts for an empty instances array
