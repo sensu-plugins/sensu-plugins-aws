@@ -84,7 +84,7 @@ class CheckInstanceReachability < Sensu::Plugin::Check::CLI
       aws_config
       client = Aws::EC2::Client.new
 
-      filter = parse(config[:filter])
+      filter = Filter.parse(config[:filter])
 
       options = { filters: filter }
 
