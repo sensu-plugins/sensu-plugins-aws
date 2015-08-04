@@ -3,7 +3,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
-## UNRELEASED
+## [1.2.0] - 2015-08-04
 ### Added
 - Added check-ec2-filter to compare filter results to given thresholds
 - Added check-vpc-nameservers, which given a VPC will validate the name servers in the DHCP option set.
