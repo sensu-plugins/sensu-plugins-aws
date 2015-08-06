@@ -15,7 +15,11 @@ Gem::Specification.new do |s|
   s.authors                = ['Sensu-Plugins and contributors']
   s.cert_chain             = ['certs/sensu-plugins.pem']
   s.date                   = Date.today.to_s
-  s.description            = 'Sensu plugins for working with an AWS environment'
+  s.description            = 'This plugin provides native AWS instrumentation
+                              for monitoring and metrics collection, including:
+                              health and metrics for various AWS services, such
+                              as EC2, RDS, ELB, and more, as well as handlers
+                              for EC2, SES, and SNS'
   s.email                  = '<sensu-users@googlegroups.com>'
   s.executables            = Dir.glob('bin/**/*').map { |file| File.basename(file) }
   s.files                  = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md CHANGELOG.md)
