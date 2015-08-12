@@ -3,6 +3,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
+## Unreleased
+### Fixed
+- handler-ec2_node checks for state_reason being nil prior to code access
+
 ## [1.2.0] - 2015-08-04
 ### Added
 - Added check-ec2-filter to compare filter results to given thresholds
