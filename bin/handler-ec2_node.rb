@@ -136,7 +136,7 @@ class Ec2Node < Sensu::Handler
         true
       else
         instance = instances.instances[0]
-        state_reason = instance.state_reason.code
+        state_reason = instance.state_reason.nil? ? nil : instance.state_reason.code
         state = instance.state.name
         states.include?(state) && state_reasons.any? { |reason| Regexp.new(reason) =~ state_reason }
       end
