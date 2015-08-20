@@ -143,3 +143,5 @@
 ## Installation
 
 [Installation and Setup](https://github.com/sensu-plugins/documentation/blob/master/user_docs/installation_instructions.md)
+
+Note:  In addition to the standard installatino requirements the installation of this gem will require compiling the nokogiri gem.  Due to this you'll need certain developmemnt packages on your system.  On Ubuntu systems install build-essential, libxml2-dev and zlib1g-dev.  On CentOS install gcc and zlib-devel.
