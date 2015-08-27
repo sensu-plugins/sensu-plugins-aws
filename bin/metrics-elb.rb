@@ -63,7 +63,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
          default: 'Latency'
 
   option :statistic,
-         rescription: 'Statistics type',
+         description: 'Statistics type',
          short: '-t STATISTIC',
          long: '--statistic',
          default: ''
