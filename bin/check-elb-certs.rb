@@ -86,7 +86,7 @@ class CheckELBCerts < Sensu::Plugin::Check::CLI
     }
   end
 
-  def run # rubocop:disable all
+  def run
     ok_message = []
     warning_message = []
     critical_message = []
@@ -97,7 +97,7 @@ class CheckELBCerts < Sensu::Plugin::Check::CLI
 
     begin
       elb.load_balancers.each do |lb|
-        lb.listeners.each do |listener| # rubocop:disable Style/Next
+        lb.listeners.each do |listener|
           if listener.protocol.to_s == 'https'
             url = URI.parse("https://#{lb.dns_name}:#{listener.port}")
             http = Net::HTTP.new(url.host, url.port)
@@ -112,7 +112,7 @@ class CheckELBCerts < Sensu::Plugin::Check::CLI
             end
 
             cert_days_remaining = ((cert.not_after - Time.now) / 86_400).to_i
-            message = sprintf '%s(%d)', lb.name, cert_days_remaining # rubocop:disable all
+            message = sprintf '%s(%d)', lb.name, cert_days_remaining
 
             if config[:crit_under] > 0 && config[:crit_under] >= cert_days_remaining
               critical_message << message
