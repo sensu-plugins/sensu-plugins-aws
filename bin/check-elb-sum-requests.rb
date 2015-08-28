@@ -126,14 +126,14 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
   def check_sum_requests(elb)
     metric        = latency_metric elb.name
     metric_value  = begin
-                      value = latest_value metric
-                      puts value
+                      latest_value metric
                     rescue
                       0
                     end
 
     @severities.keys.each do |severity|
       threshold = config[:"#{severity}_over"]
+      puts metric_value
       next unless threshold
       next if metric_value < threshold
       flag_alert severity,
