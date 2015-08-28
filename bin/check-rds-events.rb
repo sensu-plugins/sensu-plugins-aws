@@ -20,7 +20,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#  ./check-rds-events.rb -r ${you_region} -s ${your_aws_secret_access_key} -a ${your_aws_access_key}
+#  ./check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key}
 #
 # NOTES:
 #
