@@ -37,7 +37,7 @@
 #
 #   You can ignore accept nil values returned for a time periods from Cloudwatch as being an OK.  Amazon falls behind in their
 #   metrics from time to time and this prevents false positives
-#   check-rds -i sensu-admin-db --cpu-critical-over 90 -a
+#   check-rds -i sensu-admin-db --cpu-critical-over 90 -n
 #
 # NOTES:
 #
