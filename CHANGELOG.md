@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## Unreleased
 ### Fixed
 - handler-ec2_node checks for state_reason being nil prior to code access
+- Cosmetic fixes to metrics-elb, check-rds, and check-rds-events
 
 ## [1.2.0] - 2015-08-04
 ### Added

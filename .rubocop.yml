@@ -3,10 +3,10 @@ MethodLength:
     Max: 200
 
 LineLength:
-    Max: 160
+    Max: 225
 
 AbcSize:
-  Max: 75
+  Max: 125
 
 FileName:
     Enabled: false
@@ -27,4 +27,10 @@ RegexpLiteral:
   Enabled: false
 
 Style/Documentation:
+  Enabled: false
+
+Style/Next:
+  Enabled: false
+
+Style/FormatString:
   Enabled: false
