@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased
+### Added
+- Added check-cloudwatch-alarm to get alarm status
+
 ### Fixed
 - handler-ec2_node checks for state_reason being nil prior to code access
 - Cosmetic fixes to metrics-elb, check-rds, and check-rds-events

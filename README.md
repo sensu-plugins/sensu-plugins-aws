@@ -11,6 +11,8 @@
 
 **check-autoscaling-cpucredits.rb**
 
+**check-cloudwatch-alarm**
+
 **check-dynamodb-capacity.rb**
 
 **check-dynamodb-throttle.rb**
@@ -77,6 +79,7 @@
 ## Files
 
 * /bin/check-autoscaling-cpucredits.rb
+* /bin/check-cloudwatch-alarm.rb
 * /bin/check-dynamodb-capacity.rb
 * /bin/check-dynamodb-throttle.rb
 * /bin/check-ebs-snapshots.rb
