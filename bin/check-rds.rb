@@ -70,7 +70,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   option :use_iam_role,
          short: '-u',
          long: '--use-iam',
-         description: 'Use IAM role authenticiation. The correct IAM role must be in place to allow RDS access (http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAM.html)',
+         description: 'Use IAM role authenticiation. The correct IAM role must be in place to allow RDS access (http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAM.html)'
 
   option :aws_region,
          short:       '-r AWS_REGION',
