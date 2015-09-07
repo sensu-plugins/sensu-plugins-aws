@@ -47,6 +47,8 @@
 
 **check-redshift-events.rb**
 
+**check-s3-bucket.rb**
+
 **check-s3-object.rb**
 
 **check-ses-limit.rb**
