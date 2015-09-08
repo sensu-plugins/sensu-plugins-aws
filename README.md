@@ -47,6 +47,8 @@
 
 **check-redshift-events.rb**
 
+**check-s3-object.rb**
+
 **check-ses-limit.rb**
 
 **check-sqs-messages.rb**
@@ -96,6 +98,7 @@
 * /bin/check-rds-events.rb
 * /bin/check-rds.rb
 * /bin/check-redshift-events.rb
+* /bin/check-s3-object.rb
 * /bin/check-ses-limit.rb
 * /bin/check-sqs-messages.rb
 * /bin/check-vpc-nameservers.rb
