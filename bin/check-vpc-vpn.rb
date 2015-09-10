@@ -42,9 +42,9 @@ class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
 
   option :vpn_id,
     short: '-v VPN_ID',
-    long: '--vpn-id VPN_ID',
+    long: '--vpn-connection-id VPN_ID',
     required: true,
-    description: 'AWS Virtual Private Network ID'
+    description: 'VPN connection ID'
 
   option :aws_region,
     short: '-r AWS_REGION',
