@@ -49,7 +49,7 @@ class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
   option :aws_region,
     short: '-r AWS_REGION',
     long: '--aws-region REGION',
-    description: "AWS Region (such as eu-west-1).",
+    description: 'AWS Region (such as eu-west-1).',
     default: 'us-east-1'
 
   def aws_config
@@ -64,7 +64,6 @@ class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
   end
 
   def fetch_connection_data
-    # rubocop:disable Style/LineLength
     begin
       ec2 = AWS::EC2::Client.new(aws_config)
       vpn_info = ec2.describe_vpn_connections(vpn_connection_ids: [config[:vpn_id]]).vpn_connection_set
