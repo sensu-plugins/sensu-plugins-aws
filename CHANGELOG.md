@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased
+### Added
+- Added check-ec2-instance-status that checks EC2 instance health
 
 ## [2.0.1] - 2015-11-03
 ### Changed
