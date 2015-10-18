@@ -41,6 +41,8 @@
 
 **check-elb-sum-requests.rb**
 
+**check-emr-cluster.rb**
+
 **check-instance-events.rb**
 
 **check-rds-events.rb**
@@ -99,6 +101,7 @@
 * /bin/check-elb-latency.rb
 * /bin/check-elb-nodes.rb
 * /bin/check-elb-sum-requests.rb
+* /bin/check-emr-cluster.rb
 * /bin/check-instance-events.rb
 * /bin/check-rds-events.rb
 * /bin/check-rds.rb
