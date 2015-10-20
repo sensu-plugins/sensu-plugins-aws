@@ -116,16 +116,16 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
         'end_time' => et.iso8601,
         'period' => 60
       }
-
-      result = {}
-
+      
       config[:elbname].split(',').each do |elbname|
         if config[:scheme] == ''
           graphitepath = "#{elbname}"
         else
           graphitepath = "#{config[:scheme]}.#{elbname}"
         end
-
+        
+        result = {}
+        
         statistic_type.each do |key, value|
           options['metric_name'] = key
           options['dimensions'][0]['value'] = elbname
