@@ -69,7 +69,7 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
 
   def run
     if config[:scheme] == ''
-      scheme = "aws.sqs.queue.#{config[:queue].gsub('-', '_')}.message_count"
+      scheme = "aws.sqs.queue.#{config[:queue].tr('-', '_')}.message_count"
     else
       scheme = config[:scheme]
     end
