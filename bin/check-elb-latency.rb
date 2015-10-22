@@ -150,11 +150,11 @@ class CheckELBLatency < Sensu::Plugin::Check::CLI
   end
 
   def run
-    @message  = if elbs.size == 1
-                  elbs.first.inspect
-                else
-                  "#{elbs.size} load balancers total"
-                end
+    @message = if elbs.size == 1
+                 elbs.first.inspect
+               else
+                 "#{elbs.size} load balancers total"
+               end
 
     @severities = {
       critical: false,
