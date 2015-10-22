@@ -67,7 +67,7 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
   end
 
   def run
-    aws_config =   {}
+    aws_config = {}
 
     if config[:use_iam_role].nil?
       aws_config.merge!(
