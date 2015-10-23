@@ -103,16 +103,16 @@ class CheckEc2CpuCredits < Sensu::Plugin::Check::CLI
       metric_name: "#{config[:countmetric].to_s}",
       dimensions: [
         {
-          name: "AutoScalingGroupName",
-          value: group,
-        },
+          name: 'AutoScalingGroupName',
+          value: group
+        }
       ],
       start_time: config[:end_time] - 600,
       end_time: config[:end_time],
-      statistics: ["Average"],
+      statistics: ['Average'],
       period: config[:period],
-      unit: "Count",
-    })
+      unit: 'Count'
+    )
   end
 
   def latest_value(value)
