@@ -12,7 +12,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -121,7 +121,7 @@ class CheckEc2CpuCredits < Sensu::Plugin::Check::CLI
 
   def check_metric(group)
     metric = get_count_metric group
-    latest_value metric
+    latest_value metric unless metric.nil?
   end
 
   def check_group(group, reportstring, warnflag, critflag)
