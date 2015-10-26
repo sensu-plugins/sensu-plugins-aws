@@ -157,13 +157,8 @@ class CheckRDS < Sensu::Plugin::Check::CLI
     )
   end
 
-<<<<<<< HEAD
-  def latest_value(metric, unit)
-    values = metric.statistics(statistics_options.merge(unit: unit)).datapoints.sort_by { |datapoint| datapoint[:timestamp] }
-=======
   def latest_value(metric)
     values = metric.datapoints.sort_by { |datapoint| datapoint[:timestamp] }
->>>>>>> Update check-rds check to work with the version 2 of aws-sdk
 
     # handle time periods that are too small to return usable values.  # this is a cozy addition that wouldn't port upstream.
     if values.empty?
