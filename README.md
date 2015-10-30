@@ -63,6 +63,8 @@
 
 **check_vpc_vpn.py**
 
+**check-vpc-vpn.rb**
+
 **handler-ec2_node.rb**
 
 **handler-ses.rb**
@@ -111,6 +113,7 @@
 * /bin/check-sqs-messages.rb
 * /bin/check-vpc-nameservers.rb
 * /bin/check_vpc_vpn.py
+* /bin/check_vpc_vpn.rb
 * /bin/handler-ec2_node.rb
 * /bin/handler-ses.rb
 * /bin/handler-sns.rb
