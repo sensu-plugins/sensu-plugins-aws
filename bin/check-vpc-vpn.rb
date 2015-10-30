@@ -1,25 +1,35 @@
-#!/usr/bin/env ruby
-require 'rubygems' if RUBY_VERSION < '1.9.0'
-require 'sensu-plugin/check/cli'
-require 'aws-sdk'
-
+#! /usr/bin/env ruby
 #
-# ===
+#   check-vpc-vpn.rb
 #
 # DESCRIPTION:
 #   This plugin checks VPC VPN connections to ensure they are up
+#
+# OUTPUT:
+#   plain text
 #
 # PLATFORMS:
 #   all
 #
 # DEPENDENCIES:
-#   sensu-plugin >= 1.5 Ruby gem
-#   aws-sdk Ruby gem
+#   gem: sensu-plugin
+#   gem: aws-sdk
 #
-# Copyright (c) 2015, John Dyer, johntdyer@gmail.com
+# USAGE:
+#  ./check-vpc-vpn.rb --aws-region us-east-1 --vpn-connection-id vpn-abc1234
 #
-# Released under the same terms as Sensu (the MIT license); see LICENSE
-# for details.
+# NOTES:
+#   Supports inline credentials or IAM roles
+#
+# LICENSE:
+#   John Dyer johntdyer@gmail.com
+#   Released under the same terms as Sensu (the MIT license); see LICENSE
+#   for details.
+#
+
+require 'sensu-plugin/check/cli'
+require 'aws-sdk'
+
 class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
   @aws_config = {}
   # rubocop:disable Style/AlignParameters
