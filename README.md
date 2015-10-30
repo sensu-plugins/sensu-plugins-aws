@@ -39,6 +39,8 @@
 
 **check-elb-sum-requests.rb**
 
+**check-emr-cluster.rb**
+
 **check-instance-events.rb**
 
 **check-rds-events.rb**
@@ -46,6 +48,10 @@
 **check-rds.rb**
 
 **check-redshift-events.rb**
+
+**check-s3-bucket.rb**
+
+**check-s3-object.rb**
 
 **check-ses-limit.rb**
 
@@ -92,10 +98,12 @@
 * /bin/check-elb-latency.rb
 * /bin/check-elb-nodes.rb
 * /bin/check-elb-sum-requests.rb
+* /bin/check-emr-cluster.rb
 * /bin/check-instance-events.rb
 * /bin/check-rds-events.rb
 * /bin/check-rds.rb
 * /bin/check-redshift-events.rb
+* /bin/check-s3-object.rb
 * /bin/check-ses-limit.rb
 * /bin/check-sqs-messages.rb
 * /bin/check-vpc-nameservers.rb
@@ -147,4 +155,4 @@
 
 [Installation and Setup](http://sensu-plugins.io/docs/installation_instructions.html)
 
-Note:  In addition to the standard installatino requirements the installation of this gem will require compiling the nokogiri gem.  Due to this you'll need certain developmemnt packages on your system.  On Ubuntu systems install build-essential, libxml2-dev and zlib1g-dev.  On CentOS install gcc and zlib-devel.
+Note:  In addition to the standard installation requirements the installation of this gem will require compiling the nokogiri gem.  Due to this you'll need certain developmemnt packages on your system.  On Ubuntu systems install build-essential, libxml2-dev and zlib1g-dev.  On CentOS install gcc and zlib-devel.

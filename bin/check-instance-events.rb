@@ -69,7 +69,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
 
   def run
     event_instances = []
-    aws_config =   {}
+    aws_config = {}
 
     if config[:use_iam_role].nil?
       aws_config.merge!(

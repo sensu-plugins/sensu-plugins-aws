@@ -89,7 +89,7 @@ class EC2Filter < Sensu::Plugin::Check::CLI
   end
 
   def convert_operator
-    op =  ->(c, t) { c == t }
+    op = ->(c, t) { c == t }
 
     if config[:compare] == 'greater'
       op = ->(c, t) { c > t }
