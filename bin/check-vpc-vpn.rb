@@ -98,7 +98,7 @@ class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
     when 1 then warning "'#{name}' shows 1 of 2 tunnels as DOWN - [ #{msg} ]"
     when 0 then ok "'#{name}' shows 2 of 2 tunnels as UP"
     else
-      Not sure this could ever happen
+      # Not sure this could ever happen
       unknown "Unknown connection count - #{data[:down_count]}"
     end
   end
