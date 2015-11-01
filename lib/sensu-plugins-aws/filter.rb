@@ -1,6 +1,6 @@
 #
 # DESCRIPTION:
-#   Filter methods for aws quieries
+#   Filter methods for aws queries
 #
 # DEPENDENCIES:
 #
