@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased
+
+## [2.0.0] - 2015-11-02
+
+WARNING: This release drops support for Ruby 1.9.3, which is EOL as of 2015-02.
+
 ### Added
 - Added check-cloudwatch-alarm to get alarm status
 - Added connection metric for check-rds.rb
