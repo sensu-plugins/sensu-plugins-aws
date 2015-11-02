@@ -25,6 +25,9 @@
 #   Critical if CPUUtilization is over 90%, maximum of last one hour
 #   check-rds -i sensu-admin-db --cpu-critical-over 90 --statistics maximum --period 3600
 #
+#   Warning if DatabaseConnections are over 100, critical over 120
+#   check-rds -i sensu-admin-db --connections-critical-over 120 --connections-warning-over 100 --statistics maximum --period 3600
+#
 #   Warning if memory usage is over 80%, maximum of last 2 hour
 #   specifying "minimum" is intended actually since memory usage is calculated from CloudWatch "FreeableMemory" metric.
 #   check-rds -i sensu-admin-db --memory-warning-over 80 --statistics minimum --period 7200
