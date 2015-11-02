@@ -21,6 +21,8 @@
 
 **check-ec2-filter.rb**
 
+**check-ec2-instance-status.rb**
+
 **check-ec2-network.rb**
 
 **check-eip-allocation.rb**
@@ -92,6 +94,7 @@
 * /bin/check-dynamodb-throttle.rb
 * /bin/check-ebs-snapshots.rb
 * /bin/check-ec2-filter.rb
+* /bin/check-ec2-instance-status.rb
 * /bin/check-ec2-network.rb
 * /bin/check-elb-certs.rb
 * /bin/check-elb-health-fog.rb

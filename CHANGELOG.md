@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## Unreleased
 ### Added
 - Added check-cloudwatch-alarm to get alarm status
+- Added check-ec2-instance-status to check for instances failing EC2 status checks
 
 ### Fixed
 - handler-ec2_node checks for state_reason being nil prior to code access
