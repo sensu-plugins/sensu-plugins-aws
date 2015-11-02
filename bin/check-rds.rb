@@ -25,6 +25,9 @@
 #   Critical if CPUUtilization is over 90%, maximum of last one hour
 #   check-rds -i sensu-admin-db --cpu-critical-over 90 --statistics maximum --period 3600
 #
+#   Warning if DatabaseConnections are over 100, critical over 120
+#   check-rds -i sensu-admin-db --connections-critical-over 120 --connections-warning-over 100 --statistics maximum --period 3600
+#
 #   Warning if memory usage is over 80%, maximum of last 2 hour
 #   specifying "minimum" is intended actually since memory usage is calculated from CloudWatch "FreeableMemory" metric.
 #   check-rds -i sensu-admin-db --memory-warning-over 80 --statistics minimum --period 7200
@@ -107,7 +110,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
            long:        "--availability-zone-#{severity} AZ",
            description: "Trigger a #{severity} if availability zone is different than given argument"
 
-    %w(cpu memory disk).each do |item|
+    %w(cpu memory disk connections).each do |item|
       option :"#{item}_#{severity}_over",
              long:        "--#{item}-#{severity}-over N",
              proc:        proc(&:to_f),
@@ -189,7 +192,8 @@ class CheckRDS < Sensu::Plugin::Check::CLI
       'db.m1.xlarge'   => 15.0,
       'db.t2.micro'    => 1,
       'db.t2.small'    => 2,
-      'db.t2.medium'   => 4
+      'db.t2.medium'   => 4,
+      'db.t2.large'    => 8
     }
 
     memory_total_gigabytes.fetch(instance_class) * 1024**3
@@ -227,6 +231,13 @@ class CheckRDS < Sensu::Plugin::Check::CLI
     flag_alert severity, "; Disk usage is #{sprintf '%.2f', @disk_usage_percentage}% (expected lower than #{expected_lower_than}%)"
   end
 
+  def check_connections(severity, expected_lower_than)
+    @connections_metric ||= cloud_watch_metric 'DatabaseConnections'
+    @connections_metric_value ||= latest_value @connections_metric, 'Count'
+    return if @connections_metric_value < expected_lower_than
+    flag_alert severity, "; DatabaseConnections are #{sprintf '%d', @connections_metric_value} (expected lower than #{expected_lower_than})"
+  end
+
   def run
     if config[:db_instance_id].nil? || config[:db_instance_id].empty?
       unknown 'No DB instance provided.  See help for usage details'
@@ -242,12 +253,12 @@ class CheckRDS < Sensu::Plugin::Check::CLI
     @severities.keys.each do |severity|
       check_az severity, config[:"availability_zone_#{severity}"] if config[:"availability_zone_#{severity}"]
 
-      %w(cpu memory disk).each do |item|
+      %w(cpu memory disk connections).each do |item|
         send "check_#{item}", severity, config[:"#{item}_#{severity}_over"] if config[:"#{item}_#{severity}_over"]
       end
     end
 
-    if %w(cpu memory disk).any? { |item| %w(warning critical).any? { |severity| config[:"#{item}_#{severity}_over"] } }
+    if %w(cpu memory disk connections).any? { |item| %w(warning critical).any? { |severity| config[:"#{item}_#{severity}_over"] } }
       @message += "(#{config[:statistics].to_s.capitalize} within #{config[:period]}s "
       @message += "between #{config[:end_time] - config[:period]} to #{config[:end_time]})"
     end
