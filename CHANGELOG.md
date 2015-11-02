@@ -7,10 +7,18 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - Added check-cloudwatch-alarm to get alarm status
 - Added connection metric for check-rds.rb
+- Added check-s3-bucket that checks S3 bucket existence
+- Added check-s3-object that checks S3 object existence
+- Added check-emr-cluster that checks EMR cluster existence
+- Added check-vpc-vpn that checks the health of VPC VPN connections
 
 ### Fixed
 - handler-ec2_node checks for state_reason being nil prior to code access
 - Cosmetic fixes to metrics-elb, check-rds, and check-rds-events
+- Return correct metrics values in check-elb-sum-requests
+
+### Removed
+- Removed Ruby 1.9.3 support
 
 ## [1.2.0] - 2015-08-04
 ### Added
