@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
                               as EC2, RDS, ELB, and more, as well as handlers
                               for EC2, SES, and SNS'
   s.email                  = '<sensu-users@googlegroups.com>'
-  s.executables            = Dir.glob('bin/**/*.rb').map { |file| File.basename(file) }
+  s.executables            = Dir.glob('bin/**/*').map { |file| File.basename(file) }
   s.files                  = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md CHANGELOG.md)
   s.homepage               = 'https://github.com/sensu-plugins/sensu-plugins-aws'
   s.license                = 'MIT'
