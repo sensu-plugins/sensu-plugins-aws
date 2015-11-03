@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## Unreleased
 
+## [2.0.1] - 2015-11-03
 ### Changed
 - pinned all dependencies
 - set gemspec to require > `2.0.0`
