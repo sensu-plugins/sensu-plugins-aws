@@ -5,6 +5,12 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## Unreleased
 
+## [2.0.1] - 2015-11-02
+### Changed
+- pinned all dependencies
+
+Nothing new added, this is functionally identical to `2.0.0`. Doing a github release which for some reason failed even though a gem was built and pushed.
+
 ## [2.0.0] - 2015-11-02
 
 WARNING: This release drops support for Ruby 1.9.3, which is EOL as of 2015-02.
