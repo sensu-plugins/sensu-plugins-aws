@@ -5,9 +5,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## Unreleased
 
-## [2.0.1] - 2015-11-02
 ### Changed
 - pinned all dependencies
+- set gemspec to require > `2.0.0`
 
 Nothing new added, this is functionally identical to `2.0.0`. Doing a github release which for some reason failed even though a gem was built and pushed.
 
