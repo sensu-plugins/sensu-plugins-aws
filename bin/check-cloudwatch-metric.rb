@@ -118,7 +118,7 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
     if not value
       unknown "#{metric_desc} could not be retrieved"
     end
-    base_msg = "#{metric_desc} is #{value} which is "
+    base_msg = "#{metric_desc} is #{value} which is"
     if value >= critical_threshold
       critical "#{base_msg} greater than #{critical_threshold}"
     elsif warning_threshold and value >= warning_threshold
