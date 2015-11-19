@@ -131,7 +131,7 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
     if not value
       unknown "#{metric_desc} could not be retrieved"
     end
-    base_msg = "#{metric_desc} is #{value} which is "
+    base_msg = "#{metric_desc} is #{value} which is"
     if value >= config[:critical]
       critical "#{base_msg} greater than #{config[:critical]}"
     elsif config[:warning] and value >= config[:warning]
