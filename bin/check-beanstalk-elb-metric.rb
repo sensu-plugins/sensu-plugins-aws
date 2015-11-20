@@ -99,7 +99,7 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
   include CloudwatchCommon
 
   def metric_desc
-    @metric_desc ||= "BeanstalkELB/#{config[:environment]}/#{elb_name}/#{config[:metric]}"
+    @metric_desc ||= "BeanstalkELB/#{config[:environment]}/#{elb_name}/#{config[:metric_name]}"
   end
 
   def elb_name
