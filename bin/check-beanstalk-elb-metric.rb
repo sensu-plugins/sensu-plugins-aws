@@ -82,6 +82,11 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
           long: '--warning VALUE',
           proc: proc(&:to_f)
 
+  option :compare,
+         description: 'Comparision operator for threshold: equal, not, greater, less',
+         short: '-o OPERATION',
+         long: '--opertor OPERATION',
+         default: 'greater'
   def cloud_watch
     @cloud_watch ||= Aws::CloudWatch::Client.new
   end
@@ -92,6 +97,18 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
 
   def metric_desc
     @metric_desc ||= "BeanstalkELB/#{config[:environment]}/#{elb_name}/#{config[:metric]}"
+  end
+
+  def compare(value, threshold)
+    if config[:compare] == 'greater'
+      return value > threshold
+    elsif config[:compare] == 'less'
+      return value < threshold
+    elsif config[:compare] == 'not'
+      return value != threshold
+    else
+      return value == threshold
+    end
   end
 
   def elb_name
@@ -131,13 +148,12 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
     if not value
       unknown "#{metric_desc} could not be retrieved"
     end
-    base_msg = "#{metric_desc} is #{value} which is"
-    if value >= config[:critical]
-      critical "#{base_msg} greater than #{config[:critical]}"
-    elsif config[:warning] and value >= config[:warning]
-      warning "#{base_msg} greater than #{config[:warning]}"
+    if compare value, config[:critical]
+      critical "#{base_msg} threshold=#{config[:critical]}"
+    elsif config[:warning] and compare value, config[:warning]
+      warning "#{base_msg} threshold=#{config[:warning]}"
     else
-      ok "#{base_msg} good"
+      ok "#{base_msg}, will alarm at #{config[:warning] != nil ? config[:warning] : config[:critical]}"
     end
   end
 end
