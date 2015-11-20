@@ -87,6 +87,14 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
          short: '-o OPERATION',
          long: '--opertor OPERATION',
          default: 'greater'
+
+  option :no_data_ok,
+        short: '-n',
+        long: '--allow-no-data',
+        description: 'Returns ok if no data is returned from the metric',
+        boolean: true,
+        default: false
+
   def cloud_watch
     @cloud_watch ||= Aws::CloudWatch::Client.new
   end
@@ -137,17 +145,28 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
     }
   end
 
+  def read_value(resp)
+    resp.datapoints[0].send(config[:statistics].downcase)
+  end
+
+  def resp_has_no_data(resp)
+    resp.datapoints == nil or resp.datapoints[0] == nil or
+      resp.datapoints[0].length == 0 or read_value(resp) == nil
+  end
+
   def run
     resp = cloud_watch.get_metric_statistics(metrics_request)
-    if resp == nil or resp.datapoints == nil or resp.datapoints.length == 0
+
+    no_data = resp_has_no_data(resp)
+    if no_data and config[:no_data_ok]
+      ok "#{metric_desc} returned no data but that's ok"
+    elsif no_data and not config[:no_data_ok]
       unknown "#{metric_desc} could not be retrieved"
     end
 
-    value = resp.datapoints[0].send(config[:statistics].downcase)
+    value = read_value(resp)
+    base_msg = "#{metric_desc} is #{value}: comparison=#{config[:compare]}"
 
-    if not value
-      unknown "#{metric_desc} could not be retrieved"
-    end
     if compare value, config[:critical]
       critical "#{base_msg} threshold=#{config[:critical]}"
     elsif config[:warning] and compare value, config[:warning]
