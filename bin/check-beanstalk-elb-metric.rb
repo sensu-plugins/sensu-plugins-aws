@@ -27,6 +27,7 @@
 #   for details.
 #
 
+require 'sensu-plugins-aws/cloudwatch-common'
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
@@ -45,7 +46,7 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
           default: 0,
           proc: proc(&:to_i)
 
-  option :metric,
+  option :metric_name,
           description: 'ELB CloudWatch Metric',
           short: '-m METRIC_NAME',
           long: '--metric METRIC_NAME',
@@ -82,62 +83,42 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
           long: '--warning VALUE',
           proc: proc(&:to_f)
 
-  def cloud_watch
-    @cloud_watch ||= Aws::CloudWatch::Client.new
-  end
+  option :compare,
+         description: 'Comparision operator for threshold: equal, not, greater, less',
+         short: '-o OPERATION',
+         long: '--opertor OPERATION',
+         default: 'greater'
 
-  def beanstalk
-    @beanstalk ||= Aws::ElasticBeanstalk::Client.new
-  end
+  option :no_data_ok,
+        short: '-n',
+        long: '--allow-no-data',
+        description: 'Returns ok if no data is returned from the metric',
+        boolean: true,
+        default: false
+
+  include CloudwatchCommon
 
   def metric_desc
     @metric_desc ||= "BeanstalkELB/#{config[:environment]}/#{elb_name}/#{config[:metric]}"
   end
 
   def elb_name
-    @elb_name ||= beanstalk
+    @elb_name ||= Aws::ElasticBeanstalk::Client.new
       .describe_environment_resources({environment_name: config[:environment]})
       .environment_resources
       .load_balancers[config[:elb_idx]]
       .name
   end
 
-  def metrics_request
-    {
-      namespace: "AWS/ELB",
-      metric_name: config[:metric],
-      dimensions: [
-        {
-          name: "LoadBalancerName",
-          value: elb_name
-        }
-      ],
-      start_time: Time.now - config[:period],
-      end_time: Time.now,
-      period: config[:period],
-      statistics: [config[:statistics]],
-      unit: config[:unit]
-    }
-  end
-
   def run
-    resp = cloud_watch.get_metric_statistics(metrics_request)
-    if resp == nil or resp.datapoints == nil or resp.datapoints.length == 0
-      unknown "#{metric_desc} could not be retrieved"
-    end
-
-    value = resp.datapoints[0].send(config[:statistics].downcase)
-
-    if not value
-      unknown "#{metric_desc} could not be retrieved"
-    end
-    base_msg = "#{metric_desc} is #{value} which is"
-    if value >= config[:critical]
-      critical "#{base_msg} greater than #{config[:critical]}"
-    elsif config[:warning] and value >= config[:warning]
-      warning "#{base_msg} greater than #{config[:warning]}"
-    else
-      ok "#{base_msg} good"
-    end
+    new_config = config.clone
+    new_config[:namespace] = "AWS/ELB"
+    new_config[:dimensions] = [
+      {
+        name: "LoadBalancerName",
+        value: elb_name
+      }
+    ]
+    check new_config
   end
 end

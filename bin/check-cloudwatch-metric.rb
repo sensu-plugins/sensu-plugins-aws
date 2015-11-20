@@ -27,6 +27,7 @@
 #   for details.
 #
 
+require 'sensu-plugins-aws/cloudwatch-common'
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
@@ -61,8 +62,7 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
   option :statistics,
           short:       '-s N',
           long:        '--statistics NAME',
-          default:     ["Average"],
-          proc: proc { |s| [s] },
+          default:     "Average",
           description: 'CloudWatch statistics method'
 
   option :unit,
@@ -83,6 +83,21 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
           long: '--warning VALUE',
           proc: proc(&:to_f)
 
+  option :compare,
+         description: 'Comparision operator for threshold: equal, not, greater, less',
+         short: '-o OPERATION',
+         long: '--opertor OPERATION',
+         default: 'greater'
+
+  option :no_data_ok,
+        short: '-n',
+        long: '--allow-no-data',
+        description: 'Returns ok if no data is returned from the metric',
+        boolean: true,
+        default: false
+
+  include CloudwatchCommon
+
   def self.parse_dimensions(dimension_string)
     dimension_string.split(',')
       .collect { |d| d.split '=' }
@@ -93,38 +108,11 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
     config[:dimensions].map{|d| "#{d[:name]}=#{d[:value]}"}.join('&')
   end
 
-  def client
-    @cloud_watch ||= Aws::CloudWatch::Client.new
-  end
-
   def metric_desc
-    @metric_desc ||= "#{config[:namespace]}-#{config[:metric_name]}(#{dimension_string})"
+    "#{config[:namespace]}-#{config[:metric_name]}(#{dimension_string})"
   end
 
   def run
-    critical_threshold = config.delete(:critical)
-    warning_threshold = config.delete(:warning)
-
-    config[:start_time] = Time.now - config[:period]
-    config[:end_time] = Time.now
-
-    resp = client.get_metric_statistics(config)
-    if resp == nil or resp.datapoints == nil or resp.datapoints.length == 0
-      unknown "#{metric_desc} could not be retrieved"
-    end
-
-    value = resp.datapoints[0].send(config[:statistics][0].downcase)
-
-    if not value
-      unknown "#{metric_desc} could not be retrieved"
-    end
-    base_msg = "#{metric_desc} is #{value} which is"
-    if value >= critical_threshold
-      critical "#{base_msg} greater than #{critical_threshold}"
-    elsif warning_threshold and value >= warning_threshold
-      warning "#{base_msg} greater than #{warning_threshold}"
-    else
-      ok "#{base_msg} good"
-    end
+    check config
   end
 end
