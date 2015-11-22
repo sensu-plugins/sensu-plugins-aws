@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 #
 # CHANGELOG:
+# * 0.7.0:
+#   - Added method get_instance_id to check in client config section
+#     ['client']['aws']['instance_id'] first.
 # * 0.6.0:
 #   - Fixed ec2_node_should_be_deleted to account for an empty insances array
 # * 0.5.0:
@@ -118,20 +121,28 @@ class Ec2Node < Sensu::Handler
     if ec2_node_should_be_deleted?
       delete_sensu_client!
     else
-      puts "[EC2 Node] #{@event['client']['name']} is in an invalid state"
+      puts "[EC2 Node] #{get_instance_id()} is in an invalid state"
     end
   end
 
   def delete_sensu_client!
-    response = api_request(:DELETE, '/clients/' + @event['client']['name']).code
+    response = api_request(:DELETE, '/clients/' + get_instance_id()).code
     deletion_status(response)
+  end
+
+  def get_instance_id
+    if @event['client'].has_key?("aws") && @event['client']['aws'].has_key?("instance_id")
+      @event['client']['aws']['instance_id']
+    else
+      @event['client']['name']
+    end
   end
 
   def ec2_node_should_be_deleted?
     ec2 = Aws::EC2::Client.new(region: region)
     states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
     begin
-      instances = ec2.describe_instances(instance_ids: [@event['client']['name']]).reservations[0]
+      instances = ec2.describe_instances(instance_ids: [get_instance_id()]).reservations[0]
       if instances.nil? || instances.empty?
         true
       else
@@ -169,11 +180,11 @@ class Ec2Node < Sensu::Handler
   def deletion_status(code)
     case code
     when '202'
-      puts "[EC2 Node] 202: Successfully deleted Sensu client: #{@event['client']['name']}"
+      puts "[EC2 Node] 202: Successfully deleted Sensu client: #{get_instance_id()}"
     when '404'
-      puts "[EC2 Node] 404: Unable to delete #{@event['client']['name']}, doesn't exist!"
+      puts "[EC2 Node] 404: Unable to delete #{get_instance_id()}, doesn't exist!"
     when '500'
-      puts "[EC2 Node] 500: Miscellaneous error when deleting #{@event['client']['name']}"
+      puts "[EC2 Node] 500: Miscellaneous error when deleting #{get_instance_id()}"
     else
       puts "[EC2 Node] #{code}: Completely unsure of what happened!"
     end
