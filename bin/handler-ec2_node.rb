@@ -126,7 +126,7 @@ class Ec2Node < Sensu::Handler
   end
 
   def delete_sensu_client!
-    response = api_request(:DELETE, '/clients/' + get_instance_id()).code
+    response = api_request(:DELETE, '/clients/' + get_instance_name()).code
     deletion_status(response)
   end
 
@@ -136,6 +136,10 @@ class Ec2Node < Sensu::Handler
     else
       @event['client']['name']
     end
+  end
+
+  def get_instance_name
+    @event['client']['name']
   end
 
   def ec2_node_should_be_deleted?
@@ -180,11 +184,11 @@ class Ec2Node < Sensu::Handler
   def deletion_status(code)
     case code
     when '202'
-      puts "[EC2 Node] 202: Successfully deleted Sensu client: #{get_instance_id()}"
+      puts "[EC2 Node] 202: Successfully deleted Sensu client: #{get_instance_name()}"
     when '404'
-      puts "[EC2 Node] 404: Unable to delete #{get_instance_id()}, doesn't exist!"
+      puts "[EC2 Node] 404: Unable to delete #{get_instance_name()}, doesn't exist!"
     when '500'
-      puts "[EC2 Node] 500: Miscellaneous error when deleting #{get_instance_id()}"
+      puts "[EC2 Node] 500: Miscellaneous error when deleting #{get_instance_name()}"
     else
       puts "[EC2 Node] #{code}: Completely unsure of what happened!"
     end
