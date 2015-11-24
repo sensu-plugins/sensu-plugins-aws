@@ -46,9 +46,12 @@ class BeanstalkHealth < Sensu::Plugin::Check::CLI
         default: true
 
   def env_health
-    @elb_name ||= Aws::ElasticBeanstalk::Client.new
-      .describe_environment_health({environment_name: config[:environment]})
-      .status
+    @env_health ||= Aws::ElasticBeanstalk::Client.new
+      .describe_environment_health({
+          environment_name: config[:environment],
+          attribute_names: ["Color"]
+          })
+      .color
   end
 
   def run
