@@ -5,10 +5,12 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## Unreleased
 ### Added
+- Added check-beanstalk-health and updated aws-sdk to 2.1.14
 - Added check-cloudwatch-alarm to get alarm status
 
 ### Fixed
 - handler-ec2_node checks for state_reason being nil prior to code access
+- handler-ec2_node checks for client aws config block before using client name
 - Cosmetic fixes to metrics-elb, check-rds, and check-rds-events
 
 ## [1.2.0] - 2015-08-04

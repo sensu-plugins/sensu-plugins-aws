@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
   s.version                = SensuPluginsAWS::Version::VER_STRING
 
   s.add_runtime_dependency 'sensu-plugin',      '1.2.0'
-  s.add_runtime_dependency 'aws-sdk',           '~> 2.1.7'
+  s.add_runtime_dependency 'aws-sdk',           '~> 2.1.14'
   s.add_runtime_dependency 'aws-sdk-v1',        '1.64.0'
   s.add_runtime_dependency 'fog',               '~> 1.32.0'
   s.add_runtime_dependency 'right_aws',         '3.1.0'
