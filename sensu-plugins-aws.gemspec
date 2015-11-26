@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
                               for monitoring and metrics collection, including:
                               health and metrics for various AWS services, such
                               as EC2, RDS, ELB, and more, as well as handlers
-                              for EC2, SES, and SNS'
+                              for EC2, SES, and SNS.'
   s.email                  = '<sensu-users@googlegroups.com>'
   s.executables            = Dir.glob('bin/**/*').map { |file| File.basename(file) }
   s.files                  = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md CHANGELOG.md)
