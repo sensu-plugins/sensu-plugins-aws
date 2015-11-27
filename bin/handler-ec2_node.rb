@@ -81,7 +81,7 @@
 #             "name": "keepalive",
 #             "status": 2
 #           },
-#           "occurences": "eval: value > 2"
+#           "occurrences": "eval: value > 2"
 #         }
 #       }
 #     },
