@@ -10,7 +10,7 @@ module CloudwatchCommon
   end
 
   def resp_has_no_data(resp, stats)
-    resp.datapoints == nil or resp.datapoints.length == 0 or resp.datapoints.first == nil or read_value(resp, stats) == nil
+    resp.datapoints.nil? || resp.datapoints.length == 0 || resp.datapoints.first.nil? || read_value(resp, stats).nil?
   end
 
   def compare(value, threshold, compare_method)
@@ -30,7 +30,7 @@ module CloudwatchCommon
       namespace: config[:namespace],
       metric_name: config[:metric_name],
       dimensions: config[:dimensions],
-      start_time: Time.now - config[:period]*10,
+      start_time: Time.now - config[:period] * 10,
       end_time: Time.now,
       period: config[:period],
       statistics: [config[:statistics]],
@@ -42,9 +42,9 @@ module CloudwatchCommon
     resp = client.get_metric_statistics(metrics_request(config))
 
     no_data = resp_has_no_data(resp, config[:statistics])
-    if no_data and config[:no_data_ok]
+    if no_data && config[:no_data_ok]
       ok "#{metric_desc} returned no data but that's ok"
-    elsif no_data and not config[:no_data_ok]
+    elsif no_data && !config[:no_data_ok]
       unknown "#{metric_desc} could not be retrieved"
     end
 
@@ -53,10 +53,10 @@ module CloudwatchCommon
 
     if compare value, config[:critical], config[:comparison]
       critical "#{base_msg} threshold=#{config[:critical]}"
-    elsif config[:warning] and compare value, config[:warning], config[:comparison]
+    elsif config[:warning] && compare(value, config[:warning], config[:comparison])
       warning "#{base_msg} threshold=#{config[:warning]}"
     else
-      ok "#{base_msg}, will alarm at #{config[:warning] != nil ? config[:warning] : config[:critical]}"
+      ok "#{base_msg}, will alarm at #{!config[:warning].nil? ? config[:warning] : config[:critical]}"
     end
   end
 end
