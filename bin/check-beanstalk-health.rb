@@ -49,27 +49,30 @@ class BeanstalkHealth < Sensu::Plugin::Check::CLI
     @env_health ||= Aws::ElasticBeanstalk::Client.new
       .describe_environment_health({
           environment_name: config[:environment],
-          attribute_names: ["Color"]
+          attribute_names: ["Color", "Status", "HealthStatus", "Causes"]
           })
-      .color
+  end
+
+  def status_rollup
+    "Beanstalk Status: #{env_health.status}, Health Status: #{env_health.health_status}, Causes: #{env_health.causes.join(", ")}"
   end
 
   def run
-    health = env_health
-    if health == "Green"
+    color = env_health.color
+    if color == "Green"
       ok
-    elsif health == "Yellow"
-      warning "Environment status is YELLOW"
-    elsif health == "Red"
-      critical "Environment status is RED"
-    elsif health == "Grey"
+    elsif color == "Yellow"
+      warning "Environment status is YELLOW. #{status_rollup}"
+    elsif color == "Red"
+      critical "Environment status is RED. #{status_rollup}"
+    elsif color == "Grey"
       if config[:no_data_ok]
-        unknown "Environment status is GREY"
+        unknown "Environment status is GREY. This means NO DATA. #{status_rollup}"
       else
-        critical "Environment status is GREY"
+        critical "Environment status is GREY. This means NO DATA. #{status_rollup}"
       end
     else
-      critical "Unknown Environment status response, #{health}"
+      critical "Unknown Environment status response, #{color}"
     end
   end
 end
