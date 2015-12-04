@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-# check-cloudwatch-alarm
+# check-beanstalk-elb-metric
 #
 # DESCRIPTION:
 #   This plugin finds the desired ELB in a beanstalk environment and queries
@@ -53,27 +53,27 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
 
   option :period,
          description: 'CloudWatch metric statistics period. Must be a multiple of 60',
-         short:       '-p N',
-         long:        '--period SECONDS',
-         default:     60,
-         proc:        proc(&:to_i)
+         short: '-p N',
+         long: '--period SECONDS',
+         default: 60,
+         proc: proc(&:to_i)
 
   option :statistics,
-         short:       '-s N',
-         long:        '--statistics NAME',
-         default:     'Average',
+         short: '-s N',
+         long: '--statistics NAME',
+         default: 'Average',
          description: 'CloudWatch statistics method'
 
   option :unit,
-         short:       '-u UNIT',
-         long:        '--unit UNIT',
+         short: '-u UNIT',
+         long: '--unit UNIT',
          description: 'CloudWatch metric unit'
 
   option :critical,
          description: 'Trigger a critical when value is over VALUE',
          short: '-c VALUE',
          long: '--critical VALUE',
-         proc:        proc(&:to_f),
+         proc: proc(&:to_f),
          required: true
 
   option :warning,
