@@ -32,6 +32,21 @@
 # to match any state reason `.*` Regardless, eventually a client will be
 # deleted once AWS stops responding that the instance id exists.
 #
+# You could specify a json config file for the states like so :
+#  {
+#   "ec2_node": {
+#    "ec2_states": [
+#     "terminated",
+#     "stopping",
+#     "shutting-down",
+#     "stopped"
+#     ]
+#    }
+#  }
+#
+# And add that to your /etc/sensu/conf.d directory.
+# If you do not specify any states the handler would not work
+#
 # NOTE: The implementation for correlating Sensu clients to EC2 instances may
 # need to be modified to fit your organization. The current implementation
 # assumes that Sensu clients' names are the same as their instance IDs in EC2.
