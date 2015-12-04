@@ -32,7 +32,8 @@
 # to match any state reason `.*` Regardless, eventually a client will be
 # deleted once AWS stops responding that the instance id exists.
 #
-# You could specify a json config file for the states like so :
+# You could specify a ec2_states.json config file for the states like so:
+#
 #  {
 #   "ec2_node": {
 #    "ec2_states": [
