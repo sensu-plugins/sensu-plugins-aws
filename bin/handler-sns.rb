@@ -15,6 +15,7 @@
 
 require 'sensu-handler'
 require 'aws-sdk-v1'
+require 'erubis'
 
 class SnsNotifier < Sensu::Handler
   def topic_arn
@@ -43,7 +44,19 @@ class SnsNotifier < Sensu::Handler
   end
 
   def message
-    @event['check']['notification'] || @event['check']['output']
+    if message_template && File.readable?(message_template)
+      template = File.read(message_template)
+    else
+      template = <<-BODY.gsub(/^\s+/, '')
+        <%= @event['check']['notification'] || @event['check']['output'] %>
+      BODY
+    end
+    eruby = Erubis::Eruby.new(template)
+    eruby.result(binding)
+  end
+
+  def message_template
+    settings['sns']['template']
   end
 
   def handle

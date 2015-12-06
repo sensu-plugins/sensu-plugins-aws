@@ -44,6 +44,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'fog',               '1.32.0'
   s.add_runtime_dependency 'right_aws',         '3.1.0'
   s.add_runtime_dependency 'sensu-plugin',      '1.2.0'
+  s.add_runtime_dependency 'erubis',            '2.7.0'
 
   s.add_development_dependency 'codeclimate-test-reporter', '~> 0.4'
   s.add_development_dependency 'rubocop',                   '0.32.1'
