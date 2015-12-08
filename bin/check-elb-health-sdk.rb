@@ -15,6 +15,11 @@
 #   gem: aws-sdk-v1
 #   gem: sensu-plugin
 #
+# USAGE:
+#   check-elb-health-sdk.rb -r region
+#   check-elb-health-sdk.rb -r region -n my-elb
+#   check-elb-health-sdk.rb -r region -n my-elb -i instance1,instance2
+#
 # Copyright (c) 2015, Benjamin Kett <bkett@umn.edu>
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
