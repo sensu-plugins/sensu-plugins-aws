@@ -127,7 +127,6 @@ require 'net/http'
 require 'uri'
 require 'aws-sdk'
 require 'sensu-plugins-aws'
-require 'pp'
 
 class Ec2Node < Sensu::Handler
   include Common
