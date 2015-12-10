@@ -2,7 +2,7 @@
 #
 # CHANGELOG:
 # * 0.7.0:
-#    - Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing 
+#    - Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing
 #      match that will work with any user state defined.
 # * 0.6.0:
 #   - Fixed ec2_node_should_be_deleted to account for an empty insances array
@@ -157,7 +157,7 @@ class Ec2Node < Sensu::Handler
     ec2 = Aws::EC2::Client.new(region: region)
     # Check if attributes or json objects are not defined
     if @event['client']['ec2_states'].nil? && settings['ec2_node']['ec2_states'].nil?
-      puts "ec2_states is not define, please add the attributes or create a json config file with valid states keys"
+      puts 'ec2_states is not define, please add the attributes or create a json config file with valid states keys'
     else
       # Asigning valid states
       instance_states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
