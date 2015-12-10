@@ -146,7 +146,6 @@ class Ec2Node < Sensu::Handler
 
   # Method to delete client from sensu API
   def delete_sensu_client!
-    puts "I'm in delete sensu client"
     response = api_request(:DELETE, '/clients/' + @event['client']['name']).code
     deletion_status(response)
   end
