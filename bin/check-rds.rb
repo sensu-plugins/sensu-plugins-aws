@@ -12,7 +12,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -51,28 +51,11 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 require 'time'
 
 class CheckRDS < Sensu::Plugin::Check::CLI
-  option :aws_access_key,
-         short:       '-a AWS_ACCESS_KEY',
-         long:        '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default:     ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short:       '-k AWS_SECRET_KEY',
-         long:        '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default:     ENV['AWS_SECRET_KEY']
-
-  option :aws_region,
-         short:       '-r AWS_REGION',
-         long:        '--aws-region REGION',
-         description: 'AWS Region (defaults to us-east-1).',
-         default:     'us-east-1'
-
+  include Common
   option :db_instance_id,
          short:       '-i N',
          long:        '--db-instance-id NAME',
