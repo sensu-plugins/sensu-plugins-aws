@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## Unreleased
 ### Added
 - check-elb-health-sdk.rb: add option for warning instead of critical when unhealthy instances are found
+- check-rds.rb: add M4 instances
 
 ## [2.0.1] - 2015-11-03
 ### Changed
