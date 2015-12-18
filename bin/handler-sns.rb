@@ -44,8 +44,8 @@ class SnsNotifier < Sensu::Handler
   end
 
   def message
-    if message_template && File.readable?(message_template)
-      template = File.read(message_template)
+    if template_file && File.readable?(template_file)
+      template = File.read(template_file)
     else
       template = <<-BODY.gsub(/^\s+/, '')
         <%= @event['check']['notification'] || @event['check']['output'] %>
@@ -55,8 +55,8 @@ class SnsNotifier < Sensu::Handler
     eruby.result(binding)
   end
 
-  def message_template
-    settings['sns']['template']
+  def template_file
+    settings['sns']['template_file']
   end
 
   def handle
