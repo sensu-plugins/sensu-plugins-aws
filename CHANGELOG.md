@@ -7,6 +7,18 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - check-elb-health-sdk.rb: add option for warning instead of critical when unhealthy instances are found
 - check-rds.rb: add M4 instances
+- handler-sns.rb: add option to use a template to render body mail
+- check-rds-events.rb: add RDS event message to output
+- Added check-cloudwatch-metric that checks the values of cloudwatch metrics
+- Added check-beanstalk-elb-metric that checks an ELB used in a Beanstalk environment
+
+### Changed
+- handler-ec2_node.rb: Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing match that will work with any user state defined, also improved docs
+- metrics-elb-full.rb: flush hash in-between iterations
+- check-ses-limit.rb: move to AWS-SDK v2, use common module, return unknown on empty responses
+
+### Fixed
+- metrics-memcached.rb: Fixed default scheme
 
 ## [2.0.1] - 2015-11-03
 ### Changed
