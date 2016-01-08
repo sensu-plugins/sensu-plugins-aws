@@ -11,6 +11,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - check-rds-events.rb: add RDS event message to output
 - Added check-cloudwatch-metric that checks the values of cloudwatch metrics
 - Added check-beanstalk-elb-metric that checks an ELB used in a Beanstalk environment
+- Added check-server-certificate-expiry that checks the expiration date of certificates loaded into IAM
 
 ### Changed
 - handler-ec2_node.rb: Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing match that will work with any user state defined, also improved docs
