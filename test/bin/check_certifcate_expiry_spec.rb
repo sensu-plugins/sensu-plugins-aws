@@ -41,6 +41,31 @@ describe 'CheckCertificateExpiry' do
       }
   end
 
+  describe '#aws_config' do
+    it 'should return only region' do
+      check = CheckCertificateExpiry.new
+      config = check.aws_config
+      expect(config).to eq(access_key_id: nil, secret_access_key: nil, region: 'us-east-1')
+    end
+  end
+
+  describe '#aws_client' do
+    it 'should return a client' do
+      check = CheckCertificateExpiry.new
+      options = { stub_responses: true }
+      client = check.aws_client(options)
+      expect(client.config.stub_responses).to eq(true)
+      expect(client.config.region).to eq('us-east-1')
+    end
+    it 'should return a client with west region' do
+      check = CheckCertificateExpiry.new
+      options = { stub_responses: true, region: 'us-west-2' }
+      client = check.aws_client(options)
+      expect(client.config.stub_responses).to eq(true)
+      expect(client.config.region).to eq('us-west-2')
+    end
+  end
+
   describe '#get_cert' do
     it 'should return metadata' do
       check = CheckCertificateExpiry.new
