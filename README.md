@@ -11,6 +11,10 @@
 
 **check-autoscaling-cpucredits.rb**
 
+**check-beasntalk-elb-metric.rb**
+
+**check-certificate-expiry.rb**
+
 **check-cloudwatch-alarm**
 
 **check-dynamodb-capacity.rb**
@@ -87,6 +91,8 @@
 ## Files
 
 * /bin/check-autoscaling-cpucredits.rb
+* /bin/check-beanstalk-elb-metric.rb
+* /bin/check-certificate-expiry.rb
 * /bin/check-cloudwatch-alarm.rb
 * /bin/check-dynamodb-capacity.rb
 * /bin/check-dynamodb-throttle.rb
