@@ -92,7 +92,7 @@ class ElastiCacheMetrics < Sensu::Plugin::Metric::CLI::Graphite
 
   def run
     if config[:scheme] == ''
-      graphitepath = "#{config[:elasticachename]}.#{config[:metric].downcase}"
+      graphitepath = "elasticache.#{config[:cacheclusterid]}"
     else
       graphitepath = config[:scheme]
     end
