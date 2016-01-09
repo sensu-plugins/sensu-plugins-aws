@@ -73,8 +73,9 @@ class CheckCertificateExpiry < Sensu::Plugin::Check::CLI
     }
   end
 
-  def aws_client
-    @aws_client ||= Aws::IAM::Client.new aws_config
+  def aws_client(opts = {})
+    config = aws_config.merge(opts)
+    @aws_client ||= Aws::IAM::Client.new config
   end
 
   def get_cert(cert_name)
