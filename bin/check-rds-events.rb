@@ -85,7 +85,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
         events_record = rds.describe_events(start_time: (Time.now - 900).iso8601, source_type: 'db-instance', source_identifier: cluster_name)
         next if events_record[:events].empty?
 
-        # we will need to filter out undisruptive/basic operation events.
+        # we will need to filter out non-disruptive/basic operation events.
         # ie. the regular backup operations
         next if events_record[:events][-1][:message] =~ /Backing up DB instance|Finished DB Instance backup|Restored from snapshot/
         # ie. Replication resumed
