@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## Unreleased
 ### Added
 - check-ec2-cpu_balance.rb: scans for any t2 instances that are below a certain threshold of cpu credits
+- check-instance-health.rb: adding ec2 instance health and event data
 
 ## [2.1.0] - 2016-01-15
 ### Added
