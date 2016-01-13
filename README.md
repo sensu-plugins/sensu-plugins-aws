@@ -23,6 +23,8 @@
 
 **check-ebs-snapshots.rb**
 
+**check-ec2-cpu_balance.rb**
+
 **check-ec2-filter.rb**
 
 **check-ec2-network.rb**
