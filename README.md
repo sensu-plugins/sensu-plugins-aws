@@ -11,7 +11,7 @@
 
 **check-autoscaling-cpucredits.rb**
 
-**check-beasntalk-elb-metric.rb**
+**check-beanstalk-elb-metric.rb**
 
 **check-certificate-expiry.rb**
 
