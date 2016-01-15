@@ -68,7 +68,8 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
         period: period,
         statistics: [stats]
     })
-    return resp.datapoints.first.send(stats.downcase)
+
+    return resp.datapoints.first.send(stats.downcase) unless resp.datapoints.first.nil?
   end
 
   def run
