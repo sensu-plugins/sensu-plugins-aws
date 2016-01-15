@@ -89,12 +89,14 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
         if instance.instance_type.start_with? 't2.'
           id = instance.instance_id
           result = data id
-          if result < config[:critical]
-            level = 2
-            messages << "#{id} is below critical threshold [#{config[:critical]} < #{result}]"
-          elsif config[:warning] && result < config[:warning]
-            level = 1 if level == 0
-            messages << "#{id} is below warning threshold [#{config[:warning]} < #{result}]"
+          unless result.nil?
+            if result < config[:critical]
+              level = 2
+              messages << "#{id} is below critical threshold [#{config[:critical]} < #{result}]"
+            elsif config[:warning] && result < config[:warning]
+              level = 1 if level == 0
+              messages << "#{id} is below warning threshold [#{config[:warning]} < #{result}]"
+            end
           end
         end
       end
