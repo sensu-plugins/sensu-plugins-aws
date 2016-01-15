@@ -135,10 +135,8 @@ class CheckRDS < Sensu::Plugin::Check::CLI
 
   def find_db_instance(id)
     db = rds.instances[id]
-    fail unless db.exists?
+    unknown 'DB instance not found.' unless db.exists?
     db
-  rescue
-    unknown 'DB instance not found.'
   end
 
   def cloud_watch_metric(metric_name)
