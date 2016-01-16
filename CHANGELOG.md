@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased
+
+## [2.1.0] - 2016-01-15
 ### Added
 - check-elb-health-sdk.rb: add option for warning instead of critical when unhealthy instances are found
 - check-rds.rb: add M4 instances
@@ -11,7 +13,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - check-rds-events.rb: add RDS event message to output
 - Added check-cloudwatch-metric that checks the values of cloudwatch metrics
 - Added check-beanstalk-elb-metric that checks an ELB used in a Beanstalk environment
-- Added check-server-certificate-expiry that checks the expiration date of certificates loaded into IAM
+- Added check-certificate-expiry that checks the expiration date of certificates loaded into IAM
 - Added test cases for check-certificate-expiry.rb
 
 ### Changed
