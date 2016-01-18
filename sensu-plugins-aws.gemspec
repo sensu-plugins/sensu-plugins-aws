@@ -39,7 +39,6 @@ Gem::Specification.new do |s|
   s.test_files             = s.files.grep(%r{^(test|spec|features)/})
   s.version                = SensuPluginsAWS::Version::VER_STRING
 
-  s.add_runtime_dependency 'sensu-plugin',      '1.2.0'
   s.add_runtime_dependency 'aws-sdk',           '2.2.11'
   s.add_runtime_dependency 'aws-sdk-v1',        '1.64.0'
   s.add_runtime_dependency 'fog',               '1.32.0'
