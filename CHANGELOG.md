@@ -7,6 +7,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [2.1.0] - 2016-01-15
 ### Added
+- Added check-beanstalk-health and updated aws-sdk to 2.1.14
 - check-elb-health-sdk.rb: add option for warning instead of critical when unhealthy instances are found
 - check-rds.rb: add M4 instances
 - handler-sns.rb: add option to use a template to render body mail
@@ -37,6 +38,7 @@ Nothing new added, this is functionally identical to `2.0.0`. Doing a github rel
 WARNING: This release drops support for Ruby 1.9.3, which is EOL as of 2015-02.
 
 ### Added
+- Added check-beanstalk-health to get beanstalk health
 - Added check-cloudwatch-alarm to get alarm status
 - Added connection metric for check-rds.rb
 - Added check-s3-bucket that checks S3 bucket existence
@@ -46,6 +48,7 @@ WARNING: This release drops support for Ruby 1.9.3, which is EOL as of 2015-02.
 
 ### Fixed
 - handler-ec2_node checks for state_reason being nil prior to code access
+- handler-ec2_node checks for client aws config block before using client name
 - Cosmetic fixes to metrics-elb, check-rds, and check-rds-events
 - Return correct metrics values in check-elb-sum-requests
 

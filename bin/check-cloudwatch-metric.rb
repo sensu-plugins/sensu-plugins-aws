@@ -1,10 +1,18 @@
 #! /usr/bin/env ruby
 #
+<<<<<<< HEAD
+# check-cloudwatch-alarm
+#
+# DESCRIPTION:
+#   This plugin retrieves the value of a cloudwatch metric and triggers
+#   alarms based on the threshold's specified
+=======
 # check-cloudwatch-metric
 #
 # DESCRIPTION:
 #   This plugin retrieves the value of a cloudwatch metric and triggers
 #   alarms based on the thresholds specified
+>>>>>>> 539aec13b0d9001c92a4fbfdcd21a98de53efa89
 #
 # OUTPUT:
 #   plain-text
@@ -32,6 +40,7 @@ require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
 class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
+
   option :namespace,
          description: 'CloudWatch namespace for metric',
          short: '-n NAME',
