@@ -11,6 +11,10 @@
 
 **check-autoscaling-cpucredits.rb**
 
+**check-beasntalk-elb-metric.rb**
+
+**check-certificate-expiry.rb**
+
 **check-cloudwatch-alarm**
 
 **check-dynamodb-capacity.rb**
@@ -61,6 +65,8 @@
 
 **check_vpc_vpn.py**
 
+**check-vpc-vpn.rb**
+
 **handler-ec2_node.rb**
 
 **handler-ses.rb**
@@ -85,6 +91,8 @@
 ## Files
 
 * /bin/check-autoscaling-cpucredits.rb
+* /bin/check-beanstalk-elb-metric.rb
+* /bin/check-certificate-expiry.rb
 * /bin/check-cloudwatch-alarm.rb
 * /bin/check-dynamodb-capacity.rb
 * /bin/check-dynamodb-throttle.rb
@@ -108,6 +116,7 @@
 * /bin/check-sqs-messages.rb
 * /bin/check-vpc-nameservers.rb
 * /bin/check_vpc_vpn.py
+* /bin/check_vpc_vpn.rb
 * /bin/handler-ec2_node.rb
 * /bin/handler-ses.rb
 * /bin/handler-sns.rb

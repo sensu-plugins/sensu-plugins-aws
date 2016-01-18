@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 #
 # check-elb-health-sdk
-# Last Update: 1/22/2015 by bkett
-# ===
 #
 # DESCRIPTION:
 #   This plugin checks the health of an Amazon Elastic Load Balancer or all ELBs in a given region.
@@ -16,6 +14,11 @@
 # DEPENDENCIES:
 #   gem: aws-sdk-v1
 #   gem: sensu-plugin
+#
+# USAGE:
+#   check-elb-health-sdk.rb -r region
+#   check-elb-health-sdk.rb -r region -n my-elb
+#   check-elb-health-sdk.rb -r region -n my-elb -i instance1,instance2
 #
 # Copyright (c) 2015, Benjamin Kett <bkett@umn.edu>
 #
@@ -61,6 +64,12 @@ class ELBHealth < Sensu::Plugin::Check::CLI
          long: '--verbose',
          description: 'Enable a little bit more verbose reports about instance health',
          boolean: true,
+         default: false
+
+  option :warn_only,
+         short: '-w',
+         long: '--warn-only',
+         description: 'Warn instead of critical when unhealthy instances are found',
          default: false
 
   def aws_config
@@ -113,7 +122,11 @@ class ELBHealth < Sensu::Plugin::Check::CLI
       end
     end
     if critical
-      critical @message
+      if config[:warn_only]
+        warning @message
+      else
+        critical @message
+      end
     else
       ok @message
     end

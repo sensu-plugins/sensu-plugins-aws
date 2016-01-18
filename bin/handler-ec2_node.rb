@@ -4,6 +4,8 @@
 # * 0.7.0:
 #   - Added method get_instance_id to check in client config section
 #     ['client']['aws']['instance_id'] first.
+#    - Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing
+#      match that will work with any user state defined.
 # * 0.6.0:
 #   - Fixed ec2_node_should_be_deleted to account for an empty insances array
 # * 0.5.0:
@@ -34,6 +36,22 @@
 # on any `Client.*` state reason or on `Server.*` state reason. The default is
 # to match any state reason `.*` Regardless, eventually a client will be
 # deleted once AWS stops responding that the instance id exists.
+#
+# You could specify a ec2_states.json config file for the states like so:
+#
+#  {
+#   "ec2_node": {
+#    "ec2_states": [
+#     "terminated",
+#     "stopping",
+#     "shutting-down",
+#     "stopped"
+#     ]
+#    }
+#  }
+#
+# And add that to your /etc/sensu/conf.d directory.
+# If you do not specify any states the handler would not work
 #
 # NOTE: The implementation for correlating Sensu clients to EC2 instances may
 # need to be modified to fit your organization. The current implementation
@@ -84,7 +102,7 @@
 #             "name": "keepalive",
 #             "status": 2
 #           },
-#           "occurences": "eval: value > 2"
+#           "occurrences": "eval: value > 2"
 #         }
 #       }
 #     },
@@ -117,7 +135,10 @@ class Ec2Node < Sensu::Handler
 
   def filter; end
 
+  # Method handle
   def handle
+    # Call ec2_node_should_be_deleted method and check for instance state and if valid delete from the sensu API otherwise
+    # instance is in invalid state
     if ec2_node_should_be_deleted?
       delete_sensu_client!
     else
@@ -125,6 +146,7 @@ class Ec2Node < Sensu::Handler
     end
   end
 
+  # Method to delete client from sensu API
   def delete_sensu_client!
     response = api_request(:DELETE, '/clients/' + get_instance_name()).code
     deletion_status(response)
@@ -142,18 +164,40 @@ class Ec2Node < Sensu::Handler
     @event['client']['name']
   end
 
+  # Method to check if there is any insance and if instance is in a valid state that could be deleted
   def ec2_node_should_be_deleted?
+    # Defining region for aws SDK object
     ec2 = Aws::EC2::Client.new(region: region)
-    states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
+    # Check if attributes or json objects are not defined
+    if @event['client']['ec2_states'].nil? && settings['ec2_node']['ec2_states'].nil?
+      puts 'ec2_states is not define, please add the attributes or create a json config file with valid states keys'
+    else
+      # Asigning valid states
+      instance_states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
+    end
+
     begin
+      # Finding the instance
       instances = ec2.describe_instances(instance_ids: [get_instance_id()]).reservations[0]
+      # If instance is empty/nil instance id is not valid so client can be deleted
       if instances.nil? || instances.empty?
         true
       else
-        instance = instances.instances[0]
-        state_reason = instance.state_reason.nil? ? nil : instance.state_reason.code
-        state = instance.state.name
-        states.include?(state) && state_reasons.any? { |reason| Regexp.new(reason) =~ state_reason }
+        # Checking for instance state and reason, and if matches any of the user defined or default reasons then
+        # method returns True
+
+        # Returns Instance object
+        instance_obj = instances.instances[0]
+        # Returns instance state reason in AWS i.e: "Client.UserInitiatedShutdown"
+        instance_state_reason = instance_obj.state_reason.code
+        # Returns the instance state i.e: "terminated"
+        instance_state = instance_obj.state.name
+        # Defining the default reasons why an instance could be deleted or not
+        instance_default_reasons = %w(Client.UserInitiatedShutdown Server.SpotInstanceTermination Client.InstanceInitiatedShutdown)
+        # If user specified a reason use those otherwise use default
+        instance_reasons = @event['client']['ec2_state_reasons'] || settings['ec2_node']['ec2_state_reasons'] || instance_default_reasons
+        # Return true is instance state and instance reason is valid
+        instance_states.include?(instance_state) && instance_reasons.include?(instance_state_reason)
       end
     rescue Aws::EC2::Errors::InvalidInstanceIDNotFound
       true
@@ -173,12 +217,6 @@ class Ec2Node < Sensu::Handler
       end
       region_check
     end
-  end
-
-  def state_reasons
-    default_reasons = %w('UserInitiatedShutdown', 'SpotInstanceTermination', 'InstanceInitiatedShutdown')
-    reasons = @event['client']['ec2_state_reasons'] || settings['ec2_node']['ec2_state_reasons'] || default_reasons
-    @state_reasons ||= reasons.each { |reason| Regexp.new(reason) }
   end
 
   def deletion_status(code)

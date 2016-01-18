@@ -25,6 +25,9 @@
 #   Critical if CPUUtilization is over 90%, maximum of last one hour
 #   check-rds -i sensu-admin-db --cpu-critical-over 90 --statistics maximum --period 3600
 #
+#   Warning if DatabaseConnections are over 100, critical over 120
+#   check-rds -i sensu-admin-db --connections-critical-over 120 --connections-warning-over 100 --statistics maximum --period 3600
+#
 #   Warning if memory usage is over 80%, maximum of last 2 hour
 #   specifying "minimum" is intended actually since memory usage is calculated from CloudWatch "FreeableMemory" metric.
 #   check-rds -i sensu-admin-db --memory-warning-over 80 --statistics minimum --period 7200
@@ -132,10 +135,8 @@ class CheckRDS < Sensu::Plugin::Check::CLI
 
   def find_db_instance(id)
     db = rds.instances[id]
-    fail unless db.exists?
+    unknown 'DB instance not found.' unless db.exists?
     db
-  rescue
-    unknown 'DB instance not found.'
   end
 
   def cloud_watch_metric(metric_name)
@@ -169,24 +170,29 @@ class CheckRDS < Sensu::Plugin::Check::CLI
 
   def memory_total_bytes(instance_class)
     memory_total_gigabytes = {
-      'db.t1.micro'    => 0.615,
+      'db.cr1.8xlarge' => 244.0,
       'db.m1.small'    => 1.7,
+      'db.m1.medium'   => 3.75,
+      'db.m1.large'    => 7.5,
+      'db.m1.xlarge'   => 15.0,
+      'db.m2.xlarge'   => 17.1,
+      'db.m2.2xlarge'  => 34.2,
+      'db.m2.4xlarge'  => 68.4,
       'db.m3.medium'   => 3.75,
       'db.m3.large'    => 7.5,
       'db.m3.xlarge'   => 15.0,
       'db.m3.2xlarge'  => 30.0,
+      'db.m4.large'    => 8.0,
+      'db.m4.xlarge'   => 16.0,
+      'db.m4.2xlarge'  => 32.0,
+      'db.m4.4xlarge'  => 64.0,
+      'db.m4.10xlarge' => 160.0,
       'db.r3.large'    => 15.0,
       'db.r3.xlarge'   => 30.5,
       'db.r3.2xlarge'  => 61.0,
       'db.r3.4xlarge'  => 122.0,
       'db.r3.8xlarge'  => 244.0,
-      'db.m2.xlarge'   => 17.1,
-      'db.m2.2xlarge'  => 34.2,
-      'db.m2.4xlarge'  => 68.4,
-      'db.cr1.8xlarge' => 244.0,
-      'db.m1.medium'   => 3.75,
-      'db.m1.large'    => 7.5,
-      'db.m1.xlarge'   => 15.0,
+      'db.t1.micro'    => 0.615,
       'db.t2.micro'    => 1,
       'db.t2.small'    => 2,
       'db.t2.medium'   => 4,

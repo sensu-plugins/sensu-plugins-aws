@@ -16,7 +16,8 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   #YELLOW
+#   elasticache-metrics.rb -n rediscluster -c redis -a key -k secret
+#   elasticache-metrics.rb -n memcachedcluster -c memcached -a key -k secret
 #
 # NOTES:
 #   Redis: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/CacheMetrics.Redis.html
@@ -92,7 +93,7 @@ class ElastiCacheMetrics < Sensu::Plugin::Metric::CLI::Graphite
 
   def run
     if config[:scheme] == ''
-      graphitepath = "#{config[:elasticachename]}.#{config[:metric].downcase}"
+      graphitepath = "elasticache.#{config[:cacheclusterid]}"
     else
       graphitepath = config[:scheme]
     end

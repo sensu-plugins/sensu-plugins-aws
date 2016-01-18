@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-# check-cloudwatch-alarm
+# check-beanstalk-elb-metric
 #
 # DESCRIPTION:
 #   This plugin finds the desired ELB in a beanstalk environment and queries
@@ -32,56 +32,55 @@ require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
 class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
-
   option :environment,
-          description: 'Application environment name',
-          short: '-e ENVIRONMENT_NAME',
-          long: '--environment ENVIRONMENT_NAME',
-          required: true
+         description: 'Application environment name',
+         short: '-e ENVIRONMENT_NAME',
+         long: '--environment ENVIRONMENT_NAME',
+         required: true
 
   option :elb_idx,
-          description: 'Index of ELB.  Useful for multiple ELB environments',
-          short: '-i ELB_NUM',
-          long: '--elb-idx ELB_NUM',
-          default: 0,
-          proc: proc(&:to_i)
+         description: 'Index of ELB.  Useful for multiple ELB environments',
+         short: '-i ELB_NUM',
+         long: '--elb-idx ELB_NUM',
+         default: 0,
+         proc: proc(&:to_i)
 
   option :metric_name,
-          description: 'ELB CloudWatch Metric',
-          short: '-m METRIC_NAME',
-          long: '--metric METRIC_NAME',
-          required: true
+         description: 'ELB CloudWatch Metric',
+         short: '-m METRIC_NAME',
+         long: '--metric METRIC_NAME',
+         required: true
 
   option :period,
-          description: 'CloudWatch metric statistics period. Must be a multiple of 60',
-          short:       '-p N',
-          long:        '--period SECONDS',
-          default:     60,
-          proc:        proc(&:to_i)
+         description: 'CloudWatch metric statistics period. Must be a multiple of 60',
+         short: '-p N',
+         long: '--period SECONDS',
+         default: 60,
+         proc: proc(&:to_i)
 
   option :statistics,
-          short:       '-s N',
-          long:        '--statistics NAME',
-          default:     "Average",
-          description: 'CloudWatch statistics method'
+         short: '-s N',
+         long: '--statistics NAME',
+         default: 'Average',
+         description: 'CloudWatch statistics method'
 
   option :unit,
-          short:       '-u UNIT',
-          long:        '--unit UNIT',
-          description: 'CloudWatch metric unit'
+         short: '-u UNIT',
+         long: '--unit UNIT',
+         description: 'CloudWatch metric unit'
 
   option :critical,
-          description: 'Trigger a critical when value is over VALUE',
-          short: '-c VALUE',
-          long: '--critical VALUE',
-          proc:        proc(&:to_f),
-          required: true
+         description: 'Trigger a critical when value is over VALUE',
+         short: '-c VALUE',
+         long: '--critical VALUE',
+         proc: proc(&:to_f),
+         required: true
 
   option :warning,
-          description: 'Trigger a critical when value is over VALUE',
-          short: '-w VALUE',
-          long: '--warning VALUE',
-          proc: proc(&:to_f)
+         description: 'Trigger a critical when value is over VALUE',
+         short: '-w VALUE',
+         long: '--warning VALUE',
+         proc: proc(&:to_f)
 
   option :compare,
          description: 'Comparision operator for threshold: equal, not, greater, less',
@@ -90,11 +89,11 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
          default: 'greater'
 
   option :no_data_ok,
-        short: '-n',
-        long: '--allow-no-data',
-        description: 'Returns ok if no data is returned from the metric',
-        boolean: true,
-        default: false
+         short: '-n',
+         long: '--allow-no-data',
+         description: 'Returns ok if no data is returned from the metric',
+         boolean: true,
+         default: false
 
   include CloudwatchCommon
 
@@ -104,18 +103,18 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
 
   def elb_name
     @elb_name ||= Aws::ElasticBeanstalk::Client.new
-      .describe_environment_resources({environment_name: config[:environment]})
-      .environment_resources
-      .load_balancers[config[:elb_idx]]
-      .name
+                  .describe_environment_resources(environment_name: config[:environment])
+                  .environment_resources
+                  .load_balancers[config[:elb_idx]]
+                  .name
   end
 
   def run
     new_config = config.clone
-    new_config[:namespace] = "AWS/ELB"
+    new_config[:namespace] = 'AWS/ELB'
     new_config[:dimensions] = [
       {
-        name: "LoadBalancerName",
+        name: 'LoadBalancerName',
         value: elb_name
       }
     ]

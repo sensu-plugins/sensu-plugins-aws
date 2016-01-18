@@ -17,11 +17,11 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   Warning if any load balancer's latency is over 1 second, critical if over 3 seconds.
-#   check-elb-latency --warning-over 1 --critical-over 3
+#   Warning if the load balancer has 3 or fewer healthy nodes and critical if 2 or fewer
+#   check-elb-nodes --warn 3 --crit 2
 #
-#   Critical if "app" load balancer's latency is over 5 seconds, maximum of last one hour
-#   check-elb-latency --elb-names app --critical-over 5 --statistics maximum --period 3600
+#   Warning if the load balancer has 50% or less healthy nodes and critical if 25% or less
+#   check-elb-nodes --warn_perc 50 --crit_perc 25
 #
 # NOTES:
 #

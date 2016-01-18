@@ -1,10 +1,18 @@
 #! /usr/bin/env ruby
 #
+<<<<<<< HEAD
 # check-cloudwatch-alarm
 #
 # DESCRIPTION:
 #   This plugin retrieves the value of a cloudwatch metric and triggers
 #   alarms based on the threshold's specified
+=======
+# check-cloudwatch-metric
+#
+# DESCRIPTION:
+#   This plugin retrieves the value of a cloudwatch metric and triggers
+#   alarms based on the thresholds specified
+>>>>>>> 539aec13b0d9001c92a4fbfdcd21a98de53efa89
 #
 # OUTPUT:
 #   plain-text
@@ -34,54 +42,54 @@ require 'aws-sdk'
 class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
 
   option :namespace,
-          description: 'CloudWatch namespace for metric',
-          short: '-n NAME',
-          long: '--namespace NAME',
-          default: "AWS/EC2"
+         description: 'CloudWatch namespace for metric',
+         short: '-n NAME',
+         long: '--namespace NAME',
+         default: 'AWS/EC2'
 
   option :metric_name,
-          description: 'Metric name',
-          short: '-m NAME',
-          long: '--metric NAME',
-          required: true
+         description: 'Metric name',
+         short: '-m NAME',
+         long: '--metric NAME',
+         required: true
 
   option :dimensions,
-          description: 'Comma delimited list of DimName=Value',
-          short: '-d DIMENSIONS',
-          long: '--dimensions DIMENSIONS',
-          proc: proc { |d| CloudWatchMetricCheck.parse_dimensions d },
-          default: ''
+         description: 'Comma delimited list of DimName=Value',
+         short: '-d DIMENSIONS',
+         long: '--dimensions DIMENSIONS',
+         proc: proc { |d| CloudWatchMetricCheck.parse_dimensions d },
+         default: ''
 
   option :period,
-          description: 'CloudWatch metric statistics period. Must be a multiple of 60',
-          short:       '-p N',
-          long:        '--period SECONDS',
-          default:     60,
-          proc:        proc(&:to_i)
+         description: 'CloudWatch metric statistics period. Must be a multiple of 60',
+         short: '-p N',
+         long: '--period SECONDS',
+         default: 60,
+         proc: proc(&:to_i)
 
   option :statistics,
-          short:       '-s N',
-          long:        '--statistics NAME',
-          default:     "Average",
-          description: 'CloudWatch statistics method'
+         short: '-s N',
+         long: '--statistics NAME',
+         default: 'Average',
+         description: 'CloudWatch statistics method'
 
   option :unit,
-          short:       '-u UNIT',
-          long:        '--unit UNIT',
-          description: 'CloudWatch metric unit'
+         short: '-u UNIT',
+         long: '--unit UNIT',
+         description: 'CloudWatch metric unit'
 
   option :critical,
-          description: 'Trigger a critical when value is over VALUE',
-          short: '-c VALUE',
-          long: '--critical VALUE',
-          proc:        proc(&:to_f),
-          required: true
+         description: 'Trigger a critical when value is over VALUE',
+         short: '-c VALUE',
+         long: '--critical VALUE',
+         proc: proc(&:to_f),
+         required: true
 
   option :warning,
-          description: 'Trigger a critical when value is over VALUE',
-          short: '-w VALUE',
-          long: '--warning VALUE',
-          proc: proc(&:to_f)
+         description: 'Trigger a critical when value is over VALUE',
+         short: '-w VALUE',
+         long: '--warning VALUE',
+         proc: proc(&:to_f)
 
   option :compare,
          description: 'Comparision operator for threshold: equal, not, greater, less',
@@ -90,11 +98,11 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
          default: 'greater'
 
   option :no_data_ok,
-        short: '-n',
-        long: '--allow-no-data',
-        description: 'Returns ok if no data is returned from the metric',
-        boolean: true,
-        default: false
+         short: '-n',
+         long: '--allow-no-data',
+         description: 'Returns ok if no data is returned from the metric',
+         boolean: true,
+         default: false
 
   include CloudwatchCommon
 
@@ -105,7 +113,7 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
   end
 
   def dimension_string
-    config[:dimensions].map{|d| "#{d[:name]}=#{d[:value]}"}.join('&')
+    config[:dimensions].map { |d| "#{d[:name]}=#{d[:value]}" }.join('&')
   end
 
   def metric_desc

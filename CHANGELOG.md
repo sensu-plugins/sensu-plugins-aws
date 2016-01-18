@@ -6,12 +6,50 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## Unreleased
 ### Added
 - Added check-beanstalk-health and updated aws-sdk to 2.1.14
+- check-elb-health-sdk.rb: add option for warning instead of critical when unhealthy instances are found
+- check-rds.rb: add M4 instances
+- handler-sns.rb: add option to use a template to render body mail
+- check-rds-events.rb: add RDS event message to output
+- Added check-cloudwatch-metric that checks the values of cloudwatch metrics
+- Added check-beanstalk-elb-metric that checks an ELB used in a Beanstalk environment
+- Added check-server-certificate-expiry that checks the expiration date of certificates loaded into IAM
+
+### Changed
+- handler-ec2_node.rb: Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing match that will work with any user state defined, also improved docs
+- metrics-elb-full.rb: flush hash in-between iterations
+- check-ses-limit.rb: move to AWS-SDK v2, use common module, return unknown on empty responses
+
+### Fixed
+- metrics-memcached.rb: Fixed default scheme
+
+## [2.0.1] - 2015-11-03
+### Changed
+- pinned all dependencies
+- set gemspec to require > `2.0.0`
+
+Nothing new added, this is functionally identical to `2.0.0`. Doing a github release which for some reason failed even though a gem was built and pushed.
+
+## [2.0.0] - 2015-11-02
+
+WARNING: This release drops support for Ruby 1.9.3, which is EOL as of 2015-02.
+
+### Added
+- Added check-beanstalk-health to get beanstalk health
 - Added check-cloudwatch-alarm to get alarm status
+- Added connection metric for check-rds.rb
+- Added check-s3-bucket that checks S3 bucket existence
+- Added check-s3-object that checks S3 object existence
+- Added check-emr-cluster that checks EMR cluster existence
+- Added check-vpc-vpn that checks the health of VPC VPN connections
 
 ### Fixed
 - handler-ec2_node checks for state_reason being nil prior to code access
 - handler-ec2_node checks for client aws config block before using client name
 - Cosmetic fixes to metrics-elb, check-rds, and check-rds-events
+- Return correct metrics values in check-elb-sum-requests
+
+### Removed
+- Removed Ruby 1.9.3 support
 
 ## [1.2.0] - 2015-08-04
 ### Added
