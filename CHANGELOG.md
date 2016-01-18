@@ -4,10 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased
+### Added
+- check-ec2-cpu_balance.rb: scans for any t2 instances that are below a certain threshold of cpu credits
 
 ## [2.1.0] - 2016-01-15
 ### Added
-- check-ec2-cpu_balance.rb: scans for any t2 instances that are below a certain threshold of cpu credits
 - check-elb-health-sdk.rb: add option for warning instead of critical when unhealthy instances are found
 - check-rds.rb: add M4 instances
 - handler-sns.rb: add option to use a template to render body mail
