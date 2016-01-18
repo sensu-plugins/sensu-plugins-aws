@@ -49,6 +49,8 @@
 
 **check-instance-events.rb**
 
+**check-instance-health.rb**
+
 **check-rds-events.rb**
 
 **check-rds.rb**
