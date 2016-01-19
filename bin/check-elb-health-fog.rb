@@ -103,12 +103,10 @@ class ELBHealth < Sensu::Plugin::Check::CLI
       end
       if unhealthy_instances.empty?
         ok "All instances on ELB #{aws_region}::#{config[:elb_name]} healthy!"
+      elsif config[:verbose]
+        critical "Unhealthy instances detected: #{unhealthy_instances.map { |id, state| '[' + id + '::' + state + ']' }.join(' ')}"
       else
-        if config[:verbose]
-          critical "Unhealthy instances detected: #{unhealthy_instances.map { |id, state| '[' + id + '::' + state + ']' }.join(' ')}"
-        else
-          critical "Detected [#{unhealthy_instances.size}] unhealthy instances"
-        end
+        critical "Detected [#{unhealthy_instances.size}] unhealthy instances"
       end
     rescue => e
       warning "An issue occured while communicating with the AWS EC2 API: #{e.message}"
