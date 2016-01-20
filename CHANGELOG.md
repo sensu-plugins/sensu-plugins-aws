@@ -13,6 +13,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ### Fixed
 - check-vpc-vpn.rb: fix execution error by running with aws-sdk-v1
+- handler-ec2_node.rb: default values for ec2_states were ignored
 
 ## [2.1.0] - 2016-01-15
 ### Added
