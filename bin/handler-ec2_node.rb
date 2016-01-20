@@ -154,13 +154,7 @@ class Ec2Node < Sensu::Handler
   def ec2_node_should_be_deleted?
     # Defining region for aws SDK object
     ec2 = Aws::EC2::Client.new(region: region)
-    # Check if attributes or json objects are not defined
-    if @event['client']['ec2_states'].nil? && settings['ec2_node']['ec2_states'].nil?
-      puts 'ec2_states is not define, please add the attributes or create a json config file with valid states keys'
-    else
-      # Asigning valid states
-      instance_states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
-    end
+    instance_states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
 
     begin
       # Finding the instance
