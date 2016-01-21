@@ -107,7 +107,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
         cluster_name_long = "#{cluster_name} (#{aws_config[:region]}) #{events_record[:events][-1][:message]}"
         maint_clusters.push(cluster_name_long) if events_record[:events][-1][:message] =~ /has started|is being|off-line|shutdown/
       end
-      
+
     rescue => e
       unknown "An error occurred processing AWS RDS API: #{e.message}"
     end
