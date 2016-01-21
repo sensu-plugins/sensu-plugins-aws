@@ -20,7 +20,14 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#  ./check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key}
+#  Check's a specific RDS instance on a specific availability zone for critical events
+#  check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key} -i ${your_rds_instance_id_name}
+#
+#  Checks all RDS instances on a specific availability zone 
+#  check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key} 
+#
+#  Checks all RDS instances  on a specific availability zone, should be using IAM role
+#  check-rds-events.rb -r ${your_region}
 #
 # NOTES:
 #
@@ -52,11 +59,32 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
          description: 'AWS Region (defaults to us-east-1).',
          default:     'us-east-1'
 
+  option :db_instance_id,
+         short:       '-i N',
+         long:        '--db-instance-id NAME',
+         description: 'DB instance identifier'
+
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
       region: config[:aws_region]
     }
+  end
+
+  #def rds
+  #  @rds ||= AWS::RDS.new aws_config
+  #end
+
+  def find_db_instance(rds_connector, id)
+    p rds_connector
+    p id
+    p rds_connector.instances
+    db = rds_connector.instances[id]
+    p db
+    fail unless db.exists?
+    db
+  rescue
+    unknown 'DB instance not found.'
   end
 
   def run
@@ -72,18 +100,36 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
     rds = AWS::RDS::Client.new aws_config
 
     begin
-      # fetch all clusters identifiers
-      clusters = rds.describe_db_instances[:db_instances].map { |db| db[:db_instance_identifier] }
+      if !config[:db_instance_id].nil? && !config[:db_instance_id].empty?
+        puts "used -i flag"
+        puts config[:db_instance_id]
+        clusters = rds.describe_db_instances db_instance_identifier: config[:db_instance_id]
+        if clusters.nil?
+          unknown 'DB instance not found.'
+        end
+      else
+        # fetch all clusters identifiers
+        clusters = rds.describe_db_instances[:db_instances].map { |db| db[:db_instance_identifier] }
+      end
+
       maint_clusters = []
 
-      # fetch the last 2 hours of events for each cluster
-      clusters.each do |cluster_name|
-        events_record = rds.describe_events(start_time: (Time.now - 7200).iso8601, source_type: 'db-instance', source_identifier: cluster_name)
-        next if events_record[:events].empty?
+      if clusters.respond_to?("each")
+        # fetch the last 2 hours of events for each cluster
+        clusters.each do |cluster_name|
+          events_record = rds.describe_events(start_time: (Time.now - 7200).iso8601, source_type: 'db-instance', source_identifier: cluster_name)
+          next if events_record[:events].empty?
 
-        # if the last event is a start maint event then the cluster is still in maint
-        cluster_name_long = "#{cluster_name} (#{aws_config[:region]}) #{events_record[:events][-1][:message]}"
-        maint_clusters.push(cluster_name_long) if events_record[:events][-1][:message] =~ /has started|is being|off-line|shutdown/
+          # if the last event is a start maint event then the cluster is still in maint
+          cluster_name_long = "#{cluster_name} (#{aws_config[:region]}) #{events_record[:events][-1][:message]}"
+          maint_clusters.push(cluster_name_long) if events_record[:events][-1][:message] =~ /has started|is being|off-line|shutdown/
+        end
+      else
+        events_record = rds.describe_events(start_time: (Time.now - 7200).iso8601, source_type: 'db-instance', source_identifier: config[:db_instance_id])
+        if !events_record[:events].empty?
+          cluster_name_long = "#{config[:db_instance_id]} (#{aws_config[:region]}) #{events_record[:events][-1][:message]}"
+          maint_clusters.push(cluster_name_long) if events_record[:events][-1][:message] =~ /has started|is being|off-line|shutdown/
+        end
       end
     rescue => e
       unknown "An error occurred processing AWS RDS API: #{e.message}"
