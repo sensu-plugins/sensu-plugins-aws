@@ -23,8 +23,8 @@
 #  Check's a specific RDS instance on a specific availability zone for critical events
 #  check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key} -i ${your_rds_instance_id_name}
 #
-#  Checks all RDS instances on a specific availability zone 
-#  check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key} 
+#  Checks all RDS instances on a specific availability zone
+#  check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key}
 #
 #  Checks all RDS instances  on a specific availability zone, should be using IAM role
 #  check-rds-events.rb -r ${your_region}
@@ -89,7 +89,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
         if db_instance.nil? || db_instance.empty?
           unknown "#{config[:db_instance_id]} instance not found"
         else
-          clusters = [ config[:db_instance_id] ]
+          clusters = [config[:db_instance_id]]
         end
       else
         # fetch all clusters identifiers
