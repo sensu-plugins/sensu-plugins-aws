@@ -71,18 +71,6 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
     }
   end
 
-  def find_db_instance(rds_connector, id)
-    p rds_connector
-    p id
-    p rds_connector.instances
-    db = rds_connector.instances[id]
-    p db
-    fail unless db.exists?
-    db
-  rescue
-    unknown 'DB instance not found.'
-  end
-
   def run
     clusters = maint_clusters
     if clusters.empty?
@@ -97,11 +85,11 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
 
     begin
       if !config[:db_instance_id].nil? && !config[:db_instance_id].empty?
-        puts "used -i flag"
-        puts config[:db_instance_id]
-        clusters = rds.describe_db_instances db_instance_identifier: config[:db_instance_id]
-        if clusters.nil?
-          unknown 'DB instance not found.'
+        db_instance = rds.describe_db_instances(db_instance_identifier: config[:db_instance_id])
+        if db_instance.nil? || db_instance.empty?
+          unknown "#{config[:db_instance_id]} instance not found"
+        else
+          clusters = [ config[:db_instance_id] ]
         end
       else
         # fetch all clusters identifiers
@@ -110,23 +98,16 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
 
       maint_clusters = []
 
-      if clusters.respond_to?("each")
-        # fetch the last 2 hours of events for each cluster
-        clusters.each do |cluster_name|
-          events_record = rds.describe_events(start_time: (Time.now - 7200).iso8601, source_type: 'db-instance', source_identifier: cluster_name)
-          next if events_record[:events].empty?
+      # fetch the last 2 hours of events for each cluster
+      clusters.each do |cluster_name|
+        events_record = rds.describe_events(start_time: (Time.now - 7200).iso8601, source_type: 'db-instance', source_identifier: cluster_name)
+        next if events_record[:events].empty?
 
-          # if the last event is a start maint event then the cluster is still in maint
-          cluster_name_long = "#{cluster_name} (#{aws_config[:region]}) #{events_record[:events][-1][:message]}"
-          maint_clusters.push(cluster_name_long) if events_record[:events][-1][:message] =~ /has started|is being|off-line|shutdown/
-        end
-      else
-        events_record = rds.describe_events(start_time: (Time.now - 7200).iso8601, source_type: 'db-instance', source_identifier: config[:db_instance_id])
-        if !events_record[:events].empty?
-          cluster_name_long = "#{config[:db_instance_id]} (#{aws_config[:region]}) #{events_record[:events][-1][:message]}"
-          maint_clusters.push(cluster_name_long) if events_record[:events][-1][:message] =~ /has started|is being|off-line|shutdown/
-        end
+        # if the last event is a start maint event then the cluster is still in maint
+        cluster_name_long = "#{cluster_name} (#{aws_config[:region]}) #{events_record[:events][-1][:message]}"
+        maint_clusters.push(cluster_name_long) if events_record[:events][-1][:message] =~ /has started|is being|off-line|shutdown/
       end
+      
     rescue => e
       unknown "An error occurred processing AWS RDS API: #{e.message}"
     end
