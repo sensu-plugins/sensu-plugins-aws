@@ -71,10 +71,6 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
     }
   end
 
-  #def rds
-  #  @rds ||= AWS::RDS.new aws_config
-  #end
-
   def find_db_instance(rds_connector, id)
     p rds_connector
     p id
