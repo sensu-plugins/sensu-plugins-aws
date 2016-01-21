@@ -154,13 +154,9 @@ class Ec2Node < Sensu::Handler
   def ec2_node_should_be_deleted?
     # Defining region for aws SDK object
     ec2 = Aws::EC2::Client.new(region: region)
-<<<<<<< HEAD
-    instance_states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
-=======
     settings['ec2_node'] = {} unless settings['ec2_node']
     instance_states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
     instance_reasons = @event['client']['ec2_state_reasons'] || settings['ec2_node']['ec2_state_reasons'] || %w(Client.UserInitiatedShutdown Server.SpotInstanceTermination Client.InstanceInitiatedShutdown)
->>>>>>> fix_ec2_node_handler
 
     begin
       # Finding the instance
