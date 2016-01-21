@@ -154,7 +154,13 @@ class Ec2Node < Sensu::Handler
   def ec2_node_should_be_deleted?
     # Defining region for aws SDK object
     ec2 = Aws::EC2::Client.new(region: region)
+<<<<<<< HEAD
     instance_states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
+=======
+    settings['ec2_node'] = {} unless settings['ec2_node']
+    instance_states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
+    instance_reasons = @event['client']['ec2_state_reasons'] || settings['ec2_node']['ec2_state_reasons'] || %w(Client.UserInitiatedShutdown Server.SpotInstanceTermination Client.InstanceInitiatedShutdown)
+>>>>>>> fix_ec2_node_handler
 
     begin
       # Finding the instance
@@ -166,16 +172,11 @@ class Ec2Node < Sensu::Handler
         # Checking for instance state and reason, and if matches any of the user defined or default reasons then
         # method returns True
 
-        # Returns Instance object
-        instance_obj = instances.instances[0]
         # Returns instance state reason in AWS i.e: "Client.UserInitiatedShutdown"
-        instance_state_reason = instance_obj.state_reason.code
+        instance_state_reason = instances.instances[0].state_reason.code
         # Returns the instance state i.e: "terminated"
-        instance_state = instance_obj.state.name
-        # Defining the default reasons why an instance could be deleted or not
-        instance_default_reasons = %w(Client.UserInitiatedShutdown Server.SpotInstanceTermination Client.InstanceInitiatedShutdown)
-        # If user specified a reason use those otherwise use default
-        instance_reasons = @event['client']['ec2_state_reasons'] || settings['ec2_node']['ec2_state_reasons'] || instance_default_reasons
+        instance_state = instances.instances[0].state.name
+        
         # Return true is instance state and instance reason is valid
         instance_states.include?(instance_state) && instance_reasons.include?(instance_state_reason)
       end
