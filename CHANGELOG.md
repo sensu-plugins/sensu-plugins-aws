@@ -11,6 +11,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Changed
 - Update to aws-sdk 2.2.11 and aws-sdk-v1 1.66.0
 
+### Fixed
+- check-vpc-vpn.rb: fix execution error by running with aws-sdk-v1
+
 ## [2.1.0] - 2016-01-15
 ### Added
 - check-elb-health-sdk.rb: add option for warning instead of critical when unhealthy instances are found
