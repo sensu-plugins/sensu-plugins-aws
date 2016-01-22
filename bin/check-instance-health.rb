@@ -3,7 +3,7 @@
 # check-instance-health
 #
 # DESCRIPTION:
-#   This plugin looks up all instances in an account and checks event data, system status, and alarm data
+#   This plugin looks up all instances in an account and checks event data, system status
 #
 # OUTPUT:
 #   plain-text
@@ -42,11 +42,11 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
 
   def gather_events(events)
     useful_events = events.reject { |x| x[:code] == 'system-reboot' && x[:description] =~ /\[Completed\]/ }
-    return ! useful_events.empty?
+    !useful_events.empty?
   end
 
   def gather_status(status_checks)
-    return ['impaired', 'insufficient-data'].include? status_checks.status
+    ['impaired', 'insufficient-data'].include? status_checks.status
   end
 
   def run
@@ -62,7 +62,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
         if gather_status(item.system_status)
           messages << "#{id} has failed system status checks"
         end
-        
+
         if gather_status(item.instance_status)
           messages << "#{id} has failed instance status checks"
         end

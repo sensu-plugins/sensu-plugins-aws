@@ -11,7 +11,7 @@
 
 **check-autoscaling-cpucredits.rb**
 
-**check-beasntalk-elb-metric.rb**
+**check-beanstalk-elb-metric.rb**
 
 **check-certificate-expiry.rb**
 
@@ -22,6 +22,8 @@
 **check-dynamodb-throttle.rb**
 
 **check-ebs-snapshots.rb**
+
+**check-ec2-cpu_balance.rb**
 
 **check-ec2-filter.rb**
 
@@ -46,6 +48,8 @@
 **check-emr-cluster.rb**
 
 **check-instance-events.rb**
+
+**check-instance-health.rb**
 
 **check-rds-events.rb**
 

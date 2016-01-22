@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-# check-server-certificate-expiry
+# check-certificate-expiry
 #
 # DESCRIPTION:
 #   Checks expiration date on certificate. If no certificate is passed it checks
@@ -17,7 +17,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   ./check-server-certificate-expiry.rb --server-certificate-name ${cert_name} --warning 45 --critical 30
+#   ./check-certificate-expiry.rb --server-certificate-name ${cert_name} --warning 45 --critical 30
 #
 # NOTES:
 #   Based heavily on Yohei Kawahara's check-ec2-network
