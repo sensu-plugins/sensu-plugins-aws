@@ -13,7 +13,7 @@
 #
 # DEPENDENCIES:
 #   gem: sensu-plugin
-#   gem: aws-sdk
+#   gem: aws-sdk-v1
 #
 # USAGE:
 #  ./check-vpc-vpn.rb --aws-region us-east-1 --vpn-connection-id vpn-abc1234
@@ -28,7 +28,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
   @aws_config = {}
