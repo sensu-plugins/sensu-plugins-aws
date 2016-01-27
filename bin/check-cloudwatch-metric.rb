@@ -32,6 +32,7 @@ require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
 class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
+
   option :namespace,
          description: 'CloudWatch namespace for metric',
          short: '-n NAME',
