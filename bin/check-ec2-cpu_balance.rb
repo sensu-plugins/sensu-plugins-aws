@@ -74,8 +74,6 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
 
   def run
     ec2 = Aws::EC2::Client.new
-    messages = []
-    level = 0
     instances = ec2.describe_instances(
       filters: [
         {
@@ -84,6 +82,8 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
         }
       ])
 
+    messages = "\n"
+    level = 0
     instances.reservations.each do |reservation|
       reservation.instances.each do |instance|
         next unless instance.instance_type.start_with? 't2.'
@@ -92,14 +92,16 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
         unless result.nil?
           if result < config[:critical]
             level = 2
-            messages << "#{id} is below critical threshold [#{config[:critical]} < #{result}]"
+            messages << "#{id} is below critical threshold [#{config[:critical]} < #{result}]\n"
           elsif config[:warning] && result < config[:warning]
             level = 1 if level == 0
-            messages << "#{id} is below warning threshold [#{config[:warning]} < #{result}]"
+            messages << "#{id} is below warning threshold [#{config[:warning]} < #{result}]\n"
           end
         end
       end
     end
-    fail SystemExit, level, messages
+    ok messages if level == 0
+    warning messages if level == 1
+    critical messages if level == 2
   end
 end
