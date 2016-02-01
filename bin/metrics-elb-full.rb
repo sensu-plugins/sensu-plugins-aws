@@ -118,7 +118,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
       }
       config[:elbname].split(',').each do |elbname|
         if config[:scheme] == ''
-          graphitepath = "#{elbname}"
+          graphitepath = elbname.to_s
         else
           graphitepath = "#{config[:scheme]}.#{elbname}"
         end

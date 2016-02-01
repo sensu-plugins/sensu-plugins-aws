@@ -16,6 +16,12 @@ end
 
 RuboCop::RakeTask.new
 
+# Prevent environment pollution when running tests.
+ENV['AWS_SECRET_KEY'] = nil
+ENV['AWS_SECRET_ACCESS_KEY'] = nil
+ENV['AWS_ACCESS_KEY'] = nil
+ENV['AWS_ACCESS_KEY_ID'] = nil
+
 RSpec::Core::RakeTask.new(:spec) do |r|
   r.pattern = FileList['**/**/*_spec.rb']
 end
