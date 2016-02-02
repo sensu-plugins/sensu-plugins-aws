@@ -51,9 +51,9 @@ module CloudwatchCommon
     value = read_value(resp, config[:statistics])
     base_msg = "#{metric_desc} is #{value}: comparison=#{config[:compare]}"
 
-    if compare value, config[:critical], config[:comparison]
+    if compare value, config[:critical], config[:compare]
       critical "#{base_msg} threshold=#{config[:critical]}"
-    elsif config[:warning] && compare(value, config[:warning], config[:comparison])
+    elsif config[:warning] && compare(value, config[:warning], config[:compare])
       warning "#{base_msg} threshold=#{config[:warning]}"
     else
       ok "#{base_msg}, will alarm at #{!config[:warning].nil? ? config[:warning] : config[:critical]}"

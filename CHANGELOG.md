@@ -5,13 +5,25 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## Unreleased
 ### Added
+- check-ec2-cpu_balance.rb: scans for any t2 instances that are below a certain threshold of cpu credits
+- check-instance-health.rb: adding ec2 instance health and event data
+
+### Changed
+- Update to aws-sdk 2.2.11 and aws-sdk-v1 1.66.0
+
+### Fixed
+- check-vpc-vpn.rb: fix execution error by running with aws-sdk-v1
+
+## [2.1.0] - 2016-01-15
+### Added
 - check-elb-health-sdk.rb: add option for warning instead of critical when unhealthy instances are found
 - check-rds.rb: add M4 instances
 - handler-sns.rb: add option to use a template to render body mail
 - check-rds-events.rb: add RDS event message to output
 - Added check-cloudwatch-metric that checks the values of cloudwatch metrics
 - Added check-beanstalk-elb-metric that checks an ELB used in a Beanstalk environment
-- Added check-server-certificate-expiry that checks the expiration date of certificates loaded into IAM
+- Added check-certificate-expiry that checks the expiration date of certificates loaded into IAM
+- Added test cases for check-certificate-expiry.rb
 
 ### Changed
 - handler-ec2_node.rb: Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing match that will work with any user state defined, also improved docs
@@ -20,6 +32,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ### Fixed
 - metrics-memcached.rb: Fixed default scheme
+- Fix typo in cloudwatch comparison check
 
 ## [2.0.1] - 2015-11-03
 ### Changed
