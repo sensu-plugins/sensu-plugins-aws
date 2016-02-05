@@ -50,7 +50,7 @@ class SnsNotifier < Sensu::Handler
                  <<-BODY.gsub(/^\s+/, '')
         <%= @event['check']['notification'] || @event['check']['output'] %>
       BODY
-    end
+               end
     eruby = Erubis::Eruby.new(template)
     eruby.result(binding)
   end
