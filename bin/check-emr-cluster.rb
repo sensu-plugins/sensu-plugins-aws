@@ -116,7 +116,7 @@ class CheckEMRCluster < Sensu::Plugin::Check::CLI
       clusters = emr_clusters.select { |c| c.name == config[:cluster_name] }
 
       critical "EMR cluster #{config[:cluster_name]} appears #{clusters.size} times" if clusters.size > 1
-      critical "EMR cluster #{config[:cluster_name]} not found" if clusters.size == 0
+      critical "EMR cluster #{config[:cluster_name]} not found" if clusters.empty?
 
       cluster = clusters.first
       state = cluster.status.state

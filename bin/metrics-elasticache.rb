@@ -96,7 +96,7 @@ class ElastiCacheMetrics < Sensu::Plugin::Metric::CLI::Graphite
                      "elasticache.#{config[:cacheclusterid]}"
                    else
                      config[:scheme]
-    end
+                   end
 
     statistic_type = {
       'redis' => {

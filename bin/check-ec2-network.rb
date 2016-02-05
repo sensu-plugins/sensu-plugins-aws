@@ -108,7 +108,7 @@ class CheckEc2Network < Sensu::Plugin::Check::CLI
   end
 
   def latest_value(metric)
-    value = metric.statistics(statistics_options.merge unit: 'Bytes')
+    value = metric.statistics(statistics_options.merge(unit: 'Bytes'))
     value.datapoints[0][:average].to_f unless value.datapoints[0].nil?
   end
 

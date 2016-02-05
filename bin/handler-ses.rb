@@ -86,7 +86,7 @@ class SESNotifier < Sensu::Handler
                 "#{action_to_string} - #{event_name}: #{status_to_string}"
               else
                 "#{action_to_string} - #{event_name}: #{@event['check']['notification']}"
-    end
+              end
 
     if use_ami_role
       AWS.config(region: region)

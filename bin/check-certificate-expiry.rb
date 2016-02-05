@@ -93,7 +93,7 @@ class CheckCertificateExpiry < Sensu::Plugin::Check::CLI
                         " #{cert.server_certificate_name} certificate is expired!"
                       else
                         " #{cert.server_certificate_name} certificate expires in #{time_to_expiry} days;"
-      end
+                      end
     elsif time_to_expiry <= config[:warning].to_i
       warnflag = true
       reportstring += " #{cert.server_certificate_name} certificate expires in #{time_to_expiry} days;"

@@ -111,7 +111,7 @@ class EC2Filter < Sensu::Plugin::Check::CLI
                 {}
               else
                 { filters: filter }
-    end
+              end
 
     data = client.describe_instances(options)
 

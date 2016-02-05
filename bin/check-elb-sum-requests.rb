@@ -115,7 +115,7 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
   end
 
   def latest_value(metric)
-    metric.statistics(statistics_options.merge unit: 'Count').datapoints.sort_by { |datapoint| datapoint[:timestamp] }.last[:sum]
+    metric.statistics(statistics_options.merge(unit: 'Count')).datapoints.sort_by { |datapoint| datapoint[:timestamp] }.last[:sum]
   end
 
   def flag_alert(severity, message)

@@ -72,7 +72,7 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
                "aws.sqs.queue.#{config[:queue].tr('-', '_')}.message_count"
              else
                config[:scheme]
-    end
+             end
 
     begin
       sqs = AWS::SQS.new aws_config

@@ -121,7 +121,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
                          elbname.to_s
                        else
                          "#{config[:scheme]}.#{elbname}"
-        end
+                       end
         result = {}
         statistic_type.each do |key, value|
           options['metric_name'] = key

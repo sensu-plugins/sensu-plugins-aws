@@ -153,7 +153,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def latest_value(metric, unit)
-    values = metric.statistics(statistics_options.merge unit: unit).datapoints.sort_by { |datapoint| datapoint[:timestamp] }
+    values = metric.statistics(statistics_options.merge(unit: unit)).datapoints.sort_by { |datapoint| datapoint[:timestamp] }
 
     # handle time periods that are too small to return usable values.  # this is a cozy addition that wouldn't port upstream.
     if values.empty?

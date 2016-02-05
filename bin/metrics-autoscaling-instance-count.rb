@@ -72,7 +72,7 @@ class AutoScalingInstanceCountMetrics < Sensu::Plugin::Metric::CLI::Graphite
                      "#{config[:groupname]}.autoscaling.instance_count"
                    else
                      config[:scheme]
-    end
+                   end
     begin
       as = AWS::AutoScaling.new aws_config
       count = as.groups[config[:groupname]].auto_scaling_instances.map(&:lifecycle_state).count('InService')

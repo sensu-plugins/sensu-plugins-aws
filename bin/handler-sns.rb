@@ -72,15 +72,13 @@ class SnsNotifier < Sensu::Handler
 
     t = sns.topics[topic_arn]
 
-    if @event['action'].eql?('resolve')
-      subject = "RESOLVED - [#{event_name}]"
-      options = { subject: subject }
-      t.publish("#{subject} - #{message}", options)
-    else
-      subject = "ALERT - [#{event_name}]"
-      options = { subject: subject }
-      t.publish("#{subject} - #{message}", options)
-    end
+    subject = if @event['action'].eql?('resolve')
+                "RESOLVED - [#{event_name}]"
+              else
+                "ALERT - [#{event_name}]"
+              end
+    options = { subject: subject }
+    t.publish("#{subject} - #{message}", options)
   rescue => e
     puts "Exception occured in SnsNotifier: #{e.message}", e.backtrace
   end

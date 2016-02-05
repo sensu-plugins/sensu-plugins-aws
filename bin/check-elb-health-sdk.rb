@@ -96,7 +96,7 @@ class ELBHealth < Sensu::Plugin::Check::CLI
                              elb.instances.health(config[:instances])
                            else
                              elb.instances.health
-    end
+                           end
     instance_health_hash.each do |instance_health|
       if instance_health[:state] != 'InService'
         unhealthy_instances[instance_health[:instance].id] = instance_health[:state]
