@@ -103,9 +103,9 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
 
   def elb_name
     @elb_name ||= Aws::ElasticBeanstalk::Client.new
-                  .describe_environment_resources(environment_name: config[:environment])
-                  .environment_resources
-                  .load_balancers[config[:elb_idx]]
+                                               .describe_environment_resources(environment_name: config[:environment])
+                                               .environment_resources
+                                               .load_balancers[config[:elb_idx]]
                   .name
   end
 

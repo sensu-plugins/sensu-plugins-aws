@@ -107,10 +107,10 @@ class EC2Filter < Sensu::Plugin::Check::CLI
 
     filter = Filter.parse(config[:filter])
 
-    if filter.empty?
-      options = {}
-    else
-      options = { filters: filter }
+    options = if filter.empty?
+                {}
+              else
+                { filters: filter }
     end
 
     data = client.describe_instances(options)

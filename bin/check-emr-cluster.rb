@@ -106,10 +106,8 @@ class CheckEMRCluster < Sensu::Plugin::Check::CLI
   def run
     aws_config = {}
     if config[:use_iam_role].nil?
-      aws_config.merge!(
-        access_key_id: config[:aws_access_key],
-        secret_access_key: config[:aws_secret_access_key]
-      )
+      aws_config[:access_key_id] = config[:aws_access_key]
+      aws_config[:secret_access_key] = config[:aws_secret_access_key]
     end
 
     emr = Aws::EMR::Client.new(aws_config.merge!(region: config[:aws_region]))

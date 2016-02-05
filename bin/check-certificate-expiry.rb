@@ -89,10 +89,10 @@ class CheckCertificateExpiry < Sensu::Plugin::Check::CLI
 
     if time_to_expiry <= config[:critical].to_i
       critflag = true
-      if time_to_expiry < 1
-        reportstring += " #{cert.server_certificate_name} certificate is expired!"
-      else
-        reportstring += " #{cert.server_certificate_name} certificate expires in #{time_to_expiry} days;"
+      reportstring += if time_to_expiry < 1
+                        " #{cert.server_certificate_name} certificate is expired!"
+                      else
+                        " #{cert.server_certificate_name} certificate expires in #{time_to_expiry} days;"
       end
     elsif time_to_expiry <= config[:warning].to_i
       warnflag = true

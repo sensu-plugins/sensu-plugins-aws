@@ -65,10 +65,8 @@ class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
   def aws_config
     aws_connection_config = { region: config[:aws_region] }
     if config[:use_iam_role].nil?
-      aws_connection_config.merge!(
-        access_key_id: config[:access_key],
-        secret_access_key: config[:secret_key]
-      )
+      aws_connection_config[:access_key_id] = config[:access_key]
+      aws_connection_config[:secret_access_key] = config[:secret_key]
     end
     aws_connection_config
   end

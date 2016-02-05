@@ -44,10 +44,10 @@ class SnsNotifier < Sensu::Handler
   end
 
   def message
-    if template_file && File.readable?(template_file)
-      template = File.read(template_file)
-    else
-      template = <<-BODY.gsub(/^\s+/, '')
+    template = if template_file && File.readable?(template_file)
+                 File.read(template_file)
+               else
+                 <<-BODY.gsub(/^\s+/, '')
         <%= @event['check']['notification'] || @event['check']['output'] %>
       BODY
     end
