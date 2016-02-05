@@ -113,7 +113,7 @@ class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
                        1
                      else
                        data[type] + 1
-                    end
+                     end
       end
     end
 
