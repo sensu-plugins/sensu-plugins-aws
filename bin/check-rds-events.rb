@@ -5,9 +5,12 @@
 #
 # DESCRIPTION:
 #   This plugin checks rds clusters for critical events.
-#   Due to the number of events types on RDS clusters the check searches for
-#   events containing the text string 'has started' or 'is being'.  These events all have
-#   accompanying completiion events and are impacting events
+#   Due to the number of events types on RDS clusters, the check
+#   should filter out non-disruptive events that are part of
+#   basic operations.
+#
+#   More info on RDS events:
+#   http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.html
 #
 # OUTPUT:
 #   plain-text
@@ -76,14 +79,22 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
       clusters = rds.describe_db_instances[:db_instances].map { |db| db[:db_instance_identifier] }
       maint_clusters = []
 
-      # fetch the last 2 hours of events for each cluster
+      # fetch the last 15 minutes of events for each cluster
+      # that way, we're only spammed with persistent notifications that we'd care about.
       clusters.each do |cluster_name|
-        events_record = rds.describe_events(start_time: (Time.now - 7200).iso8601, source_type: 'db-instance', source_identifier: cluster_name)
+        events_record = rds.describe_events(start_time: (Time.now - 900).iso8601, source_type: 'db-instance', source_identifier: cluster_name)
         next if events_record[:events].empty?
 
-        # if the last event is a start maint event then the cluster is still in maint
+        # we will need to filter out non-disruptive/basic operation events.
+        # ie. the regular backup operations
+        next if events_record[:events][-1][:message] =~ /Backing up DB instance|Finished DB Instance backup|Restored from snapshot/
+        # ie. Replication resumed
+        next if events_record[:events][-1][:message] =~ /Replication for the Read Replica resumed/
+        # you can add more filters to skip more events.
+
+        # draft the messages
         cluster_name_long = "#{cluster_name} (#{aws_config[:region]}) #{events_record[:events][-1][:message]}"
-        maint_clusters.push(cluster_name_long) if events_record[:events][-1][:message] =~ /has started|is being|off-line|shutdown/
+        maint_clusters.push(cluster_name_long)
       end
     rescue => e
       unknown "An error occurred processing AWS RDS API: #{e.message}"
