@@ -42,6 +42,9 @@
 #   metrics from time to time and this prevents false positives
 #   check-rds -i sensu-admin-db --cpu-critical-over 90 -n
 #
+#   To Use an IAM
+#   check-rds -i sensu-admin-db --use-iam
+#
 # NOTES:
 #
 # LICENSE:
@@ -66,6 +69,11 @@ class CheckRDS < Sensu::Plugin::Check::CLI
          long:        '--aws-secret-access-key AWS_SECRET_KEY',
          description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
          default:     ENV['AWS_SECRET_KEY']
+
+  option :use_iam_role,
+         short: '-u',
+         long: '--use-iam',
+         description: 'Use IAM role authenticiation. The correct IAM role must be in place to allow RDS access (http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAM.html)'
 
   option :aws_region,
          short:       '-r AWS_REGION',
@@ -119,10 +127,15 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def aws_config
-    { access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region]
-    }
+    aws_config =   {}
+
+    if config[:use_iam_role].nil?
+      aws_config.merge!(
+        access_key_id: config[:aws_access_key],
+        secret_access_key: config[:aws_secret_access_key]
+      )
+    end
+    aws_config.merge!(region: config[:aws_region])
   end
 
   def rds
