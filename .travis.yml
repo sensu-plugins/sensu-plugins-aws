@@ -29,6 +29,4 @@ deploy:
     tags: true
     repo: sensu-plugins/sensu-plugins-aws
     all_branches: true
-    rvm: 2.0
-    rvm: 2.1
     rvm: 2.2
