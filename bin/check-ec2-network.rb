@@ -97,7 +97,7 @@ class CheckEc2Network < Sensu::Plugin::Check::CLI
   def network_metric(instance)
     cloud_watch.get_metric_statistics(
       namespace: 'AWS/EC2',
-      metric_name: "#{config[:direction].to_s}",
+      metric_name: config[:direction].to_s,
       dimensions: [
         {
           name: 'InstanceId',
