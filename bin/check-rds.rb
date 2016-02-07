@@ -12,7 +12,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -51,7 +51,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 require 'time'
 
 class CheckRDS < Sensu::Plugin::Check::CLI
@@ -126,34 +126,39 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def rds
-    @rds ||= AWS::RDS.new aws_config
+    @rds ||= Aws::RDS::Client.new aws_config
   end
 
   def cloud_watch
-    @cloud_watch ||= AWS::CloudWatch.new aws_config
+    @cloud_watch ||= Aws::CloudWatch::Client.new aws_config
   end
 
   def find_db_instance(id)
-    db = rds.instances[id]
-    unknown 'DB instance not found.' unless db.exists?
+    db = rds.describe_db_instances.db_instances.select { |db_instance| db_instance.db_instance_identifier == id }
+    unknown 'DB instance not found.' if db.empty?
     db
   end
 
-  def cloud_watch_metric(metric_name)
-    cloud_watch.metrics.with_namespace('AWS/RDS').with_metric_name(metric_name).with_dimensions(name: 'DBInstanceIdentifier', value: @db_instance.id).first
-  end
-
-  def statistics_options
-    {
+  def cloud_watch_metric(metric_name, unit)
+    cloud_watch.get_metric_statistics(
+      namespace: 'AWS/RDS',
+      metric_name: metric_name,
+      dimensions: [
+        {
+          name: 'DBInstanceIdentifier',
+          value: @db_instance.id
+        }
+      ],
       start_time: config[:end_time] - config[:period],
-      end_time:   config[:end_time],
+      end_time: config[:end_time],
       statistics: [config[:statistics].to_s.capitalize],
-      period:     config[:period]
-    }
+      period: config[:period],
+      unit: unit
+    )
   end
 
-  def latest_value(metric, unit)
-    values = metric.statistics(statistics_options.merge(unit: unit)).datapoints.sort_by { |datapoint| datapoint[:timestamp] }
+  def latest_value(metric)
+    values = metric.datapoints.sort_by { |datapoint| datapoint[:timestamp] }
 
     # handle time periods that are too small to return usable values.  # this is a cozy addition that wouldn't port upstream.
     if values.empty?
@@ -203,20 +208,20 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def check_az(severity, expected_az)
-    return if @db_instance.availability_zone_name == expected_az
-    flag_alert severity, "; AZ is #{@db_instance.availability_zone_name} (expected #{expected_az})"
+    return if @db_instance.availability_zone == expected_az
+    flag_alert severity, "; AZ is #{@db_instance.availability_zone} (expected #{expected_az})"
   end
 
   def check_cpu(severity, expected_lower_than)
-    @cpu_metric ||= cloud_watch_metric 'CPUUtilization'
-    @cpu_metric_value ||= latest_value @cpu_metric, 'Percent'
+    @cpu_metric ||= cloud_watch_metric 'CPUUtilization', 'Percent'
+    @cpu_metric_value ||= latest_value @cpu_metric
     return if @cpu_metric_value < expected_lower_than
     flag_alert severity, "; CPUUtilization is #{sprintf '%.2f', @cpu_metric_value}% (expected lower than #{expected_lower_than}%)"
   end
 
   def check_memory(severity, expected_lower_than)
-    @memory_metric ||= cloud_watch_metric 'FreeableMemory'
-    @memory_metric_value ||= latest_value @memory_metric, 'Bytes'
+    @memory_metric ||= cloud_watch_metric 'FreeableMemory', 'Bytes'
+    @memory_metric_value ||= latest_value @memory_metric
     @memory_total_bytes ||= memory_total_bytes @db_instance.db_instance_class
     @memory_usage_bytes ||= @memory_total_bytes - @memory_metric_value
     @memory_usage_percentage ||= @memory_usage_bytes / @memory_total_bytes * 100
@@ -225,8 +230,8 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def check_disk(severity, expected_lower_than)
-    @disk_metric ||= cloud_watch_metric 'FreeStorageSpace'
-    @disk_metric_value ||= latest_value @disk_metric, 'Bytes'
+    @disk_metric ||= cloud_watch_metric 'FreeStorageSpace', 'Bytes'
+    @disk_metric_value ||= latest_value @disk_metric
     @disk_total_bytes ||= @db_instance.allocated_storage * 1024**3
     @disk_usage_bytes ||= @disk_total_bytes - @disk_metric_value
     @disk_usage_percentage ||= @disk_usage_bytes / @disk_total_bytes * 100
