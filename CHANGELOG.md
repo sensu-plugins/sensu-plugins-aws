@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased
+- Added check-instance-count.rb: checks for the count of a set of filtered instances
 
 ## [2.1.1] - 2016-02-05
 ### Added
