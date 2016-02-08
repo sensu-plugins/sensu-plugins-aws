@@ -29,10 +29,12 @@
 
 require 'sensu-plugin/metric/cli'
 require 'aws-sdk'
-require 'sensu-plugins-aws/filter'
+require 'sensu-plugins-aws'
 
 class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
   include Filter
+  include Common
+
   option :aws_access_key,
          short: '-a AWS_ACCESS_KEY',
          long: '--aws-access-key AWS_ACCESS_KEY',
