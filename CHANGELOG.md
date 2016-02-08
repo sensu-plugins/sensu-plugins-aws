@@ -4,10 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## Unreleased
+- Added check-instance-count.rb: checks for the count of a set of filtered instances
 
 ## [2.1.1] - 2016-02-05
 ### Added
-- Added check-instance-count.rb: checks for the count of a set of filtered instances
 - check-ec2-cpu_balance.rb: scans for any t2 instances that are below a certain threshold of cpu credits
 - check-instance-health.rb: adding ec2 instance health and event data
 
