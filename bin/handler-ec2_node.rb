@@ -2,6 +2,8 @@
 #
 # CHANGELOG:
 # * 0.7.0:
+#   - Added method get_instance_id to check in client config section
+#     ['client']['aws']['instance_id'] first.
 #    - Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing
 #      match that will work with any user state defined.
 # * 0.6.0:
@@ -140,14 +142,26 @@ class Ec2Node < Sensu::Handler
     if ec2_node_should_be_deleted?
       delete_sensu_client!
     else
-      puts "[EC2 Node] #{@event['client']['name']} is in an invalid state"
+      puts "[EC2 Node] #{get_instance_id()} is in an invalid state"
     end
   end
 
   # Method to delete client from sensu API
   def delete_sensu_client!
-    response = api_request(:DELETE, '/clients/' + @event['client']['name']).code
+    response = api_request(:DELETE, '/clients/' + get_instance_name()).code
     deletion_status(response)
+  end
+
+  def get_instance_id
+    if @event['client'].has_key?("aws") && @event['client']['aws'].has_key?("instance_id")
+      @event['client']['aws']['instance_id']
+    else
+      @event['client']['name']
+    end
+  end
+
+  def get_instance_name
+    @event['client']['name']
   end
 
   # Method to check if there is any insance and if instance is in a valid state that could be deleted
@@ -160,7 +174,7 @@ class Ec2Node < Sensu::Handler
 
     begin
       # Finding the instance
-      instances = ec2.describe_instances(instance_ids: [@event['client']['name']]).reservations[0]
+      instances = ec2.describe_instances(instance_ids: [get_instance_id()]).reservations[0]
       # If instance is empty/nil instance id is not valid so client can be deleted
       if instances.nil? || instances.empty?
         true
@@ -172,7 +186,6 @@ class Ec2Node < Sensu::Handler
         instance_state_reason = instances.instances[0].state_reason.code
         # Returns the instance state i.e: "terminated"
         instance_state = instances.instances[0].state.name
-
         # Return true is instance state and instance reason is valid
         instance_states.include?(instance_state) && instance_reasons.include?(instance_state_reason)
       end
@@ -199,11 +212,11 @@ class Ec2Node < Sensu::Handler
   def deletion_status(code)
     case code
     when '202'
-      puts "[EC2 Node] 202: Successfully deleted Sensu client: #{@event['client']['name']}"
+      puts "[EC2 Node] 202: Successfully deleted Sensu client: #{get_instance_name()}"
     when '404'
-      puts "[EC2 Node] 404: Unable to delete #{@event['client']['name']}, doesn't exist!"
+      puts "[EC2 Node] 404: Unable to delete #{get_instance_name()}, doesn't exist!"
     when '500'
-      puts "[EC2 Node] 500: Miscellaneous error when deleting #{@event['client']['name']}"
+      puts "[EC2 Node] 500: Miscellaneous error when deleting #{get_instance_name()}"
     else
       puts "[EC2 Node] #{code}: Completely unsure of what happened!"
     end
