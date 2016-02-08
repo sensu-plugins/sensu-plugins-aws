@@ -105,8 +105,7 @@ class CheckInstanceCount < Sensu::Plugin::Check::CLI
         end
       end
     rescue => e
-      puts "Error: exception: #{e}"
-      critical
+      critical "Error: exception: #{e}"
     end
     if errors.empty?
       ok "Instances checked: #{instance_ids.join(",")}"
