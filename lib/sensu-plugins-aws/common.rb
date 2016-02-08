@@ -23,7 +23,7 @@ module Common
   end
 
   def aws_config
-    Aws.config[:credentials] = Aws::Credentials.new(config[:aws_access_key], config[:aws_secret_access_key]) if config[:aws_access_key] && config[:aws_secret_access_key]
+    Aws.config[:credentials] = Aws::Credentials.new()
 
     Aws.config.update(
       region: config[:aws_region]
