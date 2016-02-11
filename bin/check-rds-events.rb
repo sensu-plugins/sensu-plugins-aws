@@ -23,10 +23,10 @@
 #  Check's a specific RDS instance in a specific region for critical events
 #  check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key} -i ${your_rds_instance_id_name}
 #
-#  Checks all RDS instances on a specific availability zone
+#  Checks all RDS instances in a specific region
 #  check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key}
 #
-#  Checks all RDS instances  on a specific availability zone, should be using IAM role
+#  Checks all RDS instances in a specific region, should be using IAM role
 #  check-rds-events.rb -r ${your_region}
 #
 # NOTES:
