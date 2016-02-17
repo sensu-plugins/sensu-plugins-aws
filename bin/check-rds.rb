@@ -139,7 +139,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
     db
   end
 
-  def cloud_watch_metric(metric_name, unit = None)
+  def cloud_watch_metric(metric_name, unit)
     cloud_watch.get_metric_statistics(
       namespace: 'AWS/RDS',
       metric_name: metric_name,
