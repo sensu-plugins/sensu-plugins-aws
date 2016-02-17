@@ -134,19 +134,19 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def find_db_instance(id)
-    db = rds.describe_db_instances.db_instances.select { |db_instance| db_instance.db_instance_identifier == id }
-    unknown 'DB instance not found.' if db.empty?
+    db = rds.describe_db_instances.db_instances.detect { |db_instance| db_instance.db_instance_identifier == id }
+    unknown 'DB instance not found.' if db.nil?
     db
   end
 
-  def cloud_watch_metric(metric_name, unit)
+  def cloud_watch_metric(metric_name, unit = None)
     cloud_watch.get_metric_statistics(
       namespace: 'AWS/RDS',
       metric_name: metric_name,
       dimensions: [
         {
           name: 'DBInstanceIdentifier',
-          value: @db_instance.id
+          value: @db_instance.db_instance_identifier
         }
       ],
       start_time: config[:end_time] - config[:period],
@@ -240,8 +240,8 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def check_connections(severity, expected_lower_than)
-    @connections_metric ||= cloud_watch_metric 'DatabaseConnections'
-    @connections_metric_value ||= latest_value @connections_metric, 'Count'
+    @connections_metric ||= cloud_watch_metric 'DatabaseConnections', 'Count'
+    @connections_metric_value ||= latest_value @connections_metric
     return if @connections_metric_value < expected_lower_than
     flag_alert severity, "; DatabaseConnections are #{sprintf '%d', @connections_metric_value} (expected lower than #{expected_lower_than})"
   end
