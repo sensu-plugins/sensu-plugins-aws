@@ -30,13 +30,13 @@
 #   for details.
 #
 
+require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 require 'net/http'
 require 'json'
-require 'sensu-plugins-aws/filter'
 
-class EC2Filter < Sensu::Plugin::Check::CLI
+class CheckSensuClient < Sensu::Plugin::Check::CLI
   include Filter
   include Common
   option :aws_region,
