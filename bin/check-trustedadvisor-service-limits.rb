@@ -24,7 +24,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#  ./check-trustedadvisor-service-limits.rb -s ${your_aws_secret_access_key} -a ${your_aws_access_key}
+#  ./check-trustedadvisor-service-limits.rb -l {en|ja}
 #
 # NOTES:
 #
@@ -34,21 +34,11 @@
 #   for details.
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'sensu-plugins-aws'
+require 'aws-sdk'
 
 class CheckTrustedAdvisorServiceLimits < Sensu::Plugin::Check::CLI
-  option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY_ID'] or provide it as an option",
-         default: ENV['AWS_ACCESS_KEY_ID']
-
-  option :aws_secret_access_key,
-         short: '-s AWS_SECRET_ACCESS_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_ACCESS_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_ACCESS_KEY'] or provide it as an option",
-         default: ENV['AWS_SECRET_ACCESS_KEY']
-
+  include Common
   option :aws_language,
          short: '-l AWS_LANGUAGE',
          long: '--aws-language AWS_LANGUAGE',
@@ -56,17 +46,16 @@ class CheckTrustedAdvisorServiceLimits < Sensu::Plugin::Check::CLI
          default: 'en'
 
   def run
-
-    aws_support = AWS::Support::Client.new(
-      access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key])
+    # The Support endpoint seems to only available in us-east-1 region
+    # http://docs.aws.amazon.com/sdkforruby/api/Aws/Support.html
+    aws_support = Aws::Support::Client.new(region: 'us-east-1')
 
     service_limit_msg = []
- 
+
     begin
       # service limit check
       # Perform a refresh to make sure the API result is not stale.
-      sl_refresh = aws_support.refresh_trusted_advisor_check(check_id: 'eW7HH0l7J9')
+      aws_support.refresh_trusted_advisor_check(check_id: 'eW7HH0l7J9')
       sl = aws_support.describe_trusted_advisor_check_result(check_id: 'eW7HH0l7J9', language: config[:aws_language])
 
       sl[:result][:flagged_resources].each do |slr|
