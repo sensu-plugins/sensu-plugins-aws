@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## Unreleased
 ### Added
 - check-sensu-client.rb Ensures that ec2 instances are registered with Sensu. 
+- check-trustedadvisor-service-limits.rb: New check for service limits based on Trusted Advisor API 
 
 ## [2.1.1] - 2016-02-05
 ### Added
