@@ -12,7 +12,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -31,7 +31,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 require 'time'
 
 class CheckDynamoDB < Sensu::Plugin::Check::CLI
@@ -104,35 +104,46 @@ class CheckDynamoDB < Sensu::Plugin::Check::CLI
   end
 
   def dynamo_db
-    @dynamo_db ||= AWS::DynamoDB.new aws_config
+    @dynamo_db ||= Aws::DynamoDB::Client.new aws_config
   end
 
   def cloud_watch
-    @cloud_watch ||= AWS::CloudWatch.new aws_config
+    @cloud_watch ||= Aws::CloudWatch::Client.new aws_config
   end
 
   def tables
     return @tables if @tables
-    @tables = dynamo_db.tables.to_a
-    @tables.select! { |table| config[:table_names].include? table.name } if config[:table_names]
+    table_names = dynamo_db.list_tables.table_names.to_a
+    table_names.select! { |table_name| config[:table_names].include? table_name } if config[:table_names]
+    @tables = []
+    table_names.each do |table_name|
+      @tables.push(dynamo_db.describe_table(
+        table_name: table_name
+      ).table)
+    end
     @tables
   end
 
   def cloud_watch_metric(metric_name, table_name)
-    cloud_watch.metrics.with_namespace('AWS/DynamoDB').with_metric_name(metric_name).with_dimensions(name: 'TableName', value: table_name).first
-  end
-
-  def statistics_options
-    {
+    cloud_watch.get_metric_statistics(
+      namespace: 'AWS/DynamoDB',
+      metric_name: metric_name,
+      dimensions: [
+        {
+          name: 'TableName',
+          value: table_name
+        }
+      ],
       start_time: config[:end_time] - config[:period],
-      end_time:   config[:end_time],
+      end_time: config[:end_time],
       statistics: [config[:statistics].to_s.capitalize],
-      period:     config[:period]
-    }
+      period: config[:period],
+      unit: 'Count'
+    )
   end
 
   def latest_value(metric)
-    metric.statistics(statistics_options.merge unit: 'Count').datapoints.sort_by { |datapoint| datapoint[:timestamp] }.last[config[:statistics]]
+    metric.datapoints.sort_by { |datapoint| datapoint[:timestamp] }.last[config[:statistics]]
   end
 
   def flag_alert(severity, message)
@@ -143,19 +154,19 @@ class CheckDynamoDB < Sensu::Plugin::Check::CLI
   def check_capacity(table)
     config[:capacity_for].each do |r_or_w|
       metric_name   = "Consumed#{r_or_w.to_s.capitalize}CapacityUnits"
-      metric        = cloud_watch_metric metric_name, table.name
+      metric        = cloud_watch_metric metric_name, table.table_name
       metric_value  = begin
                         latest_value(metric)
                       rescue
                         0
                       end
-      percentage    = metric_value / table.send("#{r_or_w}_capacity_units").to_f * 100
+      percentage    = metric_value / table.provisioned_throughput.send("#{r_or_w}_capacity_units").to_f * 100
 
       @severities.keys.each do |severity|
         threshold = config[:"#{severity}_over"]
         next unless threshold
         next if percentage < threshold
-        flag_alert severity, "; On table #{table.name} consumed #{r_or_w} capacity is #{sprintf '%.2f', percentage}% (expected_lower_than #{threshold})"
+        flag_alert severity, "; On table #{table.table_name} consumed #{r_or_w} capacity is #{sprintf '%.2f', percentage}% (expected_lower_than #{threshold})"
         break
       end
     end

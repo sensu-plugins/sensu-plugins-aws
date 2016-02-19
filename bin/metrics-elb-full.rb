@@ -117,11 +117,11 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
         'period' => 60
       }
       config[:elbname].split(',').each do |elbname|
-        if config[:scheme] == ''
-          graphitepath = "#{elbname}"
-        else
-          graphitepath = "#{config[:scheme]}.#{elbname}"
-        end
+        graphitepath = if config[:scheme] == ''
+                         elbname.to_s
+                       else
+                         "#{config[:scheme]}.#{elbname}"
+                       end
         result = {}
         statistic_type.each do |key, value|
           options['metric_name'] = key

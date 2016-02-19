@@ -12,7 +12,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -29,7 +29,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 
 class CheckEc2Network < Sensu::Plugin::Check::CLI
   option :aws_access_key,
@@ -87,34 +87,38 @@ class CheckEc2Network < Sensu::Plugin::Check::CLI
   end
 
   def ec2
-    @ec2 ||= AWS::EC2.new aws_config
+    @ec2 ||= Aws::EC2::Client.new aws_config
   end
 
   def cloud_watch
-    @cloud_watch ||= AWS::CloudWatch.new aws_config
+    @cloud_watch ||= Aws::CloudWatch::Client.new aws_config
   end
 
   def network_metric(instance)
-    cloud_watch.metrics.with_namespace('AWS/EC2').with_metric_name("#{config[:direction]}").with_dimensions(name: 'InstanceId', value: instance).first
-  end
-
-  def statistics_options
-    {
+    cloud_watch.get_metric_statistics(
+      namespace: 'AWS/EC2',
+      metric_name: config[:direction].to_s,
+      dimensions: [
+        {
+          name: 'InstanceId',
+          value: instance
+        }
+      ],
       start_time: config[:end_time] - 300,
-      end_time:   config[:end_time],
+      end_time: config[:end_time],
       statistics: ['Average'],
-      period:     config[:period]
-    }
+      period: config[:period],
+      unit: 'Bytes'
+    )
   end
 
-  def latest_value(metric)
-    value = metric.statistics(statistics_options.merge unit: 'Bytes')
+  def latest_value(value)
     value.datapoints[0][:average].to_f unless value.datapoints[0].nil?
   end
 
   def check_metric(instance)
     metric = network_metric instance
-    latest_value metric
+    latest_value metric unless metric.nil?
   end
 
   def run

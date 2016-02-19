@@ -10,18 +10,19 @@ module CloudwatchCommon
   end
 
   def resp_has_no_data(resp, stats)
-    resp.datapoints.nil? || resp.datapoints.length == 0 || resp.datapoints.first.nil? || read_value(resp, stats).nil?
+    resp.datapoints.nil? || resp.datapoints.length.empty? || resp.datapoints.first.nil? || read_value(resp, stats).nil?
   end
 
   def compare(value, threshold, compare_method)
-    if compare_method == 'greater'
-      return value > threshold
-    elsif compare_method == 'less'
-      return value < threshold
-    elsif compare_method == 'not'
-      return value != threshold
+    case compare_method
+    when 'greater'
+      value > threshold
+    when 'less'
+      value < threshold
+    when 'not'
+      value != threshold
     else
-      return value == threshold
+      value == threshold
     end
   end
 

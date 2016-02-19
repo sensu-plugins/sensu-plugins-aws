@@ -5,11 +5,21 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## Unreleased
 ### Added
+- check-sensu-client.rb Ensures that ec2 instances are registered with Sensu. 
+- check-trustedadvisor-service-limits.rb: New check for service limits based on Trusted Advisor API 
+
+## [2.1.1] - 2016-02-05
+### Added
 - check-ec2-cpu_balance.rb: scans for any t2 instances that are below a certain threshold of cpu credits
 - check-instance-health.rb: adding ec2 instance health and event data
 
 ### Changed
 - Update to aws-sdk 2.2.11 and aws-sdk-v1 1.66.0
+
+### Fixed
+- check-vpc-vpn.rb: fix execution error by running with aws-sdk-v1
+- handler-ec2_node.rb: default values for ec2_states were ignored
+- added new certs
 
 ## [2.1.0] - 2016-01-15
 ### Added
@@ -113,6 +123,18 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Changed
 - removed cruft from /lib
 
-## [0.0.1] - 2015-05-21
+## 0.0.1 - 2015-05-21
 ### Added
 - initial release
+
+[unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.1.1...HEAD
+[2.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.1.0...2.1.1
+[2.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.0.1...2.1.0
+[2.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/1.2.0...2.0.0
+[1.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/1.1.0...1.2.0
+[1.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/1.0.0...1.1.0
+[1.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/0.0.4...1.0.0
+[0.0.4]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/0.0.3...0.0.4
+[0.0.3]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/0.0.2...0.0.3
+[0.0.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/0.0.1...0.0.2

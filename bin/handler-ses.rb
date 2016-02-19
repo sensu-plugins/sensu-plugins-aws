@@ -82,11 +82,11 @@ class SESNotifier < Sensu::Handler
             Occurrences:  #{@event['occurrences']}
           BODY
 
-    if @event['check']['notification'].nil?
-      subject = "#{action_to_string} - #{event_name}: #{status_to_string}"
-    else
-      subject = "#{action_to_string} - #{event_name}: #{@event['check']['notification']}"
-    end
+    subject = if @event['check']['notification'].nil?
+                "#{action_to_string} - #{event_name}: #{status_to_string}"
+              else
+                "#{action_to_string} - #{event_name}: #{@event['check']['notification']}"
+              end
 
     if use_ami_role
       AWS.config(region: region)

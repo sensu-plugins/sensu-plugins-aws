@@ -92,11 +92,11 @@ class ElastiCacheMetrics < Sensu::Plugin::Metric::CLI::Graphite
   end
 
   def run
-    if config[:scheme] == ''
-      graphitepath = "elasticache.#{config[:cacheclusterid]}"
-    else
-      graphitepath = config[:scheme]
-    end
+    graphitepath = if config[:scheme] == ''
+                     "elasticache.#{config[:cacheclusterid]}"
+                   else
+                     config[:scheme]
+                   end
 
     statistic_type = {
       'redis' => {

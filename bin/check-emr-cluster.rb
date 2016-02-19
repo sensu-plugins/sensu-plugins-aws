@@ -106,10 +106,8 @@ class CheckEMRCluster < Sensu::Plugin::Check::CLI
   def run
     aws_config = {}
     if config[:use_iam_role].nil?
-      aws_config.merge!(
-        access_key_id: config[:aws_access_key],
-        secret_access_key: config[:aws_secret_access_key]
-      )
+      aws_config[:access_key_id] = config[:aws_access_key]
+      aws_config[:secret_access_key] = config[:aws_secret_access_key]
     end
 
     emr = Aws::EMR::Client.new(aws_config.merge!(region: config[:aws_region]))
@@ -118,7 +116,7 @@ class CheckEMRCluster < Sensu::Plugin::Check::CLI
       clusters = emr_clusters.select { |c| c.name == config[:cluster_name] }
 
       critical "EMR cluster #{config[:cluster_name]} appears #{clusters.size} times" if clusters.size > 1
-      critical "EMR cluster #{config[:cluster_name]} not found" if clusters.size == 0
+      critical "EMR cluster #{config[:cluster_name]} not found" if clusters.empty?
 
       cluster = clusters.first
       state = cluster.status.state

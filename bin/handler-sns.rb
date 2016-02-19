@@ -44,13 +44,13 @@ class SnsNotifier < Sensu::Handler
   end
 
   def message
-    if template_file && File.readable?(template_file)
-      template = File.read(template_file)
-    else
-      template = <<-BODY.gsub(/^\s+/, '')
+    template = if template_file && File.readable?(template_file)
+                 File.read(template_file)
+               else
+                 <<-BODY.gsub(/^\s+/, '')
         <%= @event['check']['notification'] || @event['check']['output'] %>
       BODY
-    end
+               end
     eruby = Erubis::Eruby.new(template)
     eruby.result(binding)
   end
@@ -72,15 +72,13 @@ class SnsNotifier < Sensu::Handler
 
     t = sns.topics[topic_arn]
 
-    if @event['action'].eql?('resolve')
-      subject = "RESOLVED - [#{event_name}]"
-      options = { subject: subject }
-      t.publish("#{subject} - #{message}", options)
-    else
-      subject = "ALERT - [#{event_name}]"
-      options = { subject: subject }
-      t.publish("#{subject} - #{message}", options)
-    end
+    subject = if @event['action'].eql?('resolve')
+                "RESOLVED - [#{event_name}]"
+              else
+                "ALERT - [#{event_name}]"
+              end
+    options = { subject: subject }
+    t.publish("#{subject} - #{message}", options)
   rescue => e
     puts "Exception occured in SnsNotifier: #{e.message}", e.backtrace
   end
