@@ -20,10 +20,12 @@ script:
 deploy:
   provider: rubygems
   api_key:
-    secure: fOoSlWtNlFaSi+Ncn1BqtZbq4LgcNWlYk4kuk6zpXaJt4fMfibU6qTIqbxsJPGbQIC9A86yu0tyAh8Te/uIKwIUK9/KhrunH1KnBgfLmryoJtZyUC4SlPnr+HcnzP/Y8kko7Rs9G+qO/a26wp1e9PyiK92djqakDF3SSpGO5bZQ=
+    secure: Yl+P21/xvWHf1sjSM+qdSG6r+gmxhf4eEuwH/m94TYqQlI7VR6RQIrKRcwS7e8n6BTNBCDXI+NtQXI2dIOTg8BMfK9qajUH3DpBogL1p8P9jCgXMtzUURd1NN2jta0eBLyaHMCpU91XfGVjiBotDRxyyIRQ0N9T1SD/cMkum5Gc=
   gem: sensu-plugins-aws
   on:
     tags: true
-    repo: sensu-plugins/sensu-plugins-aws
     all_branches: true
+    rvm: 2.0
+    rvm: 2.1
     rvm: 2.2
+    repo: sensu-plugins/sensu-plugins-aws

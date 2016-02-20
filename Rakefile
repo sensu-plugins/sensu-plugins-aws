@@ -1,4 +1,3 @@
-
 require 'bundler/gem_tasks'
 require 'github/markup'
 require 'redcarpet'
@@ -7,7 +6,14 @@ require 'rubocop/rake_task'
 require 'yard'
 require 'yard/rake/yardoc_task'
 
-args = [:spec, :make_bin_executable, :yard, :rubocop, :check_binstubs]
+desc 'Don\'t run Rubocop for unsupported versions'
+begin
+  args = if RUBY_VERSION >= '2.0.0'
+           [:spec, :make_bin_executable, :yard, :rubocop, :check_binstubs]
+         else
+           [:spec, :make_bin_executable, :yard]
+         end
+end
 
 YARD::Rake::YardocTask.new do |t|
   OTHER_PATHS = %w().freeze
@@ -23,12 +29,12 @@ end
 
 desc 'Make all plugins executable'
 task :make_bin_executable do
-  `chmod -R +x bin/*.rb`
+  `chmod -R +x bin/*`
 end
 
 desc 'Test for binstubs'
 task :check_binstubs do
-  bin_list = Gem::Specification.load('sensu-plugins-aws.gemspec').executables
+  bin_list = Gem::Specification.load('sensu-plugins-ansible.gemspec').executables
   bin_list.each do |b|
     `which #{ b }`
     unless $CHILD_STATUS.success?
