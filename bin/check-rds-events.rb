@@ -23,7 +23,14 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#  ./check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key}
+#  Check's a specific RDS instance in a specific region for critical events
+#  check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key} -i ${your_rds_instance_id_name}
+#
+#  Checks all RDS instances in a specific region
+#  check-rds-events.rb -r ${your_region} -k ${your_aws_secret_access_key} -a ${your_aws_access_key}
+#
+#  Checks all RDS instances in a specific region, should be using IAM role
+#  check-rds-events.rb -r ${your_region}
 #
 # NOTES:
 #
@@ -55,6 +62,11 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
          description: 'AWS Region (defaults to us-east-1).',
          default:     'us-east-1'
 
+  option :db_instance_id,
+         short:       '-i N',
+         long:        '--db-instance-id NAME',
+         description: 'DB instance identifier'
+
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
@@ -75,8 +87,18 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
     rds = AWS::RDS::Client.new aws_config
 
     begin
-      # fetch all clusters identifiers
-      clusters = rds.describe_db_instances[:db_instances].map { |db| db[:db_instance_identifier] }
+      if !config[:db_instance_id].nil? && !config[:db_instance_id].empty?
+        db_instance = rds.describe_db_instances(db_instance_identifier: config[:db_instance_id])
+        if db_instance.nil? || db_instance.empty?
+          unknown "#{config[:db_instance_id]} instance not found"
+        else
+          clusters = [config[:db_instance_id]]
+        end
+      else
+        # fetch all clusters identifiers
+        clusters = rds.describe_db_instances[:db_instances].map { |db| db[:db_instance_identifier] }
+      end
+
       maint_clusters = []
 
       # fetch the last 15 minutes of events for each cluster
@@ -96,6 +118,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
         cluster_name_long = "#{cluster_name} (#{aws_config[:region]}) #{events_record[:events][-1][:message]}"
         maint_clusters.push(cluster_name_long)
       end
+
     rescue => e
       unknown "An error occurred processing AWS RDS API: #{e.message}"
     end
