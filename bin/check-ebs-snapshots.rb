@@ -72,7 +72,7 @@ class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
       ]
     )
     volumes[:volumes].each do |volume|
-      next if config[:check_ignored] && ignored(volume[:volume_id])
+      next if config[:check_ignored] && ignored(volume)
       tags = volume[:tags].map { |a| Hash[*a] }.reduce(:merge) || {}
       snapshots = @ec2.describe_snapshots(
         filters: [
@@ -101,23 +101,10 @@ class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
     end
   end
 
-  def ignored(volume_id)
-    ignored ||= @ec2.describe_volumes(
-      filters: [
-        {
-          name: 'attachment.status',
-          values: ['attached']
-        },
-        {
-          name: 'tag-key',
-          values: ['IGNORE_BACKUP']
-        }
-      ]
-    )
-
-    ignored[:volumes].each do |volume|
-      if volume[:volume_id] == volume_id
-        puts "Ignoring volume with id: #{volume_id}"
+  def ignored(volume)
+    volume[:tags].each do |tag|
+      if tag[:key] == 'IGNORE_BACKUP'
+        puts "Ignoring volume with id: #{volume[:volume_id]}"
         true
       end
     end
