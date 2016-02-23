@@ -1,4 +1,32 @@
-#!/usr/bin/env ruby
+#! /usr/bin/env ruby
+#
+#   check-elasticache-failover.rb
+#
+# DESCRIPTION:
+#   Checks if specified ElastiCache node is `primary` state.
+#
+# OUTPUT:
+#   CheckElastiCacheFailover OK: Node `mynode-001` (in replication group `my-group-1`, node group `0001`) is `primary`.
+#   or
+#   CheckElastiCacheFailover CRITICAL: Node `mynode-001` (in replication group `my-group-1`, node group `0001`) is **not** `primary`.
+#
+# PLATFORMS:
+#   Linux, Windows, BSD, Solaris, etc
+#
+# DEPENDENCIES:
+#   gem: sensu-plugin
+#   gem: aws-sdk >= 2
+#
+# USAGE:
+#   check-elasticache-failover.rb --region <your region> --replication-group <yours> --node-group <yours> --primary-node <yours>
+#
+# NOTES:
+#
+# LICENSE:
+#   y13i <email@y13i.com>
+#   Released under the same terms as Sensu (the MIT license); see LICENSE
+#   for details.
+#
 
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
