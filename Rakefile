@@ -34,7 +34,7 @@ end
 
 desc 'Test for binstubs'
 task :check_binstubs do
-  bin_list = Gem::Specification.load('sensu-plugins-ansible.gemspec').executables
+  bin_list = Gem::Specification.load('sensu-plugins-aws.gemspec').executables
   bin_list.each do |b|
     `which #{ b }`
     unless $CHILD_STATUS.success?
