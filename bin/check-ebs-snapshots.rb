@@ -18,8 +18,12 @@
 # USAGE:
 #   ./check-ebs-snapshots.rb -r ${you_region}
 #   ./check-ebs-snapshots.rb -r ${you_region} -p 1
+#   ./check-ebs-snapshots.rb -r ${you_region} -p -i
+#   ./check-ebs-snapshots.rb -r ${you_region} -i
 #
 # NOTES:
+#   When using -i flag any volume that has a tag-key of "IGNORE_BACKUP" will
+#   be ignored.
 #
 # LICENSE:
 #   Shane Starcher <shane.starcher@gmail.com>
@@ -45,11 +49,17 @@ class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
          description: 'AWS region',
          default: 'us-east-1'
 
+  option :check_ignored,
+         short:       '-i',
+         long:        '--ignore',
+         description: 'mark as true to ignore volumes with an IGNORE_BACKUP tag',
+         boolean: true
+
   def run
     errors = []
-    ec2 = Aws::EC2::Client.new
+    @ec2 = Aws::EC2::Client.new
 
-    volumes = ec2.describe_volumes(
+    volumes = @ec2.describe_volumes(
       filters: [
         {
           name: 'attachment.status',
@@ -61,11 +71,10 @@ class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
         }
       ]
     )
-
     volumes[:volumes].each do |volume|
       tags = volume[:tags].map { |a| Hash[*a] }.reduce(:merge) || {}
-
-      snapshots = ec2.describe_snapshots(
+      next if config[:check_ignored] && tags.key?('IGNORE_BACKUP')
+      snapshots = @ec2.describe_snapshots(
         filters: [
           {
             name: 'volume-id',
