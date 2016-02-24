@@ -30,6 +30,8 @@
 
 **check-eip-allocation.rb**
 
+**check-elasticache-failover.rb**
+
 **check-elb-certs.rb**
 
 **check-elb-health-fog.rb**
@@ -102,6 +104,7 @@
 * /bin/check-ebs-snapshots.rb
 * /bin/check-ec2-filter.rb
 * /bin/check-ec2-network.rb
+* /bin/check-elasticache-failover.rb
 * /bin/check-elb-certs.rb
 * /bin/check-elb-health-fog.rb
 * /bin/check-elb-health-sdk.rb
