@@ -54,6 +54,8 @@
 
 **check-rds-events.rb**
 
+**check-rds-pending.rb**
+
 **check-rds.rb**
 
 **check-redshift-events.rb**
@@ -115,6 +117,7 @@
 * /bin/check-emr-cluster.rb
 * /bin/check-instance-events.rb
 * /bin/check-rds-events.rb
+* /bin/check-rds-pending.rb
 * /bin/check-rds.rb
 * /bin/check-redshift-events.rb
 * /bin/check-s3-object.rb
