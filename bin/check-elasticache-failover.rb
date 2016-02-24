@@ -30,6 +30,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
+require 'sensu-plugins-aws/common'
 
 class CheckElastiCacheFailover < Sensu::Plugin::Check::CLI
   VERSION = '0.0.1'.freeze
@@ -39,7 +40,7 @@ class CheckElastiCacheFailover < Sensu::Plugin::Check::CLI
          long:        '--profile PROFILE',
          short:       '-p PROFILE'
 
-  option :region,
+  option :aws_region,
          description: 'AWS region.',
          short:       '-r REGION',
          long:        '--region REGION'
@@ -65,6 +66,8 @@ class CheckElastiCacheFailover < Sensu::Plugin::Check::CLI
          description: 'Cluster name that should be primary.',
          long:        '--primary-node NAME',
          short:       '-c NAME'
+
+  include Common
 
   def run
     replication_group = elasticache.client.describe_replication_groups.replication_groups.find do |g|
@@ -99,29 +102,12 @@ class CheckElastiCacheFailover < Sensu::Plugin::Check::CLI
   private
 
   def elasticache
-    @elasticache ||= Aws::ElastiCache::Resource.new(aws_configuration)
-  end
+    return @elasticache if @elasticache
 
-  def aws_configuration
-    h = {}
+    c = {}
+    c.update aws_config
+    c.update(profile: config[:profile]) if config[:profile]
 
-    [:profile, :region].each do |option|
-      h.update(option => config[option]) if config[option]
-    end
-
-    h.update(region: own_region) if h[:region].nil?
-    h
-  end
-
-  def own_region
-    @own_region ||= begin
-      require 'net/http'
-
-      timeout 3 do
-        Net::HTTP.get('169.254.169.254', '/latest/meta-data/placement/availability-zone').chop
-      end
-    rescue
-      nil
-    end
+    @elasticache = Aws::ElastiCache::Resource.new(c)
   end
 end
