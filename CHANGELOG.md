@@ -4,11 +4,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [2.2.0] - 2016-02-25
 ### Added
 - check-ebs-snapshots.rb: added -i flag to ignore volumes with an IGNORE_BACKUP tag
 - check-sensu-client.rb Ensures that ec2 instances are registered with Sensu. 
 - check-trustedadvisor-service-limits.rb: New check for service limits based on Trusted Advisor API 
 - check-sqs-messages.rb,metrics-sqs.rb: Allow specifying queues by prefix with -p option
+- check-rds-events.rb: Add option to check a specific RDS instance
+- Add plugin check-elasticache-failover.rb that checks if an Elasticache node is in the primary state
+
+### Fixed
+- metrics-elasticache.rb: Gather node metrics when requested
 
 ## [2.1.1] - 2016-02-05
 ### Added
@@ -129,8 +136,9 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.1.1...HEAD
-[2.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.1.0...2.1.1
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.2.0...HEAD
+[2.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.1.1...2.2.0
+[2.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.1.0...v2.1.1
 [2.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.0.1...2.1.0
 [2.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/1.2.0...2.0.0
