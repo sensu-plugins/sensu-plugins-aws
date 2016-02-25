@@ -53,6 +53,7 @@ class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
          short:       '-i',
          long:        '--ignore',
          description: 'mark as true to ignore volumes with an IGNORE_BACKUP tag',
+         default: false,
          boolean: true
 
   def run
