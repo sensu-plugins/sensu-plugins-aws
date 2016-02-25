@@ -56,7 +56,13 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
          short: '-q SQS_QUEUE',
          long: '--queue SQS_QUEUE',
          description: 'The name of the SQS you want to check the number of messages for',
-         required: true
+         default: ''
+
+  option :prefix,
+         short: '-p PREFIX',
+         long: '--prefix PREFIX',
+         description: 'The prefix of the queues you want to check the number of messages for',
+         default: ''
 
   option :warn_over,
          short: '-w WARN_OVER',
@@ -96,14 +102,46 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
   def run
     AWS.config aws_config
     sqs = AWS::SQS.new
-    messages = sqs.queues.named(config[:queue]).approximate_number_of_messages
 
-    if (config[:crit_under] >= 0 && messages < config[:crit_under]) || (config[:crit_over] >= 0 && messages > config[:crit_over])
-      critical "#{messages} message(s) in #{config[:queue]} queue"
-    elsif (config[:warn_under] >= 0 && messages < config[:warn_under]) || (config[:warn_over] >= 0 && messages > config[:warn_over])
-      warning "#{messages} message(s) in #{config[:queue]} queue"
+    if config[:prefix] == ''
+      if config[:queue] == ''
+        critical 'Error, either QUEUE or PREFIX must be specified'
+      end
+
+      messages = sqs.queues.named(config[:queue]).approximate_number_of_messages
+
+      if (config[:crit_under] >= 0 && messages < config[:crit_under]) || (config[:crit_over] >= 0 && messages > config[:crit_over])
+        critical "#{messages} message(s) in #{config[:queue]} queue"
+      elsif (config[:warn_under] >= 0 && messages < config[:warn_under]) || (config[:warn_over] >= 0 && messages > config[:warn_over])
+        warning "#{messages} message(s) in #{config[:queue]} queue"
+      else
+        ok "#{messages} messages in #{config[:queue]} queue"
+      end
     else
-      ok "#{messages} messages in #{config[:queue]} queue"
+      warn = false
+      crit = false
+      queues = []
+
+      sqs.queues.with_prefix(config[:prefix]).each do |q|
+        queue_name = q.arn.split(':').last
+        messages = q.approximate_number_of_messages
+
+        if (config[:crit_under] >= 0 && messages < config[:crit_under]) || (config[:crit_over] >= 0 && messages > config[:crit_over])
+          crit = true
+          queues << "#{messages} message(s) in #{queue_name} queue"
+        elsif (config[:warn_under] >= 0 && messages < config[:warn_under]) || (config[:warn_over] >= 0 && messages > config[:warn_over])
+          warn = true
+          queues << "#{messages} message(s) in #{queue_name} queue"
+        end
+      end
+
+      if crit
+        critical queues.to_s
+      elsif warn
+        warning queues.to_s
+      else
+        ok "All queues matching prefix '#{config[:prefix]}' OK"
+      end
     end
   end
 end

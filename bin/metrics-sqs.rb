@@ -34,7 +34,13 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
          description: 'Name of the queue',
          short: '-q QUEUE',
          long: '--queue QUEUE',
-         required: true
+         default: ''
+
+  option :prefix,
+         description: 'Queue name prefix',
+         short: '-p PREFIX',
+         long: '--prefix PREFIX',
+         default: ''
 
   option :scheme,
          description: 'Metric naming scheme, text to prepend to metric',
@@ -67,19 +73,33 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
     }
   end
 
-  def run
-    scheme = if config[:scheme] == ''
-               "aws.sqs.queue.#{config[:queue].tr('-', '_')}.message_count"
-             else
-               config[:scheme]
-             end
+  def scheme(queue_name)
+    "aws.sqs.queue.#{queue_name.tr('-', '_')}.message_count"
+  end
 
+  def run
     begin
       sqs = AWS::SQS.new aws_config
 
-      messages = sqs.queues.named(config[:queue]).approximate_number_of_messages
-      output scheme, messages
+      if config[:prefix] == ''
+        if config[:queue] == ''
+          critical 'Error, either QUEUE or PREFIX must be specified'
+        end
 
+        scheme = if config[:scheme] == ''
+                   scheme config[:queue]
+                 else
+                   config[:scheme]
+                 end
+
+        messages = sqs.queues.named(config[:queue]).approximate_number_of_messages
+        output scheme, messages
+      else
+        sqs.queues.with_prefix(config[:prefix]).each do |q|
+          queue_name = q.arn.split(':').last
+          output scheme(queue_name), q.approximate_number_of_messages
+        end
+      end
     rescue => e
       critical "Error fetching SQS queue metrics: #{e.message}"
     end
