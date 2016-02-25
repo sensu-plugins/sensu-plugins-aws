@@ -16,8 +16,8 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   #YELLOW
-#
+#   check-sqs-messages -q my_queue -a key -k secret -w 500 -c 1000
+#   check-sqs-messages -p queue_prefix_ -a key -k secret -W 100 -C 50
 #
 # NOTES:
 #

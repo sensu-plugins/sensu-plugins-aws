@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-# sqs-metrics
+# metrics-sqs
 #
 # DESCRIPTION:
 #   Fetch SQS metrics
@@ -16,7 +16,8 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   sqs-metrics -q my_queue -a key -k secret
+#   metrics-sqs -q my_queue -a key -k secret
+#   metrics-sqs -p queue_prefix_ -a key -k secret
 #
 # NOTES:
 #
