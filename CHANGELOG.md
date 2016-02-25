@@ -8,6 +8,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - check-ebs-snapshots.rb: added -i flag to ignore volumes with an IGNORE_BACKUP tag
 - check-sensu-client.rb Ensures that ec2 instances are registered with Sensu. 
 - check-trustedadvisor-service-limits.rb: New check for service limits based on Trusted Advisor API 
+- check-sqs-messages.rb,metrics-sqs.rb: Allow specifying queues by prefix with -p option
 
 ## [2.1.1] - 2016-02-05
 ### Added
