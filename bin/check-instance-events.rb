@@ -22,7 +22,7 @@
 # NOTES:
 #
 # LICENSE:
-#   Copyright (c) 2014, Tim Smith, tim@cozy.co
+#   Copyright (c) 2014, Tim Smith, tsmith@chef.io
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
 #
