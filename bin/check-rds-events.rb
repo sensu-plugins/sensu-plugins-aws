@@ -35,7 +35,7 @@
 # NOTES:
 #
 # LICENSE:
-#   Tim Smith <tim@cozy.co>
+#   Tim Smith <tim@chef.io>
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
 #
