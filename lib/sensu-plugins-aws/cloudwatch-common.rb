@@ -10,7 +10,7 @@ module CloudwatchCommon
   end
 
   def resp_has_no_data(resp, stats)
-    resp.datapoints.nil? || resp.datapoints.length.empty? || resp.datapoints.first.nil? || read_value(resp, stats).nil?
+    resp.datapoints.nil? || resp.datapoints.empty? || resp.datapoints.first.nil? || read_value(resp, stats).nil?
   end
 
   def compare(value, threshold, compare_method)
