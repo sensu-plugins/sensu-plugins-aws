@@ -5,12 +5,15 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 - check-cloudwatch-metric.rb: removed invalid .length.empty? check
+### Added
+- Implemented metrics for EMR cluster steps
+- Implemented check for EMR cluster failed steps
 
 ## [2.2.0] - 2016-02-25
 ### Added
 - check-ebs-snapshots.rb: added -i flag to ignore volumes with an IGNORE_BACKUP tag
-- check-sensu-client.rb Ensures that ec2 instances are registered with Sensu. 
-- check-trustedadvisor-service-limits.rb: New check for service limits based on Trusted Advisor API 
+- check-sensu-client.rb Ensures that ec2 instances are registered with Sensu.
+- check-trustedadvisor-service-limits.rb: New check for service limits based on Trusted Advisor API
 - check-sqs-messages.rb,metrics-sqs.rb: Allow specifying queues by prefix with -p option
 - check-rds-events.rb: Add option to check a specific RDS instance
 - Add plugin check-elasticache-failover.rb that checks if an Elasticache node is in the primary state
