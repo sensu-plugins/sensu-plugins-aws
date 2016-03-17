@@ -48,6 +48,8 @@
 
 **check-emr-cluster.rb**
 
+**check-emr-steps.rb**
+
 **check-instance-events.rb**
 
 **check-instance-health.rb**
@@ -90,6 +92,8 @@
 
 **metrics-elb.rb**
 
+**metrics-emr-steps.rb**
+
 **metrics-sqs.rb**
 
 
@@ -113,6 +117,7 @@
 * /bin/check-elb-nodes.rb
 * /bin/check-elb-sum-requests.rb
 * /bin/check-emr-cluster.rb
+* /bin/check-emr-steps.rb
 * /bin/check-instance-events.rb
 * /bin/check-rds-events.rb
 * /bin/check-rds.rb
@@ -132,6 +137,7 @@
 * /bin/metrics-elasticache.rb
 * /bin/metrics-elb-full.rb
 * /bin/metrics-elb.rb
+* /bin/metrics-emr-steps.rb
 * /bin/metrics-sqs.rb
 
 ## Usage
