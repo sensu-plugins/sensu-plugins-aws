@@ -14,6 +14,9 @@
 #   gem: sensu-plugin
 #
 # USAGE:
+#   metric-emr-steps.rb -a AWS_ACCESS_KEY -k AWS_SECRET_KEY -r us-west-2 -b 'prod lateral train'
+#
+#   This will list out the counts for each step status for the entire history of the cluster.
 #
 # NOTES:
 #
@@ -26,7 +29,7 @@ require 'sensu-plugins-aws'
 require 'sensu-plugin/metric/cli'
 require 'aws-sdk'
 
-class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
+class EMRStepMetrics < Sensu::Plugin::Metric::CLI::Graphite
   include Common
 
   option :scheme,
@@ -54,36 +57,36 @@ class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
          default: 'us-east-1'
 
   option :cluster_name,
-        short: '-b CLUSTER_NAME',
-        long: '--cluster-name',
-        description: 'The name of the EMR cluster',
-        required: true
+         short: '-b CLUSTER_NAME',
+         long: '--cluster-name',
+         description: 'The name of the EMR cluster',
+         required: true
 
   def count(steps, status)
-    count = steps.count {|step| step.status.state == status }
+    steps.count { |step| step.status.state == status }
   end
 
-  STATUS = ["PENDING", "RUNNING", "COMPLETED","CANCELLED", "FAILED", "INTERRUPTED"]
+  STATUS = %w(PENDING RUNNING COMPLETED CANCELLED FAILED INTERRUPTED).freeze
 
   def cluster_steps(emr, cluster_id, data)
-    steps = emr.list_steps({
-        cluster_id: cluster_id
-      }).steps
-    STATUS.each_entry {|s| data[s] += count(steps, s)}
+    steps = emr.list_steps(
+      cluster_id: cluster_id
+    ).steps
+    STATUS.each_entry { |s| data[s] += count(steps, s) }
   end
 
   def run
     emr = Aws::EMR::Client.new(aws_config)
     begin
-      emr_clusters = emr.list_clusters().clusters
+      emr_clusters = emr.list_clusters.clusters
       clusters = emr_clusters.select { |c| c.name == config[:cluster_name] }
       critical "EMR cluster #{config[:cluster_name]} not found" if clusters.empty?
-      cluster = clusters.sort_by{|c| c.status().timeline.creation_date_time}.reverse.first
+      cluster = clusters.sort_by { |c| c.status.timeline.creation_date_time }.reverse.first
       data = {}
-      STATUS.each_entry{|status| data[status] = 0}
+      STATUS.each_entry { |status| data[status] = 0 }
       cluster_steps(emr, cluster.id, data)
-      safeName = config[:cluster_name].gsub(" ", "_")
-      STATUS.each_entry{|status| output config[:scheme] + "." + safeName + ".step." + status, data[status] }
+      safe_name = config[:cluster_name].tr(' ', '_')
+      STATUS.each_entry { |status| output config[:scheme] + '.' + safe_name + '.step.' + status, data[status] }
     end
     ok
   end
