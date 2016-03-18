@@ -14,7 +14,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   metric-emr-steps.rb -a AWS_ACCESS_KEY -k AWS_SECRET_KEY -r us-west-2 -b 'prod lateral train'
+#   metric-emr-steps.rb -r us-west-2 -b 'prod lateral train'
 #
 #   This will list out the counts for each step status for the entire history of the cluster.
 #

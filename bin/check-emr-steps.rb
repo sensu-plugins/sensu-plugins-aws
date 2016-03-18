@@ -14,7 +14,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   check-emr-steps.rb -a AWS_ACCESS_KEY -k +AWS_SECRET_KEY -r us-west-2 -b 'My Cluster'
+#   check-emr-steps.rb -r us-west-2 -b 'My Cluster'
 #
 #   This will alert on any failed steps in the past 10 minutes on the latest cluster
 #   with the name 'My Cluster'.
