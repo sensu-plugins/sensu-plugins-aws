@@ -8,6 +8,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Implemented metrics for EMR cluster steps
 - Implemented check for EMR cluster failed steps
 
+### Changed
+- Update to aws-sdk 2.2.28
+
 ### Fixed
 - check-cloudwatch-metric.rb: removed invalid .length.empty? check
 
