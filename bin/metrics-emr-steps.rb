@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-# metric-emr-steps
+# metrics-emr-steps
 #
 # DESCRIPTION:
 #   Lists steps in EMR cluster queue with their status.
