@@ -8,6 +8,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Added options to check different step status for check emr steps
 - Added cluster id to emr step metrics
 - Added two handlers for increasing/decreasing desired capacity of autoscaling groups
+- Implemented check for reserved instances
 
 ## [2.3.0] - 2016-03-18
 ### Added
