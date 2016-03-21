@@ -169,7 +169,7 @@ class Ec2Node < Sensu::Handler
         # method returns True
 
         # Returns instance state reason in AWS i.e: "Client.UserInitiatedShutdown"
-        instance_state_reason = instances.instances[0].state_reason == nil ? nil : instances.instances[0].state_reason.code
+        instance_state_reason = instances.instances[0].state_reason.nil? ? nil : instances.instances[0].state_reason.code
         # Returns the instance state i.e: "terminated"
         instance_state = instances.instances[0].state.name
 
