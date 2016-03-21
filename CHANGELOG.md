@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+- metrics-s3.rb: added
+- metrics-billing.rb: added
 
 ## [3.2.1] - 2016-08-10
 ### Fixed
