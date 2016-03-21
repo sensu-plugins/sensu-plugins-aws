@@ -33,7 +33,7 @@ require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
 require 'aws-sdk'
 
-class CheckConfigServiceCompliance < Sensu::Plugin::Check::CLI
+class CheckConfigServiceRules < Sensu::Plugin::Check::CLI
   include Common
 
   option :aws_region,
@@ -47,25 +47,34 @@ class CheckConfigServiceCompliance < Sensu::Plugin::Check::CLI
          long: '--config-rules rule1,rule2',
          description: 'A list of config rules to consider. Default is all rules.'
 
+  def aws_client(opts = {})
+    config = aws_config.merge(opts)
+    @aws_client ||= Aws::ConfigService::Client.new config
+  end
+
+  def get_config_rules_data(rules = nil)
+    options = { config_rule_names: rules.split(',') } if rules
+    aws_client.describe_compliance_by_config_rule(options).compliance_by_config_rules
+  end
+
   def get_rule_names_by_compliance_type(rules, compliance_type)
     rules.select { |r| r.compliance.compliance_type == compliance_type }.collect(&:config_rule_name)
   end
 
   def run
-    options = { config_rule_names: config[:config_rules].split(',') } if config[:config_rules]
-    config_service = Aws::ConfigService::Client.new
+    rules = get_config_rules_data(config[:config_rules])
 
-    begin
-      resp = config_service.describe_compliance_by_config_rule(options)
+    noncompliant = get_rule_names_by_compliance_type rules, 'NON_COMPLIANT'
+    unknown = get_rule_names_by_compliance_type rules, 'INSUFFICIENT_DATA'
 
-      noncompliant = get_rule_names_by_compliance_type resp.compliance_by_config_rules, 'NON_COMPLIANT'
-      unknown = get_rule_names_by_compliance_type resp.compliance_by_config_rules, 'INSUFFICIENT_DATA'
-
-      critical("Config rules in violation: #{noncompliant.join(',')}") if noncompliant.any?
-      unknown("Config rules in unknown state: #{unknown.join(',')}") if unknown.any?
+    if noncompliant.any?
+      critical("Config rules in violation: #{noncompliant.join(',')}")
+    elsif unknown.any?
+      unknown("Config rules in unknown state: #{unknown.join(',')}")
+    else
       ok
-    rescue => e
-      unknown "An error occurred processing AWS ConfigService API: #{e.message}"
     end
+  rescue => e
+    unknown "An error occurred processing AWS ConfigService API: #{e.message}"
   end
 end

@@ -16,6 +16,8 @@
 
 **check-cloudwatch-alarm**
 
+**check-configservice-rules**
+
 **check-dynamodb-capacity.rb**
 
 **check-dynamodb-throttle.rb**
@@ -108,6 +110,7 @@
 * /bin/check-autoscaling-cpucredits.rb
 * /bin/check-beanstalk-elb-metric.rb
 * /bin/check-certificate-expiry.rb
+* /bin/check-configservice-rules.rb
 * /bin/check-cloudwatch-alarm.rb
 * /bin/check-dynamodb-capacity.rb
 * /bin/check-dynamodb-throttle.rb
