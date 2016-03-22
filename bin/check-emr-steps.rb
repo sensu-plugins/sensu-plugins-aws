@@ -14,7 +14,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   check-emr-steps.rb -r us-west-2 -b 'My Cluster'
+#   check-emr-steps.rb -r us-west-2 -b 'My Cluster' -t FAILED -c 0
 #
 #   This will alert on any failed steps in the past 10 minutes on the latest cluster
 #   with the name 'My Cluster'.
@@ -50,6 +50,18 @@ class CheckEMRSteps < Sensu::Plugin::Metric::CLI::Graphite
          description: 'The name of the EMR cluster',
          required: true
 
+  option :status,
+         short: '-t STEP_STATUS',
+         long: '--step-status',
+         description: 'Step status to check, [PENDING RUNNING COMPLETED CANCELLED FAILED INTERRUPTED]',
+         default: 'FAILED'
+
+  option :count,
+         short: '-c COUNT',
+         long: '--count',
+         description: 'Max number of steps with this status.',
+         default: 0
+
   def run
     emr = Aws::EMR::Client.new(aws_config)
     begin
@@ -60,19 +72,19 @@ class CheckEMRSteps < Sensu::Plugin::Metric::CLI::Graphite
 
       steps = emr.list_steps(
         cluster_id: cluster.id,
-        step_states: ['FAILED']
+        step_states: config[:status]
       ).steps
 
       messages = []
       now = Time.new
       failed = steps.select { |step| now - step.status.timeline.end_date_time < 10 * 60 }
-      failed.each_entry { |step| messages << "Step #{step.id} '#{step.name}' has failed on cluster #{cluster.id} '#{cluster.name}'" }
-
-      if messages.count > 0
-        critical("#{messages.count} #{messages.count > 1 ? 'steps have' : 'step has'} failed: #{messages.join(',')}")
-      else
-        ok
+      if failed.size > config[count]
+        failed.each_entry { |step| messages << "Step #{step.id} '#{step.name}' has failed on cluster #{cluster.id} '#{cluster.name}'" }
+        if messages.count > 0
+          critical("#{messages.count} #{messages.count > 1 ? 'steps have' : 'step has'} failed: #{messages.join(',')}")
+        end
       end
+      ok
     end
   end
 end
