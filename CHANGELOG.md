@@ -5,6 +5,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ###Added
+- added options to check different step status for check emr steps
+- added cluster id to emr step metrics
  - Added two handlers for increasing/decreasing desired capacity of autoscaling groups
 ## [2.3.0] - 2016-03-18
 ### Added
@@ -148,8 +150,7 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.3.0...HEAD
-[2.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.2.0...2.3.0
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.2.0...HEAD
 [2.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.1.1...2.2.0
 [2.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.1.0...v2.1.1
 [2.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.0.1...2.1.0
