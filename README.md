@@ -76,6 +76,10 @@
 
 **handler-ec2_node.rb**
 
+**handler-scale-asg-down.rb**
+
+**handler-scale-asg-up.rb**
+
 **handler-ses.rb**
 
 **handler-sns.rb**

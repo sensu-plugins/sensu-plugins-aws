@@ -4,7 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
-
+###Added
+ - Added two handlers for increasing/decreasing desired capacity of autoscaling groups
 ## [2.3.0] - 2016-03-18
 ### Added
 - Implemented metrics for EMR cluster steps
