@@ -74,6 +74,7 @@ class EMRStepMetrics < Sensu::Plugin::Metric::CLI::Graphite
       STATUS.each_entry { |status| data[status] = 0 }
       cluster_steps(emr, cluster.id, data)
       safe_name = config[:cluster_name].tr(' ', '_')
+      output config[:scheme] + '.' + safe_name + '.id.' + cluster_id
       STATUS.each_entry { |status| output config[:scheme] + '.' + safe_name + '.step.' + status, data[status] }
     end
     ok
