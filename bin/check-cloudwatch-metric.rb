@@ -17,7 +17,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   ./check-cloudwatch-metric -n CPUUtilization -d InstanceId=i-12345678,AvailabilityZone=us-east-1a -c 90
+#   ./check-cloudwatch-metric -m CPUUtilization -d InstanceId=i-12345678,AvailabilityZone=us-east-1a -c 90
 #
 # NOTES:
 #
