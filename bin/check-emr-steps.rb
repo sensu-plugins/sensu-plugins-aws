@@ -78,7 +78,7 @@ class CheckEMRSteps < Sensu::Plugin::Metric::CLI::Graphite
       messages = []
       now = Time.new
       failed = steps.select { |step| now - step.status.timeline.end_date_time < 10 * 60 }
-      if failed.size > config[count]
+      if failed.size > config[:count]
         failed.each_entry { |step| messages << "Step #{step.id} '#{step.name}' has failed on cluster #{cluster.id} '#{cluster.name}'" }
         if messages.count > 0
           critical("#{messages.count} #{messages.count > 1 ? 'steps have' : 'step has'} failed: #{messages.join(',')}")
