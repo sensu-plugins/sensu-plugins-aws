@@ -60,6 +60,8 @@
 
 **check-redshift-events.rb**
 
+** check-reserved-instances.rb**
+
 **check-s3-bucket.rb**
 
 **check-s3-object.rb**
