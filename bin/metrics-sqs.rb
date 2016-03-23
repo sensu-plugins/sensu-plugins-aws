@@ -74,7 +74,8 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
   end
 
   def scheme(queue_name)
-    "aws.sqs.queue.#{queue_name.tr('-', '_')}.message_count"
+    scheme = config[:scheme].empty? ? 'aws.sqs.queue' : config[:scheme]
+    "#{scheme}.#{queue_name.tr('-', '_')}.message_count"
   end
 
   def run
@@ -86,14 +87,8 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
           critical 'Error, either QUEUE or PREFIX must be specified'
         end
 
-        scheme = if config[:scheme] == ''
-                   scheme config[:queue]
-                 else
-                   config[:scheme]
-                 end
-
         messages = sqs.queues.named(config[:queue]).approximate_number_of_messages
-        output scheme, messages
+        output scheme(config[:queue]), messages
       else
         sqs.queues.with_prefix(config[:prefix]).each do |q|
           queue_name = q.arn.split(':').last
