@@ -150,7 +150,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.2.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.3.0...HEAD
+[2.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.2.0...2.3.0
 [2.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.1.1...2.2.0
 [2.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.1.0...v2.1.1
 [2.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.0.1...2.1.0
