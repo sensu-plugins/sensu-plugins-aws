@@ -12,6 +12,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Added check to ensure that some or all AWS ConfigService rules have full compliance
 - Added check to ensure that sns subscriptions is not pending
 - handler-ec2_node.rb: protect from instance state_reason which may be nil
+- Added check to ensure that some or all ECS Services are healthy on a cluster
 
 ## [2.3.0] - 2016-03-18
 ### Added

@@ -5,6 +5,7 @@ require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 require 'yard'
 require 'yard/rake/yardoc_task'
+require 'English' # needed for $CHILD_STATUS vs $?
 
 desc 'Don\'t run Rubocop for unsupported versions'
 begin
