@@ -5,6 +5,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ###Added
+- added options to check different step status for check emr steps
+- added cluster id to emr step metrics
  - Added two handlers for increasing/decreasing desired capacity of autoscaling groups
 ## [2.3.0] - 2016-03-18
 ### Added
