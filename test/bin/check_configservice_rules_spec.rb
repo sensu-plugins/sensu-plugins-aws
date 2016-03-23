@@ -24,7 +24,7 @@ class CheckConfigServiceRules
   end
 end
 
-describe 'CheckConfigRulesRules' do
+describe 'CheckConfigServiceRules' do
   before :all do
     @aws_stub = Aws::ConfigService::Client.new(stub_responses: true, region: 'us-east-1')
 

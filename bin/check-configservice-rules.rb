@@ -18,7 +18,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#  ./check-configservice-rules-.rb -r {us-east-1|eu-west-1}
+#  ./check-configservice-rules.rb -r {us-east-1|eu-west-1}
 #
 # NOTES:
 #   As of this writing, ConfigService rules are only available in us-east-1.
