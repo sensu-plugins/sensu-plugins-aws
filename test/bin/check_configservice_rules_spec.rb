@@ -1,28 +1,6 @@
 require 'aws-sdk'
-require_relative '../../bin/check-configservice-rules.rb'
 require_relative '../spec_helper.rb'
-
-class CheckConfigServiceRules
-  at_exit do
-    exit! 0
-  end
-
-  def critical(*)
-    'triggered critical'
-  end
-
-  def warning(*)
-    'triggered warning'
-  end
-
-  def ok(*)
-    'triggered ok'
-  end
-
-  def unknown(*)
-    'triggered unknown'
-  end
-end
+require_relative '../../bin/check-configservice-rules.rb'
 
 describe 'CheckConfigServiceRules' do
   before :all do
@@ -93,7 +71,7 @@ describe 'CheckConfigServiceRules' do
       response = check.run
 
       # the stubbed data includes a non-compliant rule, so we should CRIT
-      expect(response).to eq('triggered critical')
+      expect(response).to match(/triggered critical(.*)Resources-Tagged/)
     end
   end
 end
