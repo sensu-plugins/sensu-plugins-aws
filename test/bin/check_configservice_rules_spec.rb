@@ -62,12 +62,11 @@ describe 'CheckConfigServiceRules' do
         ]
       }
 
-      Aws.config[:configservice] = {
-        stub_responses: {
-          describe_compliance_by_config_rule: @rule_data
-        }
+    Aws.config[:configservice] = {
+      stub_responses: {
+        describe_compliance_by_config_rule: @rule_data
       }
-
+    }
   end
 
   describe '#get_config_rules_data' do
