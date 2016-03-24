@@ -8,11 +8,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Added options to check different step status for check emr steps
 - Added cluster id to emr step metrics
 - Added two handlers for increasing/decreasing desired capacity of autoscaling groups
-<<<<<<< HEAD
 - Implemented check for reserved instances
-=======
 - Added check to ensure that some or all AWS ConfigService rules have full compliance
->>>>>>> 0fa25ed... add check for configservice rules
 
 ## [2.3.0] - 2016-03-18
 ### Added

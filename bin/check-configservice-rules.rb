@@ -18,7 +18,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#  ./check-configservice-rules.rb -r {us-east-1|eu-west-1}
+#  ./check-configservice-rules.rb -r {us-east-1|eu-west-1} [-c My_Config_Rule]
 #
 # NOTES:
 #   As of this writing, ConfigService rules are only available in us-east-1.
@@ -47,14 +47,10 @@ class CheckConfigServiceRules < Sensu::Plugin::Check::CLI
          long: '--config-rules rule1,rule2',
          description: 'A list of config rules to consider. Default is all rules.'
 
-  def aws_client(opts = {})
-    config = aws_config.merge(opts)
-    @aws_client ||= Aws::ConfigService::Client.new config
-  end
-
   def get_config_rules_data(rules = nil)
     options = { config_rule_names: rules.split(',') } if rules
-    aws_client.describe_compliance_by_config_rule(options).compliance_by_config_rules
+    config_client = Aws::ConfigService::Client.new
+    config_client.describe_compliance_by_config_rule(options).compliance_by_config_rules
   end
 
   def get_rule_names_by_compliance_type(rules, compliance_type)
