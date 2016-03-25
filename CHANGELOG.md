@@ -10,6 +10,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - Added two handlers for increasing/decreasing desired capacity of autoscaling groups
 - Implemented check for reserved instances
 - Added check to ensure that some or all AWS ConfigService rules have full compliance
+- Added check to ensure that sns subscriptions is not pending
 
 ## [2.3.0] - 2016-03-18
 ### Added

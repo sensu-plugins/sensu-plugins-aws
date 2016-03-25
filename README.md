@@ -70,6 +70,8 @@
 
 **check-ses-limit.rb**
 
+**check-sns-subscriptions**
+
 **check-sqs-messages.rb**
 
 **check-vpc-nameservers**
