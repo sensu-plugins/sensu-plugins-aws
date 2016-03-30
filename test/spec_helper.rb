@@ -30,19 +30,19 @@ module Common
     exit! 0
   end
 
-  def critical(msg)
+  def critical(msg = nil)
     "triggered critical: #{msg}"
   end
 
-  def warning(msg)
+  def warning(msg = nil)
     "triggered warning: #{msg}"
   end
 
-  def ok(msg)
+  def ok(msg = nil)
     "triggered ok: #{msg}"
   end
 
-  def unknown(*)
+  def unknown(msg = nil)
     "triggered unknown: #{msg}"
   end
 end

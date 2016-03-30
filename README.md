@@ -30,6 +30,8 @@
 
 **check-ec2-network.rb**
 
+**check-ecs-service-health.rb**
+
 **check-eip-allocation.rb**
 
 **check-elasticache-failover.rb**
@@ -62,7 +64,7 @@
 
 **check-redshift-events.rb**
 
-** check-reserved-instances.rb**
+**check-reserved-instances.rb**
 
 **check-s3-bucket.rb**
 
@@ -119,6 +121,7 @@
 * /bin/check-ebs-snapshots.rb
 * /bin/check-ec2-filter.rb
 * /bin/check-ec2-network.rb
+* /bin/check-ecs-service-health.rb
 * /bin/check-elasticache-failover.rb
 * /bin/check-elb-certs.rb
 * /bin/check-elb-health-fog.rb
