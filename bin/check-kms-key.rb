@@ -85,12 +85,10 @@ class CheckKMSKey < Sensu::Plugin::Check::CLI
   def run
     if config[:key_id].nil?
       unknown 'No KMS key id provided.  See help for usage details'
+    elsif check_key(config[:key_id])
+      ok 'Key exists and is enabled'
     else
-      if check_key(config[:key_id])
-        ok 'Key exists and is enabled'
-      else
-        warning 'Key exists but is not enabled'
-      end
+      warning 'Key exists but is not enabled'
     end
   end
 end
