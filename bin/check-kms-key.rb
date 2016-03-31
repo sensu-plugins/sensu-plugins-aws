@@ -57,7 +57,8 @@ class CheckKMSKey < Sensu::Plugin::Check::CLI
   option :key_id,
          short:       '-k ID',
          long:        '--key-id ID',
-         description: 'KMS key identifier'
+         description: 'KMS key identifier',
+         default:     nil
 
   def aws_config
     { access_key_id: config[:aws_access_key],
@@ -66,26 +67,30 @@ class CheckKMSKey < Sensu::Plugin::Check::CLI
     }
   end
 
-  def kms
-    @kms ||= Aws::KMS::Client.new aws_config
+  def aws_client(opts = {})
+    config = aws_config.merge(opts)
+    @aws_client ||= Aws::KMS::Client.new config
   end
 
   def check_key(id)
-    return kms.describe_key(key_id: id)['key_metadata']['enabled']
+    return aws_client.describe_key(key_id: id)['key_metadata']['enabled']
   rescue Aws::KMS::Errors::NotFoundException
+    puts 'Nop'
     critical 'Key doesnt exist'
   rescue => e
-    unkown "Failed to check key #{id}: #{e}"
+    puts "Failed to check key #{id}: #{e}"
+    unknown "Failed to check key #{id}: #{e}"
   end
 
   def run
-    unknown 'No KMS key id provided.  See help for usage details' if config[:key_id].nil?
-    if check_key(config[:key_id])
-      message 'Key exists and is enabled'
-      ok
+    if config[:key_id].nil?
+      unknown 'No KMS key id provided.  See help for usage details'
     else
-      message 'Key exists but is not enabled'
-      warning
+      if check_key(config[:key_id])
+        ok 'Key exists and is enabled'
+      else
+        warning 'Key exists but is not enabled'
+      end
     end
   end
 end
