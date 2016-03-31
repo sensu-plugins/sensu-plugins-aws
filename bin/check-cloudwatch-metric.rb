@@ -99,8 +99,8 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
 
   def self.parse_dimensions(dimension_string)
     dimension_string.split(',')
-                    .collect { |d| d.split '=' }
-                    .collect { |a| { name: a[0], value: a[1] } }
+      .collect { |d| d.split '=' }
+      .collect { |a| { name: a[0], value: a[1] } }
   end
 
   def dimension_string

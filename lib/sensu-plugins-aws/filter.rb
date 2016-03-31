@@ -27,7 +27,7 @@ module Filter
 
     items.each do |item|
       if item.strip.empty?
-        raise 'Invalid filter syntax'
+        fail 'Invalid filter syntax'
       end
 
       entry = {}
@@ -35,7 +35,7 @@ module Filter
       value = item.scan(/values:\[(.*?)\]/)
 
       if name.nil? || name.empty? || value.nil? || value.empty?
-        raise 'Unable to parse filter entry'
+        fail 'Unable to parse filter entry'
       end
 
       entry[:name] = name[0][0].strip

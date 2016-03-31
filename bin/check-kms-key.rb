@@ -72,10 +72,10 @@ class CheckKMSKey < Sensu::Plugin::Check::CLI
 
   def check_key(id)
     return kms.describe_key(key_id: id)['key_metadata']['enabled']
-    rescue Aws::KMS::Errors::NotFoundException
-      critical 'Key doesnt exist'
-    rescue => e
-      unkown "Failed to check key #{id}: #{e}"
+  rescue Aws::KMS::Errors::NotFoundException
+    critical 'Key doesnt exist'
+  rescue => e
+    unkown "Failed to check key #{id}: #{e}"
   end
 
   def run
