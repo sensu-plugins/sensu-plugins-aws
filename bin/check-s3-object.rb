@@ -39,7 +39,7 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
          default: ENV['AWS_ACCESS_KEY']
 
   option :aws_secret_access_key,
-         short: '-s AWS_SECRET_KEY',
+         short: '-k AWS_SECRET_KEY',
          long: '--aws-secret-access-key AWS_SECRET_KEY',
          description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
          default: ENV['AWS_SECRET_KEY']
@@ -62,7 +62,7 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
          required: true
 
   option :key_name,
-         short: '-k KEY_NAME',
+         short: '-n KEY_NAME',
          long: '--key-name',
          description: 'The name of key in the bucket',
          required: true
