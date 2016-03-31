@@ -58,6 +58,8 @@
 
 **check-instance-health.rb**
 
+**check-kms-key.rb**
+
 **check-rds-events.rb**
 
 **check-rds.rb**
