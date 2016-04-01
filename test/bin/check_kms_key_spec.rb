@@ -73,7 +73,7 @@ describe 'CheckKMSKey' do
   describe '#run' do
     it 'should run and exit ok when enabled kms key is passed' do
       check = CheckKMSKey.new
-			check.config[:key_id] = '1234'
+      check.config[:key_id] = '1234'
       @aws_stub.stub_responses(:describe_key, @valid_key)
       allow(check).to receive(:kms_client).and_return(@aws_stub)
       response = check.run
@@ -82,7 +82,7 @@ describe 'CheckKMSKey' do
 
     it 'should run and exit with warning when disabled kms key is passed' do
       check = CheckKMSKey.new
-			check.config[:key_id] = '1234'
+      check.config[:key_id] = '1234'
       @aws_stub.stub_responses(:describe_key, @invalid_key)
       allow(check).to receive(:kms_client).and_return(@aws_stub)
       response = check.run
