@@ -62,7 +62,7 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
          required: true
 
   option :key_name,
-         short: '-b KEY_NAME',
+         short: '-n KEY_NAME',
          long: '--key-name',
          description: 'The name of key in the bucket',
          required: true
