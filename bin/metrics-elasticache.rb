@@ -116,6 +116,7 @@ class ElastiCacheMetrics < Sensu::Plugin::Metric::CLI::Graphite
     statistic_type = {
       'redis' => {
         'CPUUtilization' => 'Percent',
+        'BytesUsedForCache' => 'Bytes',
         'SwapUsage' => 'Bytes',
         'FreeableMemory' => 'Bytes',
         'NetworkBytesIn' => 'Bytes',
