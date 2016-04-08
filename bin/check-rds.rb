@@ -55,13 +55,13 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   option :aws_access_key,
          short:       '-a AWS_ACCESS_KEY',
          long:        '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
+         description: 'AWS Access Key. Either set ENV["AWS_ACCESS_KEY"] or provide it as an option',
          default:     ENV['AWS_ACCESS_KEY']
 
   option :aws_secret_access_key,
          short:       '-k AWS_SECRET_KEY',
          long:        '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
+         description: 'AWS Secret Access Key. Either set ENV["AWS_SECRET_KEY"] or provide it as an option',
          default:     ENV['AWS_SECRET_KEY']
 
   option :aws_region,
@@ -102,6 +102,25 @@ class CheckRDS < Sensu::Plugin::Check::CLI
          description: 'Continue if CloudWatch provides no metrics for the time period',
          default: false
 
+  option :use_iam_role,
+         short: '-u',
+         long: '--use-iam',
+         description: 'Use instance IAM role for authentication',
+         default: false
+
+  def aws_config
+    hash = {}
+
+    if config[:use_iam_role]
+      hash.update(
+        access_key_id: config[:access_key_id],
+        secret_access_key: config[:secret_access_key]
+      ) if config[:access_key_id] && config[:secret_access_key]
+    end
+    hash.update region: config[:region] if config[:region]
+    hash
+  end
+
   %w(warning critical).each do |severity|
     option :"availability_zone_#{severity}",
            long:        "--availability-zone-#{severity} AZ",
@@ -113,13 +132,6 @@ class CheckRDS < Sensu::Plugin::Check::CLI
              proc:        proc(&:to_f),
              description: "Trigger a #{severity} if #{item} usage is over a percentage"
     end
-  end
-
-  def aws_config
-    { access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region]
-    }
   end
 
   def rds
@@ -152,7 +164,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   end
 
   def latest_value(metric, unit)
-    values = metric.statistics(statistics_options.merge unit: unit).datapoints.sort_by { |datapoint| datapoint[:timestamp] }
+    values = metric.statistics(statistics_options.merge(unit: unit)).datapoints.sort_by { |datapoint| datapoint[:timestamp] }
 
     # handle time periods that are too small to return usable values.  # this is a cozy addition that wouldn't port upstream.
     if values.empty?
