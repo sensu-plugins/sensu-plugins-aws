@@ -8,7 +8,6 @@
 # OUTPUT:
 #   plain-text
 #
-#
 # DEPENDENCIES:
 #   gem: aws-sdk
 #   gem: sensu-plugin
