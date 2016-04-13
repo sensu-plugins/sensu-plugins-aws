@@ -74,6 +74,8 @@
 
 **check-ses-limit.rb**
 
+**check-ses-statistics.rb**
+
 **check-sns-subscriptions**
 
 **check-sqs-messages.rb**
@@ -108,6 +110,8 @@
 
 **metrics-emr-steps.rb**
 
+**metrics-ses.rb**
+
 **metrics-sqs.rb**
 
 
@@ -140,6 +144,7 @@
 * /bin/check-redshift-events.rb
 * /bin/check-s3-object.rb
 * /bin/check-ses-limit.rb
+* /bin/check-ses-statistics.rb
 * /bin/check-sqs-messages.rb
 * /bin/check-vpc-nameservers.rb
 * /bin/check_vpc_vpn.py
@@ -154,6 +159,7 @@
 * /bin/metrics-elb-full.rb
 * /bin/metrics-elb.rb
 * /bin/metrics-emr-steps.rb
+* /bin/metrics-ses.rb
 * /bin/metrics-sqs.rb
 
 ## Usage
