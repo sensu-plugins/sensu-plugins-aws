@@ -29,7 +29,7 @@ require 'sensu-plugins-aws'
 require 'sensu-plugin/metric/cli'
 require 'aws-sdk'
 
-class CheckEMRSteps < Sensu::Plugin::Metric::CLI::Graphite
+class CheckEMRSteps < Sensu::Plugin::Check::CLI
   include Common
 
   option :scheme,
