@@ -4,15 +4,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [2.4.0] - 2016-04-13
 ### Added
 - Added metrics-ses.rb to collect SES metrics from GetSendStatistics
-- Added check-ses-statistics.rb to check thresholds from GetSendStatistics
-- Added options to check different step status for check emr steps
-- Added cluster id to emr step metrics
+- Added check-ses-statistics.rb to check SES thresholds from GetSendStatistics
+- check-emr-steps.rb: Added options to check different step status for check EMR steps
+- metrics-emr.rb: Added cluster ID to EMR step metrics
 - Added two handlers for increasing/decreasing desired capacity of autoscaling groups
 - Implemented check for reserved instances
 - Added check to ensure that some or all AWS ConfigService rules have full compliance
-- Added check to ensure that sns subscriptions is not pending
+- Added check to ensure that SNS subscriptions is not pending
 - handler-ec2_node.rb: protect from instance state_reason which may be nil
 - Added check to ensure that some or all ECS Services are healthy on a cluster
 - Added check to ensure a KMS key is available (enabled or disabled)
@@ -160,7 +162,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.3.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.4.0...HEAD
+[2.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.3.0...2.4.0
 [2.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.2.0...2.3.0
 [2.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.1.1...2.2.0
 [2.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.1.0...v2.1.1
