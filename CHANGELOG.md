@@ -5,6 +5,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ### Added
+- Added metrics-ses.rb to collect SES metrics from GetSendStatistics
+- Added check-ses-statistics.rb to check thresholds from GetSendStatistics
 - Added options to check different step status for check emr steps
 - Added cluster id to emr step metrics
 - Added two handlers for increasing/decreasing desired capacity of autoscaling groups
