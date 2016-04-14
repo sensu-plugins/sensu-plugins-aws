@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Removed
+- Support for Ruby 2.0
+
+### Added
+- Support for Ruby 2.3
 
 ## [2.4.3] - 2016-04-13
 ### Fixed
