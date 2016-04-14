@@ -44,61 +44,71 @@ class CheckSesStatistics < Sensu::Plugin::Check::CLI
          short: '-l COUNT',
          long: '--low_delivery_warn',
          description: 'Number of delivery attempts to warn below.',
-         default: 0
+         default: 0,
+         proc: proc(&:to_i)
 
   option :low_delivery_crit,
          short: '-L COUNT',
          long: '--low_delivery_crit',
          description: 'Number of delivery attempts to alert below.',
-         default: 0
+         default: 0,
+         proc: proc(&:to_i)
 
   option :delivery_warn,
          short: '-d COUNT',
          long: '--delivery_warn',
          description: 'Number of delivery attempts to warn above.',
-         default: 0
+         default: 0,
+         proc: proc(&:to_i)
 
   option :delivery_crit,
          short: '-D COUNT',
          long: '--delivery_crit',
          description: 'Number of delivery attempts to alert above.',
-         default: 0
+         default: 0,
+         proc: proc(&:to_i)
 
   option :complaint_warn,
          short: '-c COUNT',
          long: '--complaint_warn',
          description: 'Number of complaints to warn above.',
-         default: 0
+         default: 0,
+         proc: proc(&:to_i)
 
   option :complaint_crit,
          short: '-C COUNT',
          long: '--complaint_crit',
          description: 'Number of complaints to alert above.',
-         default: 0
+         default: 0,
+         proc: proc(&:to_i)
 
   option :reject_warn,
          short: '-j COUNT',
          long: '--reject_warn',
          description: 'Number of rejects to warn above.',
-         default: 0
+         default: 0,
+         proc: proc(&:to_i)
 
   option :reject_crit,
          short: '-J COUNT',
          long: '--reject_crit',
          description: 'Number of rejects to alert above.',
-         default: 0
+         default: 0,
+         proc: proc(&:to_i)
 
   option :bounce_warn,
          short: '-b COUNT',
          long: '--bounce_warn',
          description: 'Number of bounces to warn above.',
-         default: 0
+         default: 0,
+         proc: proc(&:to_i)
 
   option :bounce_crit,
          short: '-B COUNT',
          long: '--bounce_crit',
          description: 'Number of bounces to alert above.',
-         default: 0
+         default: 0,
+         proc: proc(&:to_i)
 
   def run
     ses = Aws::SES::Client.new(aws_config)
