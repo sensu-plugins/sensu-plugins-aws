@@ -51,7 +51,7 @@ class SesMetrics < Sensu::Plugin::Metric::CLI::Graphite
       unknown 'Empty response from AWS SES API' if response.empty? # Can this happen?
       unknown 'No data points from AWS SES API' if response.send_data_points.empty?
 
-      data_point = response.send_data_points[-1]
+      data_point = response.send_data_points.sort_by(&:timestamp).last
       output config[:scheme] + '.bounces', data_point.bounces
       output config[:scheme] + '.rejects', data_point.rejects
       output config[:scheme] + '.complaints', data_point.complaints

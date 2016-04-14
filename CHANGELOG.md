@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Fixed
+- check-ses-statistics.rb, metrics-ses.rb: sort results from SES
 
 ## [2.4.2] - 2016-04-13
 ### Fixed

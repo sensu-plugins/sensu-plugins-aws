@@ -118,7 +118,7 @@ class CheckSesStatistics < Sensu::Plugin::Check::CLI
       unknown 'Empty response from AWS SES API' if response.empty? # Can this happen?
       unknown 'No data points from AWS SES API' if response.send_data_points.empty?
 
-      data_point = response.send_data_points[-1]
+      response.send_data_points.sort_by(&:timestamp).last
       bounces = data_point.bounces
       rejects = data_point.rejects
       complaints = data_point.complaints
