@@ -6,7 +6,7 @@ install:
 rvm:
 - 2.1
 - 2.2
-- 2.3
+- 2.3.0
 notifications:
   email:
     recipients:
@@ -27,5 +27,5 @@ deploy:
     all_branches: true
     rvm: 2.1
     rvm: 2.2
-    rvm: 2.3
+    rvm: 2.3.0
     repo: sensu-plugins/sensu-plugins-aws
