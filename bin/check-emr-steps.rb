@@ -25,7 +25,7 @@
 #   for details.
 
 require 'sensu-plugins-aws'
-require 'sensu-plugin/metric/cli'
+require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
 class CheckEMRSteps < Sensu::Plugin::Check::CLI

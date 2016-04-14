@@ -28,7 +28,7 @@
 #   for details.
 
 require 'sensu-plugins-aws'
-require 'sensu-plugin/metric/cli'
+require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
 class CheckSesStatistics < Sensu::Plugin::Check::CLI
