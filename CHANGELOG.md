@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+## [2.4.3] - 2016-04-13
+- check-ses-statistics.rb: fix variable
+
 ## [2.4.2] - 2016-04-13
 ### Fixed
 - check-ses-statistics.rb, check-emr-steps.rb: fix requires
@@ -171,8 +174,9 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.4.2...HEAD
-[2.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.1...2.4.2
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.4.3...HEAD
+[2.4.3]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.2...2.4.3
+[2.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.1...2.4.2
 [2.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.0...2.4.1
 [2.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.3.0...2.4.0
 [2.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.2.0...2.3.0
