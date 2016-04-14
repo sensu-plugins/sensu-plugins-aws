@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 
 ## [2.4.3] - 2016-04-13
+### Fixed
 - check-ses-statistics.rb: fix variable
 
 ## [2.4.2] - 2016-04-13
