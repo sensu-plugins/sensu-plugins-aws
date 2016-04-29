@@ -26,8 +26,6 @@
 # for details.
 
 require 'sensu-plugin/check/cli'
-require 'net/http'
-require 'uri'
 require 'aws-sdk-v1'
 
 class ELBHealth < Sensu::Plugin::Check::CLI
@@ -47,12 +45,17 @@ class ELBHealth < Sensu::Plugin::Check::CLI
          short: '-r AWS_REGION',
          long: '--aws-region REGION',
          description: 'AWS Region (defaults to us-east-1).',
-         default: 'us-east-1'
+         default: ''
 
   option :elb_name,
          short: '-n ELB_NAME',
          long: '--elb-name ELB_NAME',
          description: 'The Elastic Load Balancer name of which you want to check the health'
+
+  option :instance_tag,
+         short: '-t',
+         long: '--instance-tag INSTANCE_TAG',
+         description: "Specify instance tag to be included in the check output. E.g. 'Name' tag"
 
   option :instances,
          short: '-i INSTANCES',
@@ -80,11 +83,25 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   end
 
   def elb
-    @elb ||= AWS::ELB.new aws_config
+    @elb = AWS::ELB.new aws_config
+  end
+
+  def ec2
+    @ec2 = AWS::EC2::Client.new aws_config
+  end
+
+  def ec2_regions
+    ec2_regions = []
+
+    # this connection requires a region to start with. Use default us-east-1
+    aws_ec2 = AWS::EC2.new aws_config.merge(region: 'us-east-1')
+    aws_ec2.regions.each do |region|
+      ec2_regions.push(region.name)
+    end
+    ec2_regions
   end
 
   def elbs
-    return @elbs if @elbs
     @elbs = elb.load_balancers.to_a
     @elbs.select! { |elb| config[:elb_name].include? elb.name } if config[:elb_name]
     @elbs
@@ -99,7 +116,18 @@ class ELBHealth < Sensu::Plugin::Check::CLI
                            end
     instance_health_hash.each do |instance_health|
       if instance_health[:state] != 'InService'
-        unhealthy_instances[instance_health[:instance].id] = instance_health[:state]
+        instance_id = instance_health[:instance].id
+        state_message = instance_health[:state]
+
+        if config[:instance_tag]
+          instance = ec2.describe_instances(instance_ids: [instance_id])
+          selected_tag = instance[:reservation_index][instance_id][:instances_set][0][:tag_set].select { |tag| tag[:key] == config[:instance_tag] }
+          unless selected_tag.empty?
+            state_message = "#{selected_tag[0][:value]}::#{instance_health[:state]}"
+          end
+        end
+
+        unhealthy_instances[instance_id] = state_message
       end
     end
     if unhealthy_instances.empty?
@@ -110,17 +138,37 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   end
 
   def run
-    @message = (elbs.size > 1 ? config[:aws_region] + ': ' : '')
+    aws_regions = ec2_regions
+    @message = ''
     critical = false
-    elbs.each do |elb|
-      result = check_health elb
-      if result != 'OK'
-        @message += "#{elb.name} unhealthy => #{result.map { |id, state| '[' + id + '::' + state + ']' }.join(' ')}. "
-        critical = true
+
+    unless config[:aws_region].empty?
+      if aws_regions.include? config[:aws_region]
+        aws_regions.clear.push(config[:aws_region])
       else
-        @message += "#{elb.name} => healthy. "
+        critical 'Invalid region specified!'
       end
     end
+
+    aws_regions.each do |r| # Iterate each possible region
+      config[:aws_region] = r
+      region_critical = false
+      @message += (elbs.size > 1 ? config[:aws_region] + ': ' : '')
+      elbs.each do |elb|
+        result = check_health elb
+        if result != 'OK'
+          @message += "#{elb.name} unhealthy => #{result.map { |id, state| '[' + id + '::' + state + ']' }.join(' ')}. "
+          critical = true
+          region_critical = true
+        else
+          @message += "#{elb.name} => healthy. " unless config[:verbose] == false
+        end
+      end
+      if elbs.size > 1 && config[:verbose] != true && region_critical == false
+        @message += 'OK. '
+      end
+    end
+
     if critical
       if config[:warn_only]
         warning @message
