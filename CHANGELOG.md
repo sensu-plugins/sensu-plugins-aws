@@ -9,6 +9,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ### Added
 - Support for Ruby 2.3
+- check-rds.rb: Added check for IOPS
 
 ## [2.4.3] - 2016-04-13
 ### Fixed
