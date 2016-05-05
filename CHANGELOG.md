@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ### Removed
 - Support for Ruby 2.0
+- Ignore completed instance-stop ec2 events
 
 ### Added
 - Support for Ruby 2.3
