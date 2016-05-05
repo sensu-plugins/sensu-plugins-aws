@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [3.0.0] - 2016-05-05
 ### Removed
 - Support for Ruby 2.0
 
@@ -181,7 +183,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.4.3...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.3...3.0.0
 [2.4.3]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.2...2.4.3
 [2.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.1...2.4.2
 [2.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.0...2.4.1
