@@ -8,6 +8,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [3.0.0] - 2016-05-05
 ### Removed
 - Support for Ruby 2.0
+- Ignore completed instance-stop ec2 events
 
 ### Added
 - Support for Ruby 2.3
