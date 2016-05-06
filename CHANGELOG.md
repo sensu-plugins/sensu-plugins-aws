@@ -4,11 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Fixed
+- check-instance-events.rb: Ignore completed instance-stop ec2 events
 
 ## [3.0.0] - 2016-05-05
 ### Removed
 - Support for Ruby 2.0
-- Ignore completed instance-stop ec2 events
 
 ### Added
 - Support for Ruby 2.3
