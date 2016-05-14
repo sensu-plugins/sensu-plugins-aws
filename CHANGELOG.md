@@ -10,6 +10,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## Added
 - Added check-instance-reachability.rb: looks up all instances from a filter set and pings
 - Added check-route.rb: checks a route to an instance / eni on a route table
+### Changed
+- handler-ec2_node.rb updated to allow configuration set from client config
 
 ## [3.0.0] - 2016-05-05
 ### Removed
