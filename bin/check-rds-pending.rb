@@ -16,11 +16,11 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
-#  ./check-rds-events.rb -r ${you_region} -s ${your_aws_secret_access_key} -a ${your_aws_access_key}
+#  ./check-rds-events.rb -r ${you_region}
 #
 # NOTES:
 #
@@ -34,17 +34,7 @@ require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
 class CheckRDSEvents < Sensu::Plugin::Check::CLI
-  option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY_ID'] or provide it as an option",
-         default: ENV['AWS_ACCESS_KEY_ID']
-
-  option :aws_secret_access_key,
-         short: '-s AWS_SECRET_ACCESS_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_ACCESS_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_ACCESS_KEY'] or provide it as an option",
-         default: ENV['AWS_SECRET_ACCESS_KEY']
+  include Common
 
   option :aws_region,
          short: '-r AWS_REGION',
@@ -52,19 +42,15 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
          description: 'AWS Region (such as eu-west-1).',
          default: 'us-east-1'
 
-  def run # rubocop:disable AbcSize
-
-    rds = Aws::RDS::Client.new(
-      access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region])
+  def run
+    rds = Aws::RDS::Client.new
 
     begin
       # fetch all clusters identifiers
       clusters = rds.describe_db_instances[:db_instances].map { |db| db[:db_instance_identifier] }
       maint_clusters = []
-      # Check if there is any pending maintenance required 
-      pending_record = rds.describe_pending_maintenance_actions(filters: [{name: "db-instance-id", values: clusters}] )
+      # Check if there is any pending maintenance required
+      pending_record = rds.describe_pending_maintenance_actions(filters: [{ name: 'db-instance-id', values: clusters }])
       pending_record[:pending_maintenance_actions].each do |response|
         maint_clusters.push(response[:pending_maintenance_action_details])
       end
