@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ### Fixed
 - check-instance-events.rb: Ignore completed instance-stop ec2 events
+- check-instance-events.rb: Ignore canceled system-maintence ec2 events
 
 ## [3.0.0] - 2016-05-05
 ### Removed
