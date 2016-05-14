@@ -9,6 +9,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - check-instance-events.rb: Ignore canceled system-maintence ec2 events
 ## Added
 - Added check-instance-reachability.rb: looks up all instances from a filter set and pings
+- Added check-route.rb: checks a route to an instance / eni on a route table
 
 ## [3.0.0] - 2016-05-05
 ### Removed
