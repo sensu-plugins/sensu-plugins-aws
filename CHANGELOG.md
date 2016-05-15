@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [3.1.0] - 2016-05-15
 ### Fixed
 - check-instance-events.rb: Ignore completed instance-stop ec2 events
 - check-instance-events.rb: Ignore canceled system-maintenance ec2 events
@@ -196,13 +198,14 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.0.0...HEAD
-[3.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.3...3.0.0
-[2.4.3]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.2...2.4.3
-[2.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.1...2.4.2
-[2.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.0...2.4.1
-[2.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.3.0...2.4.0
-[2.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.2.0...2.3.0
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.1.0...HEAD
+[3.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.0.0...3.1.0
+[3.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.4.3...3.0.0
+[2.4.3]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.4.2...2.4.3
+[2.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.4.1...2.4.2
+[2.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.4.0...2.4.1
+[2.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.3.0...2.4.0
+[2.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.2.0...2.3.0
 [2.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.1.1...2.2.0
 [2.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.1.0...v2.1.1
 [2.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.0.1...2.1.0
