@@ -6,13 +6,17 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ### Fixed
 - check-instance-events.rb: Ignore completed instance-stop ec2 events
-- check-instance-events.rb: Ignore canceled system-maintence ec2 events
+- check-instance-events.rb: Ignore canceled system-maintenance ec2 events
+
 ## Added
 - Added check-instance-reachability.rb: looks up all instances from a filter set and pings
 - Added check-route.rb: checks a route to an instance / eni on a route table
+- Added check-rds-pending.rb: checks for pending RDS maintenance events
+
 ### Changed
 - handler-ec2_node.rb updated to allow configuration set from client config
 - metrics-ec2-filter.rb: Moved filter parsing to library
+- update to Rubocop 0.40 and cleanup
 
 ## [3.0.0] - 2016-05-05
 ### Removed
