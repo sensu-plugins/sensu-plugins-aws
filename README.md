@@ -86,7 +86,7 @@
 
 **check_vpc_vpn.py**
 
-**check-instance-count.rb**
+**check-instances-count.rb**
 
 **check-vpc-vpn.rb**
 
@@ -158,7 +158,7 @@
 * /bin/handler-ses.rb
 * /bin/handler-sns.rb
 * /bin/metrics-autoscaling-instance-count.rb
-# /bin/check-instance-count.rb
+* /bin/check-instances-count.rb
 * /bin/metrics-ec2-count.rb
 * /bin/metrics-ec2-filter.rb
 * /bin/metrics-elasticache.rb
