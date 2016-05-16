@@ -171,7 +171,7 @@ class CheckSensuClient < Sensu::Plugin::Check::CLI
     verify_mode = OpenSSL::SSL::VERIFY_PEER
     verify_mode = OpenSSL::SSL::VERIFY_NONE if config[:insecure]
     request = RestClient::Resource.new("#{config[:sensu_host]}:#{config[:sensu_port]}/clients",
-                                        verify_ssl: verify_mode)
+                                       verify_ssl: verify_mode)
     response = JSON.parse(request.get)
 
     clients = Set.new
