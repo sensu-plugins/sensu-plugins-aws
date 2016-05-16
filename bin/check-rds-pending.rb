@@ -1,13 +1,10 @@
 #! /usr/bin/env ruby
 #
-# check-rds-events
+# check-rds-pending
 #
 #
 # DESCRIPTION:
-#   This plugin checks rds clusters for critical events.
-#   Due to the number of events types on RDS clusters the check searches for
-#   events containing the text string 'has started' or 'is being'.  These events all have
-#   accompanying completiion events and are impacting events
+#   This plugin checks rds clusters for pending maintenance action.
 #
 # OUTPUT:
 #   plain-text
@@ -20,7 +17,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#  ./check-rds-events.rb -r ${you_region}
+#  ./check-rds-pending.rb -r ${you_region}
 #
 # NOTES:
 #
