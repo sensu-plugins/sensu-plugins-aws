@@ -33,7 +33,7 @@
 require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
-require 'net/http'
+require 'rest-client'
 require 'json'
 
 class CheckSensuClient < Sensu::Plugin::Check::CLI
@@ -50,6 +50,12 @@ class CheckSensuClient < Sensu::Plugin::Check::CLI
          long: '--host SENSU_HOST',
          description: 'Sensu host to query',
          default: 'sensu'
+
+  option :insecure,
+         short: '-k',
+         boolean: true,
+         description: 'Enabling insecure connections',
+         default: false
 
   option :sensu_port,
          short: '-p SENSU_PORT',
@@ -162,8 +168,11 @@ class CheckSensuClient < Sensu::Plugin::Check::CLI
   end
 
   def client_check
-    uri = URI("http://#{config[:sensu_host]}:#{config[:sensu_port]}/clients")
-    response = JSON.parse(Net::HTTP.get(uri))
+    verify_mode = OpenSSL::SSL::VERIFY_PEER
+    verify_mode = OpenSSL::SSL::VERIFY_NONE if config[:insecure]
+    request = RestClient::Resource.new("#{config[:sensu_host]}:#{config[:sensu_port]}/clients",
+                                        verify_ssl: verify_mode)
+    response = JSON.parse(request.get)
 
     clients = Set.new
     response.each do |client|
