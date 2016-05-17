@@ -3,7 +3,6 @@
 # CHANGELOG:
 # * 0.7.0:
 #   - Added method instance_id to check in client config section
-#     ['client']['aws']['instance_id'] first.
 #    - Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing
 #      match that will work with any user state defined.
 # * 0.6.0:
@@ -153,14 +152,6 @@ class Ec2Node < Sensu::Handler
   end
 
   def instance_id
-    if @event['client'].key?('aws') && @event['client']['aws'].key?('instance_id')
-      @event['client']['aws']['instance_id']
-    else
-      @event['client']['name']
-    end
-  end
-
-  def instance_name
     @event['client']['name']
   end
 
