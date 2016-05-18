@@ -45,7 +45,7 @@ class ELBHealth < Sensu::Plugin::Check::CLI
          short: '-r AWS_REGION',
          long: '--aws-region REGION',
          description: 'AWS Region (defaults to us-east-1).',
-         default: ''
+         default: 'us-east-1'
 
   option :elb_name,
          short: '-n ELB_NAME',
@@ -78,8 +78,7 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region]
-    }
+      region: config[:aws_region] }
   end
 
   def elb
@@ -142,7 +141,7 @@ class ELBHealth < Sensu::Plugin::Check::CLI
     @message = ''
     critical = false
 
-    unless config[:aws_region].empty?
+    unless config[:aws_region].casecmp('all') == 0
       if aws_regions.include? config[:aws_region]
         aws_regions.clear.push(config[:aws_region])
       else

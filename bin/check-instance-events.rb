@@ -63,8 +63,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region]
-    }
+      region: config[:aws_region] }
   end
 
   def run
@@ -91,7 +90,8 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
         #         "not_after": "2015-01-05 18:00:00 UTC"
         #     }
         # ]
-        useful_events = i[:events_set].reject { |x| x[:code] == 'system-reboot' && x[:description] =~ /\[Completed\]/ }
+        useful_events =
+          i[:events_set].reject { |x| (x[:code] == 'system-reboot' || x[:code] == 'instance-stop' || x[:code] == 'system-maintenance') && (x[:description] =~ /\[Completed\]/ || x[:description] =~ /\[Canceled\]/) }
         unless useful_events.empty?
           event_instances << i[:instance_id]
         end

@@ -2,6 +2,8 @@
 #
 # CHANGELOG:
 # * 0.7.0:
+#   - Added method instance_id to check in client config section
+#     ['client']['aws']['instance_id'] first.
 #    - Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing
 #      match that will work with any user state defined.
 # * 0.6.0:
@@ -140,7 +142,7 @@ class Ec2Node < Sensu::Handler
     if ec2_node_should_be_deleted?
       delete_sensu_client!
     else
-      puts "[EC2 Node] #{@event['client']['name']} is in an invalid state"
+      puts "[EC2 Node] #{instance_id} is in an invalid state"
     end
   end
 
@@ -148,6 +150,18 @@ class Ec2Node < Sensu::Handler
   def delete_sensu_client!
     response = api_request(:DELETE, '/clients/' + @event['client']['name']).code
     deletion_status(response)
+  end
+
+  def instance_id
+    if @event['client'].key?('aws') && @event['client']['aws'].key?('instance_id')
+      @event['client']['aws']['instance_id']
+    else
+      @event['client']['name']
+    end
+  end
+
+  def instance_name
+    @event['client']['name']
   end
 
   # Method to check if there is any insance and if instance is in a valid state that could be deleted
@@ -160,7 +174,7 @@ class Ec2Node < Sensu::Handler
 
     begin
       # Finding the instance
-      instances = ec2.describe_instances(instance_ids: [@event['client']['name']]).reservations[0]
+      instances = ec2.describe_instances(instance_ids: [instance_id]).reservations[0]
       # If instance is empty/nil instance id is not valid so client can be deleted
       if instances.nil? || instances.empty?
         true

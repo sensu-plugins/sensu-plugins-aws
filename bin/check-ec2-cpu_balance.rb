@@ -80,7 +80,8 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
           name: 'instance-state-name',
           values: ['running']
         }
-      ])
+      ]
+    )
 
     messages = "\n"
     level = 0

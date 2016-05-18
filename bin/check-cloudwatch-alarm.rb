@@ -73,8 +73,7 @@ class CloudWatchCheck < Sensu::Plugin::Check::CLI
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region]
-    }
+      region: config[:aws_region] }
   end
 
   def run

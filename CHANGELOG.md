@@ -4,12 +4,24 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Fixed
+- check-instance-events.rb: Ignore completed instance-stop ec2 events
+- check-instance-events.rb: Ignore canceled system-maintence ec2 events
+## Added
+- Added check-instance-reachability.rb: looks up all instances from a filter set and pings
+- Added check-route.rb: checks a route to an instance / eni on a route table
+### Changed
+- handler-ec2_node.rb updated to allow configuration set from client config
+- metrics-ec2-filter.rb: Moved filter parsing to library
+
+## [3.0.0] - 2016-05-05
 ### Removed
 - Support for Ruby 2.0
 
 ### Added
 - Support for Ruby 2.3
 - check-elb-health-sdk.rb: Added multi-region support and specify instance tag to display on check output
+- check-rds.rb: Added check for IOPS
 
 ## [2.4.3] - 2016-04-13
 ### Fixed
@@ -181,7 +193,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/2.4.3...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.3...3.0.0
 [2.4.3]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.2...2.4.3
 [2.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.1...2.4.2
 [2.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/v2.4.0...2.4.1
