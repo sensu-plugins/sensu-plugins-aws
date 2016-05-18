@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Fixed
+- metrics-sqs.rb: --scheme option now works with --prefix
+
 ### Added
 - check-sensu-clients.rb: SSL support
 
