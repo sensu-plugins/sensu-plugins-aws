@@ -121,12 +121,12 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
               end
               event_instances << "#{name} (#{i[:instance_id]} #{r}) (#{i[:events_set][0][:code]}) #{i[:events_set][0][:description]}"
             else
-              event_instances << "(#{i[:instance_id]} #{r}) (#{i[:events_set][0][:code]}) #{i[:events_set][0][:description]}"
+              event_instances << "#{i[:instance_id]} (#{r}) (#{i[:events_set][0][:code]}) #{i[:events_set][0][:description]}"
             end
           end
         end
       rescue => e
-        unknown "An error occurred processing AWS EC2 API: #{e.message}"
+        unknown "An error occurred processing AWS EC2 API (#{r}): #{e.message}"
       end
     end
 

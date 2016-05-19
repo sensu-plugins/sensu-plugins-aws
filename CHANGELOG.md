@@ -10,7 +10,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - check-sensu-clients.rb: SSL support
 - check-rds-events.rb: Added '-r all' region support
-- check-instance-events.rb: Added '-r all' region support
+- check-instance-events.rb: Added '-r all' region support and description of the event
 - check-elb-health-sdk.rb: Added '-r all' support and specify instance tag to display on check output
 
 ## [3.1.0] - 2016-05-15
