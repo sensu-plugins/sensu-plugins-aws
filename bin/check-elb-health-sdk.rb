@@ -90,14 +90,10 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   end
 
   def ec2_regions
-    ec2_regions = []
+    # This is for SDK v2
+    # Aws.partition('aws').regions.map(&:name)
 
-    # this connection requires a region to start with. Use default us-east-1
-    aws_ec2 = AWS::EC2.new aws_config.merge(region: 'us-east-1')
-    aws_ec2.regions.each do |region|
-      ec2_regions.push(region.name)
-    end
-    ec2_regions
+    AWS::EC2.regions.map(&:name)
   end
 
   def elbs
