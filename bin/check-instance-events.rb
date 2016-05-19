@@ -112,8 +112,8 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
             i[:events_set].reject { |x| (x[:code] =~ /system-reboot|instance-stop|system-maintenance/) && (x[:description] =~ /\[Completed\]|\[Canceled\]/) }
           unless useful_events.empty?
             if config[:include_name]
+              name = ''
               begin
-                name = ''
                 instance_desc = ec2.describe_instances(instance_ids: [i[:instance_id]])
                 name = instance_desc[:reservation_index][i[:instance_id]][:instances_set][0][:tag_set].select { |tag| tag[:key] == 'Name' }[0][:value]
               rescue => e
