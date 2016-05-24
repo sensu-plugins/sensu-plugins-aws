@@ -79,7 +79,9 @@ class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
   end
 
   def service_details(cluster = 'default', services = nil)
-    ecs_client.describe_services(cluster: cluster, services: service_list(cluster, services))['services']
+    service_list(cluster, services).each_slice(10).to_a.map do |s|
+      ecs_client.describe_services(cluster: cluster, services: s)['services']
+    end.flatten
   end
 
   def bucket_service(running_count, desired_count)
