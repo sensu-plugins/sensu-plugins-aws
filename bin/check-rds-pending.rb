@@ -28,6 +28,7 @@
 #
 
 require 'sensu-plugin/check/cli'
+require 'sensu-plugins-aws'
 require 'aws-sdk'
 
 class CheckRDSEvents < Sensu::Plugin::Check::CLI
