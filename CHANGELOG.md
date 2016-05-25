@@ -6,6 +6,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ### Fixed
 - metrics-sqs.rb: --scheme option now works with --prefix
+- check-ecs-service-health.rb:
+  - `service_list` retrieves all records when services not provided through options
+  - `service_details` - handles scenario whereby services array is greater than aws limit (10)
 
 ### Added
 - check-sensu-clients.rb: SSL support
