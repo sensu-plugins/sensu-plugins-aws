@@ -68,11 +68,20 @@ class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
   # List of requested services or all services registered to the cluster
   def service_list(cluster = 'default', services = nil)
     return services.split ',' if services
-    ecs_client.list_services(cluster: cluster)['service_arns']
+    collect_services(cluster)
+  end
+
+  def collect_services(cluster = 'default', token: nil)
+    response = ecs_client.list_services(cluster: cluster, next_token: token)
+    services = response.service_arns
+    services.push(*collect_services(cluster, token: response.next_token)) if response.next_token
+    services
   end
 
   def service_details(cluster = 'default', services = nil)
-    ecs_client.describe_services(cluster: cluster, services: service_list(cluster, services))['services']
+    service_list(cluster, services).each_slice(10).to_a.map do |s|
+      ecs_client.describe_services(cluster: cluster, services: s)['services']
+    end.flatten
   end
 
   def bucket_service(running_count, desired_count)
