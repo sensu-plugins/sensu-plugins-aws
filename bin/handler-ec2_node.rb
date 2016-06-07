@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
 #
 # CHANGELOG:
+# * 0.8.0:
+#   - Added support to use ec2_region from client definition
 # * 0.7.0:
 #   - Added method instance_id to check in client config section
-#    - Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing
+#   - Update to new API event naming and simplifying ec2_node_should_be_deleted method and fixing
 #      match that will work with any user state defined.
 # * 0.6.0:
 #   - Fixed ec2_node_should_be_deleted to account for an empty insances array
@@ -60,7 +62,17 @@
 # handler to suit your needs.
 #
 #
-# Optional a Sensu configuration snippet:
+# A Sensu Client configuration using the ec2_region attribute:
+#   {
+#     "client": {
+#       "name": "i-424242",
+#       "address": "127.0.0.1",
+#       "ec2_region": "eu-west-1",
+#       "subscriptions": ["all"]
+#     }
+#   }
+#
+# Or a Sensu Server configuration snippet:
 #   {
 #     "aws": {
 #       "access_key": "adsafdafda",
@@ -77,7 +89,7 @@
 # If none of the settings are found it will then attempt to
 # generate temporary credentials from the IAM instance profile
 #
-# If region is not specified in either of the above 2 mechanisms
+# If region is not specified in either of the above 3 mechanisms
 # we will make a request for the EC2 instances current region.
 #
 # To use, you can set it as the keepalive handler for a client:
