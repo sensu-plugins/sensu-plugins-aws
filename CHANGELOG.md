@@ -13,6 +13,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ### Added
 - check-sensu-clients.rb: SSL support
+- check-rds-events.rb: Added '-r all' region support
+- check-instance-events.rb: Added '-r all' region support and description of the event
+- check-elb-health-sdk.rb: Added '-r all' support and specify instance tag to display on check output
 
 ## [3.1.0] - 2016-05-15
 ### Fixed
@@ -35,7 +38,6 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ### Added
 - Support for Ruby 2.3
-- check-elb-health-sdk.rb: Added multi-region support and specify instance tag to display on check output
 - check-rds.rb: Added check for IOPS
 
 ## [2.4.3] - 2016-04-13

@@ -73,6 +73,13 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
       region: config[:aws_region] }
   end
 
+  def rds_regions
+    # This is for SDK v2
+    # Aws.partition('aws').regions.map(&:name)
+
+    AWS::RDS.regions.map(&:name)
+  end
+
   def run
     clusters = maint_clusters
     if clusters.empty?
@@ -83,44 +90,56 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
   end
 
   def maint_clusters
-    rds = AWS::RDS::Client.new aws_config
+    maint_clusters = []
+    aws_regions = rds_regions
 
-    begin
-      if !config[:db_instance_id].nil? && !config[:db_instance_id].empty?
-        db_instance = rds.describe_db_instances(db_instance_identifier: config[:db_instance_id])
-        if db_instance.nil? || db_instance.empty?
-          unknown "#{config[:db_instance_id]} instance not found"
-        else
-          clusters = [config[:db_instance_id]]
-        end
+    unless config[:aws_region].casecmp('all') == 0
+      if aws_regions.include? config[:aws_region]
+        aws_regions.clear.push(config[:aws_region])
       else
-        # fetch all clusters identifiers
-        clusters = rds.describe_db_instances[:db_instances].map { |db| db[:db_instance_identifier] }
+        critical 'Invalid region specified!'
       end
-
-      maint_clusters = []
-
-      # fetch the last 15 minutes of events for each cluster
-      # that way, we're only spammed with persistent notifications that we'd care about.
-      clusters.each do |cluster_name|
-        events_record = rds.describe_events(start_time: (Time.now - 900).iso8601, source_type: 'db-instance', source_identifier: cluster_name)
-        next if events_record[:events].empty?
-
-        # we will need to filter out non-disruptive/basic operation events.
-        # ie. the regular backup operations
-        next if events_record[:events][-1][:message] =~ /Backing up DB instance|Finished DB Instance backup|Restored from snapshot/
-        # ie. Replication resumed
-        next if events_record[:events][-1][:message] =~ /Replication for the Read Replica resumed/
-        # you can add more filters to skip more events.
-
-        # draft the messages
-        cluster_name_long = "#{cluster_name} (#{aws_config[:region]}) #{events_record[:events][-1][:message]}"
-        maint_clusters.push(cluster_name_long)
-      end
-
-    rescue => e
-      unknown "An error occurred processing AWS RDS API: #{e.message}"
     end
+
+    aws_regions.each do |r|
+      rds = AWS::RDS::Client.new aws_config.merge!(region: r)
+
+      begin
+        if !config[:db_instance_id].nil? && !config[:db_instance_id].empty?
+          db_instance = rds.describe_db_instances(db_instance_identifier: config[:db_instance_id])
+          if db_instance.nil? || db_instance.empty?
+            unknown "#{config[:db_instance_id]} instance not found"
+          else
+            clusters = [config[:db_instance_id]]
+          end
+        else
+          # fetch all clusters identifiers
+          clusters = rds.describe_db_instances[:db_instances].map { |db| db[:db_instance_identifier] }
+        end
+
+        # fetch the last 15 minutes of events for each cluster
+        # that way, we're only spammed with persistent notifications that we'd care about.
+        clusters.each do |cluster_name|
+          events_record = rds.describe_events(start_time: (Time.now - 900).iso8601, source_type: 'db-instance', source_identifier: cluster_name)
+          next if events_record[:events].empty?
+
+          # we will need to filter out non-disruptive/basic operation events.
+          # ie. the regular backup operations
+          next if events_record[:events][-1][:message] =~ /Backing up DB instance|Finished DB Instance backup|Restored from snapshot/
+          # ie. Replication resumed
+          next if events_record[:events][-1][:message] =~ /Replication for the Read Replica resumed/
+          # you can add more filters to skip more events.
+
+          # draft the messages
+          cluster_name_long = "#{cluster_name} (#{r}) #{events_record[:events][-1][:message]}"
+          maint_clusters.push(cluster_name_long)
+        end
+
+      rescue => e
+        unknown "An error occurred processing AWS RDS API (#{r}): #{e.message}"
+      end
+    end
+
     maint_clusters
   end
 end
