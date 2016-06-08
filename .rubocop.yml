@@ -34,3 +34,7 @@ Style/Next:
 
 Style/FormatString:
   Enabled: false
+
+Style/ClassVars:
+  Exclude:
+    - test/**/*.rb
