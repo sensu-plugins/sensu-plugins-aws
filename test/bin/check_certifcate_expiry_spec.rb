@@ -4,7 +4,7 @@ require_relative '../spec_helper.rb'
 
 class CheckCertificateExpiry
   at_exit do
-    exit! 0
+    @@autorun = false
   end
 
   def critical(*)
