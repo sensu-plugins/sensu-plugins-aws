@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ### Fixed
+- metrics-emr-steps.rb fixed typo in variable name
 - metrics-sqs.rb: --scheme option now works with --prefix
 - check-ecs-service-health.rb:
   - `service_list` retrieves all records when services not provided through options
