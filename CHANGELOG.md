@@ -13,6 +13,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ### Added
 - check-sensu-clients.rb: SSL support
+- common.rb: adding support for environment variable AWS_REGION when region is specified as an empty string
 
 ## [3.1.0] - 2016-05-15
 ### Fixed
