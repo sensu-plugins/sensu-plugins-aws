@@ -78,6 +78,12 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
     "#{scheme}.#{queue_name.tr('-', '_')}.message_count"
   end
 
+  def record_queue_metrics(q_name, q)
+    output scheme(q_name), q.approximate_number_of_messages
+    output "#{scheme(q_name)}.delayed", q.approximate_number_of_messages_delayed
+    output "#{scheme(q_name)}.not_visible", q.approximate_number_of_messages_not_visible
+  end
+
   def run
     begin
       sqs = AWS::SQS.new aws_config
@@ -87,12 +93,10 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
           critical 'Error, either QUEUE or PREFIX must be specified'
         end
 
-        messages = sqs.queues.named(config[:queue]).approximate_number_of_messages
-        output scheme(config[:queue]), messages
+        record_queue_metrics(config[:queue], sqs.queues.named(config[:queue]))
       else
         sqs.queues.with_prefix(config[:prefix]).each do |q|
-          queue_name = q.arn.split(':').last
-          output scheme(queue_name), q.approximate_number_of_messages
+          record_queue_metrics(q.arn.split(':').last, q)
         end
       end
     rescue => e
