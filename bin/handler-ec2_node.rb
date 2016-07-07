@@ -212,9 +212,9 @@ class Ec2Node < Sensu::Handler
   def region
     @region ||= begin
       region_check = ENV['EC2_REGION']
-      region_check = settings['aws']['region'] if settings.key? 'aws'
-      region_check = event['client']['ec2_region'] if event['client'].key? 'ec2_region'
-      region_check = event['client']['ec2']['region'] if event['client'].key? 'ec2' && event['client']['ec2'].key? 'region'
+      region_check = settings['aws']['region'] if settings.key?('aws')
+      region_check = event['client']['ec2_region'] if event['client'].key?('ec2_region')
+      region_check = event['client']['ec2']['region'] if event['client'].key?('ec2') && event['client']['ec2'].key?('region')
       if region_check.nil? || region_check.empty?
         region_check = Net::HTTP.get(URI('http://169.254.169.254/latest/meta-data/placement/availability-zone'))
         matches = /(\w+\-\w+\-\d+)/.match(region_check)
