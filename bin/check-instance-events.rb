@@ -54,6 +54,13 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
          long: '--use-iam',
          description: 'Use IAM role authenticiation. Instance must have IAM role assigned for this to work'
 
+  option :instance_id,
+         short: '-i INSTANCE_IDS',
+         long: '--instances INSTANCES_IDS',
+         description: 'Comma separated list of instances ids to check. Defaults to all instances in the region',
+         proc: proc { |a| a.split(',') },
+         default: []
+
   option :include_name,
          short: '-n',
          long: '--include-name',
@@ -77,7 +84,13 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
 
     ec2 = AWS::EC2::Client.new(aws_config.merge!(region: config[:aws_region]))
     begin
-      ec2.describe_instance_status[:instance_status_set].each do |i|
+
+      describe_instance_options = {}
+      if config[:instance_id].any?
+        describe_instance_options = describe_instance_options.merge(instance_ids: config[:instance_id])
+      end
+
+      ec2.describe_instance_status(describe_instance_options)[:instance_status_set].each do |i|
         next if i[:events_set].empty?
 
         # Exclude completed reboots since the events API appearently returns these even after they have been completed:
