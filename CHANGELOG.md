@@ -11,6 +11,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
   - `service_list` retrieves all records when services not provided through options
   - `service_details` - handles scenario whereby services array is greater than aws limit (10)
 - exit code for tests did not respect rspec exit codes due to autorun feature. (#133 @zbintliff)
+- syntax error in check-sensu-clients
 
 ### Added
 - check-sensu-clients.rb: SSL support
