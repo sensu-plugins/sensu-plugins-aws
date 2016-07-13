@@ -16,6 +16,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Added
 - check-sensu-clients.rb: SSL support
 - common.rb: adding support for environment variable AWS_REGION when region is specified as an empty string
+- metrics-sqs.rb: Add support for recording additional per-queue SQS metrics (counts of not-visible and delayed messages)
 
 ## [3.1.0] - 2016-05-15
 ### Fixed
