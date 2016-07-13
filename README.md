@@ -82,6 +82,8 @@
 
 **check-sqs-messages.rb**
 
+**check-subnet-ip-consumption**
+
 **check-vpc-nameservers**
 
 **check_vpc_vpn.py**
@@ -151,6 +153,7 @@
 * /bin/check-ses-limit.rb
 * /bin/check-ses-statistics.rb
 * /bin/check-sqs-messages.rb
+* /bin/check-subnet-ip-consumption.rb
 * /bin/check-vpc-nameservers.rb
 * /bin/check_vpc_vpn.py
 * /bin/check_vpc_vpn.rb
