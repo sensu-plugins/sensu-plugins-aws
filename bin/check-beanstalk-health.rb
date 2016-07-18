@@ -59,12 +59,13 @@ class BeanstalkHealth < Sensu::Plugin::Check::CLI
   end
 
   def beanstalk_client
-    if config[:aws_region]
-      @beanstalk_client ||= Aws::ElasticBeanstalk::Client.new(
-        region: config[:aws_region])
-    else
-      @beanstalk_client ||= Aws::ElasticBeanstalk::Client.new
-    end
+    @beanstalk_client ||= if config[:aws_region]
+                            Aws::ElasticBeanstalk::Client.new(
+                              region: config[:aws_region]
+                            )
+                          else
+                            Aws::ElasticBeanstalk::Client.new
+                          end
   end
 
   def instances_health
