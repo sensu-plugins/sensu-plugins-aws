@@ -27,6 +27,6 @@ module Common
 
     Aws.config.update(
       region: config[:aws_region]
-    ) unless config.key?(:aws_region)
+    ) if config.key?(:aws_region)
   end
 end
