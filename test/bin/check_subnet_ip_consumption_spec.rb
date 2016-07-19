@@ -67,22 +67,6 @@ describe 'CheckSubnetIpConsumption' do
       subnet_az: 'us-east-1c', cidr_block: '192.168.99.0', vpc_friendly_name: '<no name>' }
   end
 
-  describe '#aws_config' do
-    context 'with defaults' do
-      it 'returns us-east-1 region' do
-        check = CheckSubnetIpConsumption.new
-        expect(check.aws_config[:region]).to eq('us-east-1')
-      end
-    end
-    context 'with user-specified region' do
-      it 'returns us-west-2 region' do
-        check = CheckSubnetIpConsumption.new
-        check.config[:aws_region] = 'us-west-2'
-        expect(check.aws_config[:region]).to eq('us-west-2')
-      end
-    end
-  end
-
   describe '#ec2_client' do
     it 'a valid EC2 client exists' do
       check = CheckSubnetIpConsumption.new

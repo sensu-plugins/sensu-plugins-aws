@@ -38,16 +38,6 @@ require 'aws-sdk'
 class CheckSubnetIpConsumption < Sensu::Plugin::Check::CLI
   include Common
 
-  option :aws_access_key,
-         short:       '-a AWS_ACCESS_KEY',
-         long:        '--aws-access-key AWS_ACCESS_KEY',
-         description: 'AWS Access Key ID.'
-
-  option :aws_secret_access_key,
-         short:       '-k AWS_SECRET_KEY',
-         long:        '--aws-secret-access-key AWS_SECRET_KEY',
-         description: 'AWS Secret Access Key.'
-
   option :aws_region,
          short:       '-r AWS_REGION',
          long:        '--aws-region REGION',
@@ -85,18 +75,11 @@ class CheckSubnetIpConsumption < Sensu::Plugin::Check::CLI
          description: 'Manipulate the verbosity of the alert output. Valid options are 0, 1, and 2 (from least to most verbose). Default is 0.'
 
   def iam_client
-    @iam_client ||= Aws::IAM::Client.new(aws_config)
+    @iam_client ||= Aws::IAM::Client.new
   end
 
   def ec2_client
-    @ec2_client ||= Aws::EC2::Client.new(aws_config)
-  end
-
-  # Stores configuration values for the AWS SDK
-  def aws_config
-    { access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region] }
+    @ec2_client ||= Aws::EC2::Client.new
   end
 
   # Returns the alias of the AWS account (if there is one), "<no name>" (if there is not), or nil if -s/--show-account-alias is not used.
