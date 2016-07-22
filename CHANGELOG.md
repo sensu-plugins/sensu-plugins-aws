@@ -21,6 +21,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - metrics-sqs.rb: Add support for recording additional per-queue SQS metrics (counts of not-visible and delayed messages)
 - check-subnet-ip-consumption.rb: to check consumption of IP addresses in subnets and alert if consumption exceeds a threshold
 - check-beanstalk-health.rb: Add optional region support
+- check-rds-events.rb: Added '-r all' region support
+- check-instance-events.rb: Added '-r all' region support and description of the event. Minor change to output message
+- check-elb-health-sdk.rb: Updated available regions fetch
 
 ## [3.1.0] - 2016-05-15
 ### Fixed
