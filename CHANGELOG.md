@@ -14,6 +14,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - syntax error in check-sensu-clients
 
 ### Added
+- check-rds.rb: Add support for assuming a role in another account
 - check-instance-events.rb: Add instance_id option
 - check-sensu-clients.rb: SSL support
 - common.rb: adding support for environment variable AWS_REGION when region is specified as an empty string
