@@ -70,6 +70,11 @@ class CheckRDS < Sensu::Plugin::Check::CLI
          description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
          default:     ENV['AWS_SECRET_KEY']
 
+  option :role_arn,
+         long:        '--role-arn ROLE_ARN',
+         description: 'AWS role arn of the role of the third party account to switch to',
+         default:     false
+
   option :aws_region,
          short:       '-r AWS_REGION',
          long:        '--aws-region REGION',
@@ -127,12 +132,20 @@ class CheckRDS < Sensu::Plugin::Check::CLI
       region: config[:aws_region] }
   end
 
+  def role_credentials
+    @role_credentials = Aws::AssumeRoleCredentials.new(
+      client: Aws::STS::Client.new(aws_config),
+      role_arn: config[:role_arn],
+      role_session_name: "role@#{Time.now.to_i}"
+    )
+  end
+
   def rds
-    @rds ||= Aws::RDS::Client.new aws_config
+    @rds ||= config[:role_arn] ? Aws::RDS::Client.new(credentials: role_credentials, region: aws_config[:region]) : Aws::RDS::Client.new(aws_config)
   end
 
   def cloud_watch
-    @cloud_watch ||= Aws::CloudWatch::Client.new aws_config
+    @cloud_watch ||= config[:role_arn] ? Aws::CloudWatch::Client.new(credentials: role_credentials, region: aws_config[:region]) : Aws::CloudWatch::Client.new(aws_config)
   end
 
   def find_db_instance(id)
