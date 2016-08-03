@@ -5,25 +5,30 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ### Fixed
-- metrics-emr-steps.rb fixed typo in variable name
-- metrics-sqs.rb: --scheme option now works with --prefix
+- metrics-emr-steps.rb: fixed typo in variable name (@babsher)
+- metrics-sqs.rb: --scheme option now works with --prefix (@mool)
 - check-ecs-service-health.rb:
-  - `service_list` retrieves all records when services not provided through options
-  - `service_details` - handles scenario whereby services array is greater than aws limit (10)
+  - `service_list` retrieves all records when services not provided through options (@marckysharky)
+  - `service_details` - handles scenario whereby services array is greater than aws limit (10) (@marckysharky)
 - exit code for tests did not respect rspec exit codes due to autorun feature. (#133 @zbintliff)
-- syntax error in check-sensu-clients
+- syntax error in check-sensu-clients (@sstarcher)
+- check-rds-pending: Fix uninitialized constant (@obazoud)
 
 ### Added
-- check-rds.rb: Add support for assuming a role in another account
-- check-instance-events.rb: Add instance_id option
-- check-sensu-clients.rb: SSL support
-- common.rb: adding support for environment variable AWS_REGION when region is specified as an empty string
-- metrics-sqs.rb: Add support for recording additional per-queue SQS metrics (counts of not-visible and delayed messages)
-- check-subnet-ip-consumption.rb: to check consumption of IP addresses in subnets and alert if consumption exceeds a threshold
+- check-rds.rb: Add support for assuming a role in another account (@oba11)
+- check-instance-events.rb: Add instance_id option (@Jeppesen-io)
+- check-sensu-clients.rb: SSL support (@sstarcher)
+- common.rb: adding support for environment variable AWS_REGION when region is specified as an empty string (@sstarcher)
+- metrics-sqs.rb: Add support for recording additional per-queue SQS metrics (counts of not-visible and delayed messages) (@paddycarey)
+- check-subnet-ip-consumption.rb: to check consumption of IP addresses in subnets and alert if consumption exceeds a threshold (@nickjacques)
 - check-beanstalk-health.rb: Add optional region support
-- check-rds-events.rb: Added '-r all' region support
-- check-instance-events.rb: Added '-r all' region support and description of the event. Minor change to output message
-- check-elb-health-sdk.rb: Updated available regions fetch
+- check-rds-events.rb: Added '-r all' region support (@swibowo)
+- check-instance-events.rb: Added '-r all' region support and description of the event. Minor change to output message (@swibowo)
+- check-elb-health-sdk.rb: Updated available regions fetch (@swibowo)
+- handler-ec2_node.rb: Add region support (@runningman84)
+
+### Changed
+- Update `aws-sdk` dependency pin to ~> 2.3 (@sstarcher)
 
 ## [3.1.0] - 2016-05-15
 ### Fixed
