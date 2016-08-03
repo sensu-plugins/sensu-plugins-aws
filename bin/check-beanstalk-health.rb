@@ -45,6 +45,11 @@ class BeanstalkHealth < Sensu::Plugin::Check::CLI
          boolean: true,
          default: true
 
+  option :aws_region,
+         short:       '-r AWS_REGION',
+         long:        '--aws-region REGION',
+         description: 'Optional parameter to specify AWS Region.'
+
   def env_health
     @env_health ||= beanstalk_client
                     .describe_environment_health(
@@ -54,7 +59,13 @@ class BeanstalkHealth < Sensu::Plugin::Check::CLI
   end
 
   def beanstalk_client
-    @beanstalk_client ||= Aws::ElasticBeanstalk::Client.new
+    @beanstalk_client ||= if config[:aws_region]
+                            Aws::ElasticBeanstalk::Client.new(
+                              region: config[:aws_region]
+                            )
+                          else
+                            Aws::ElasticBeanstalk::Client.new
+                          end
   end
 
   def instances_health
