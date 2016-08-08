@@ -27,57 +27,115 @@
 #   for details.
 #
 
-require 'rubygems' if RUBY_VERSION < '1.9.0'
+require 'sensu-plugins-aws'
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
+require 'time'
 
 class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
-  option :rdsname,
-         description: 'Name of the Relational Database Service instance',
-         short: '-n RDS_NAME',
-         long: '--name RDS_NAME'
-
-  option :scheme,
-         description: 'Metric naming scheme, text to prepend to metric',
-         short: '-s SCHEME',
-         long: '--scheme SCHEME',
-         default: ''
-
-  option :fetch_age,
-         description: 'How long ago to fetch metrics for',
-         short: '-f AGE',
-         long: '--fetch_age',
-         default: 60,
-         proc: proc(&:to_i)
+  include Common
 
   option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
+         short:       '-a AWS_ACCESS_KEY',
+         long:        '--aws-access-key AWS_ACCESS_KEY',
          description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         required: true,
-         default: ENV['AWS_ACCESS_KEY']
+         default:     ENV['AWS_ACCESS_KEY']
 
   option :aws_secret_access_key,
-         short: '-k AWS_SECRET_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_KEY',
+         short:       '-k AWS_SECRET_KEY',
+         long:        '--aws-secret-access-key AWS_SECRET_KEY',
          description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         required: true,
-         default: ENV['AWS_SECRET_KEY']
+         default:     ENV['AWS_SECRET_KEY']
 
   option :aws_region,
-         short: '-r AWS_REGION',
-         long: '--aws-region REGION',
-         description: 'AWS Region (such as eu-west-1).',
-         default: 'us-east-1'
+         short:       '-r AWS_REGION',
+         long:        '--aws-region REGION',
+         description: 'AWS Region (defaults to us-east-1).',
+         default:     'eu-central-1'
+
+  option :db_instance_id,
+         short:       '-i N',
+         long:        '--db-instance-id NAME',
+         description: 'DB instance identifier'
+
+  option :end_time,
+         short:       '-t T',
+         long:        '--end-time TIME',
+         default:     Time.now,
+         proc:        proc { |a| Time.parse a },
+         description: 'CloudWatch metric statistics end time'
+
+  option :period,
+         short:       '-p N',
+         long:        '--period SECONDS',
+         default:     60,
+         proc:        proc(&:to_i),
+         description: 'CloudWatch metric statistics period'
+
+  option :statistics,
+         short:       '-S N',
+         long:        '--statistics NAME',
+         default:     :average,
+         proc:        proc { |a| a.downcase.intern },
+         description: 'CloudWatch statistics method'
+
+  option :accept_nil,
+         short: '-n',
+         long: '--accept_nil',
+         description: 'Continue if CloudWatch provides no metrics for the time period',
+         default: false
+
+ 
 
   def aws_config
-    hash = {}
-    hash.update access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key] if config[:access_key_id] && config[:secret_access_key]
-    hash.update region: config[:aws_region]
-    hash
+    { access_key_id: config[:aws_access_key],
+      secret_access_key: config[:aws_secret_access_key],
+      region: config[:aws_region] }
   end
 
-  def run
+  def rds
+    @rds ||= Aws::RDS::Client.new aws_config
+  end
+
+  def cloud_watch
+    @cloud_watch ||= Aws::CloudWatch::Client.new aws_config
+  end
+
+  def find_db_instance(id)
+    db = rds.describe_db_instances.db_instances.detect { |db_instance| db_instance.db_instance_identifier == id }
+    unknown 'DB instance not found.' if db.nil?
+    db
+  end
+
+  def cloud_watch_metric(metric_name, value)
+    cloud_watch.get_metric_statistics(
+      namespace: 'AWS/RDS',
+      metric_name: metric_name,
+      dimensions: [
+        {
+          name: 'DBInstanceIdentifier',
+          value: value 
+        }
+      ],
+      start_time: config[:end_time] - config[:period],
+      end_time: config[:end_time],
+      statistics: [config[:statistics].to_s.capitalize],
+      period: config[:period]
+    )
+  end
+
+  def latest_value(metric)
+    values = metric.datapoints.sort_by { |datapoint| datapoint[:timestamp] }
+
+    # handle time periods that are too small to return usable values.  # this is a cozy addition that wouldn't port upstream.
+    if values.empty?
+      config[:accept_nil] ? ok('Cloudwatch returned no results for time period. Accept nil passed so OK') : unknown('Requested time period did not return values from Cloudwatch. Try increasing your time period.')
+    else
+      values.last[config[:statistics]]
+    end
+  end
+
+  def run  
     statistic_type = {
       'CPUUtilization' => 'Average',
       'DatabaseConnections' => 'Average',
@@ -92,59 +150,25 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
       'SwapUsage' => 'Average',
       'BinLogDiskUsage' => 'Average',
       'DiskQueueDepth' => 'Average'
-    }
+	}
 
-    begin
-      et = Time.now - config[:fetch_age]
-      st = et - 60
+    @db_instance  = find_db_instance config[:db_instance_id]
+    @message      = "#{config[:db_instance_id]}: "
+     
+    result = {}    
 
-      cw = AWS::CloudWatch::Client.new aws_config
-
-      unless config[:rdsname]
-        rdss = AWS::RDS.new aws_config
-        config[:rdsname] = ''
-        rdss.instances.each do |rds|
-          config[:rdsname] += rds.db_instance_id + ' '
-        end
-      end
-
-      options = {
-        'namespace' => 'AWS/RDS',
-        'dimensions' => [
-          {
-            'name' => 'DBInstanceIdentifier',
-            'value' => '' # Will be filled in the each block below
-          }
-        ],
-        'start_time' => st.iso8601,
-        'end_time' => et.iso8601,
-        'period' => 60
-      }
-
-      result = {}
-      graphitepath = config[:scheme]
-
-      config[:rdsname].split(' ').each do |rdsname|
-        statistic_type.each do |key, value|
-          unless config[:scheme] == ''
-            graphitepath = "#{config[:scheme]}."
-          end
-          options['metric_name'] = key
-          options['dimensions'][0]['value'] = rdsname
-          options['statistics'] = [value]
-          r = cw.get_metric_statistics(options)
-          result[rdsname + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
-        end
-        unless result.nil?
-          # We only return data when we have some to return
-          result.each do |key, value|
-            output graphitepath + key.downcase.to_s, value.to_a.last[1], value[:timestamp].to_i
-          end
-        end
-      end
-    rescue => e
-      critical "Error: exception: #{e}"
+    rdsname = @db_instance.db_instance_identifier
+    
+    statistic_type.each do |key, value|
+      r = cloud_watch_metric key, rdsname
+      result[rdsname + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
+    end 
+    unless result.nil?
+      result.each do |key, value|
+        output key.downcase.to_s, value.average, value[:timestamp].to_i
+      end 
+      exit
     end
-    ok
   end
 end
+
