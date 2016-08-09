@@ -79,14 +79,6 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
          proc:        proc { |a| a.downcase.intern },
          description: 'CloudWatch statistics method'
 
-  option :accept_nil,
-         short: '-n',
-         long: '--accept_nil',
-         description: 'Continue if CloudWatch provides no metrics for the time period',
-         default: false
-
- 
-
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
@@ -94,11 +86,11 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
   end
 
   def rds
-    @rds ||= Aws::RDS::Client.new aws_config
+    @rds ||= config[:role_arn] ? Aws::RDS::Client.new(credentials: role_credentials, region: aws_config[:region]) : Aws::RDS::Client.new(aws_config)
   end
 
   def cloud_watch
-    @cloud_watch ||= Aws::CloudWatch::Client.new aws_config
+    @cloud_watch ||= config[:role_arn] ? Aws::CloudWatch::Client.new(credentials: role_credentials, region: aws_config[:region]) : Aws::CloudWatch::Client.new(aws_config)
   end
 
   def find_db_instance(id)
@@ -122,17 +114,6 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
       statistics: [config[:statistics].to_s.capitalize],
       period: config[:period]
     )
-  end
-
-  def latest_value(metric)
-    values = metric.datapoints.sort_by { |datapoint| datapoint[:timestamp] }
-
-    # handle time periods that are too small to return usable values.  # this is a cozy addition that wouldn't port upstream.
-    if values.empty?
-      config[:accept_nil] ? ok('Cloudwatch returned no results for time period. Accept nil passed so OK') : unknown('Requested time period did not return values from Cloudwatch. Try increasing your time period.')
-    else
-      values.last[config[:statistics]]
-    end
   end
 
   def run  
