@@ -106,7 +106,7 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
       dimensions: [
         {
           name: 'DBInstanceIdentifier',
-          value: value 
+          value: value
         }
       ],
       start_time: config[:end_time] - config[:period],
@@ -116,7 +116,7 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
     )
   end
 
-  def run  
+  def run
     statistic_type = {
       'CPUUtilization' => 'Average',
       'DatabaseConnections' => 'Average',
@@ -131,25 +131,24 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
       'SwapUsage' => 'Average',
       'BinLogDiskUsage' => 'Average',
       'DiskQueueDepth' => 'Average'
-	}
+    }
 
     @db_instance  = find_db_instance config[:db_instance_id]
     @message      = "#{config[:db_instance_id]}: "
-     
-    result = {}    
+
+    result = {}
 
     rdsname = @db_instance.db_instance_identifier
-    
-    statistic_type.each do |key, value|
+
+    statistic_type.each do |key, _value|
       r = cloud_watch_metric key, rdsname
       result[rdsname + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
-    end 
+    end
     unless result.nil?
       result.each do |key, value|
         output key.downcase.to_s, value.average, value[:timestamp].to_i
-      end 
-      exit
+      end
     end
+    exit
   end
 end
-
