@@ -79,12 +79,6 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
          proc:        proc { |a| a.downcase.intern },
          description: 'CloudWatch statistics method'
 
-  def aws_config
-    { access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region] }
-  end
-
   def rds
     @rds ||= config[:role_arn] ? Aws::RDS::Client.new(credentials: role_credentials, region: aws_config[:region]) : Aws::RDS::Client.new(aws_config)
   end
