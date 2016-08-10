@@ -59,6 +59,7 @@ class CheckEMRSteps < Sensu::Plugin::Check::CLI
          short: '-c COUNT',
          long: '--count',
          description: 'Max number of steps with this status.',
+         proc: proc(&:to_i),
          default: 0
 
   def run
@@ -71,7 +72,7 @@ class CheckEMRSteps < Sensu::Plugin::Check::CLI
 
       steps = emr.list_steps(
         cluster_id: cluster.id,
-        step_states: config[:status]
+        step_states: [config[:status]]
       ).steps
 
       messages = []

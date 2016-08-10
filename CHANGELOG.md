@@ -5,6 +5,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+- Fixed bugs in check-emr-steps.rb
+
 ## [3.2.0] - 2016-08-03
 ### Fixed
 - metrics-emr-steps.rb: fixed typo in variable name (@babsher)
