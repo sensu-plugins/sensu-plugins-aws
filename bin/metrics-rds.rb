@@ -80,11 +80,11 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
          description: 'CloudWatch statistics method'
 
   def rds
-    @rds ||= config[:role_arn] ? Aws::RDS::Client.new(credentials: role_credentials, region: aws_config[:region]) : Aws::RDS::Client.new(aws_config)
+    @rds = Aws::RDS::Client.new(aws_config)
   end
 
   def cloud_watch
-    @cloud_watch ||= config[:role_arn] ? Aws::CloudWatch::Client.new(credentials: role_credentials, region: aws_config[:region]) : Aws::CloudWatch::Client.new(aws_config)
+    @cloud_watch = Aws::CloudWatch::Client.new(aws_config)
   end
 
   def find_db_instance(id)
