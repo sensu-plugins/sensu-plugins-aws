@@ -41,7 +41,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
          default: 'us-east-1'
 
   def gather_events(events)
-    useful_events = events.reject { |x| x[:code] == 'system-reboot' && x[:description] =~ /\[Completed\]/ }
+    useful_events = events.reject { |x| (x[:code] =~ /system-reboot|instance-stop|system-maintenance/) && (x[:description] =~ /\[Completed\]|\[Canceled\]/) }
     !useful_events.empty?
   end
 

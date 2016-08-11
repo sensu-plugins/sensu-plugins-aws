@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Fixed
+- check-instance-health.rb: fixed remediated events not working after resolving it.
+
 
 - Fixed bugs in check-emr-steps.rb
 
