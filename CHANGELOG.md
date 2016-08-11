@@ -5,10 +5,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ### Fixed
-- check-instance-health.rb: fixed remediated events not working after resolving it.
-
-
-- Fixed bugs in check-emr-steps.rb
+- check-instance-health.rb: fixed remediated events not working after resolving it (@oba11)
+- Fixed bugs in check-emr-steps.rb (@babsher)
+- check-elb-certs.rb: Fix error introduced by rubocop cleanup (#125 @eheydrick)
 
 ## [3.2.0] - 2016-08-03
 ### Fixed
