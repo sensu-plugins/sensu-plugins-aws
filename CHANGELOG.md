@@ -12,6 +12,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ### Fixed
 - check-ses-limits.rb: Fix percentage calculation
+- check-rds.rb: Support added for checking all databases in a region
 
 ## [3.2.1] - 2016-08-10
 ### Fixed
