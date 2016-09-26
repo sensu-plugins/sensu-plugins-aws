@@ -62,20 +62,20 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
                 { filters: filter }
               end
 
-    messages = Array.new
+    messages = []
 
     ec2 = Aws::EC2::Client.new
-    instance_ids = Array.new
+    instance_ids = []
 
     instances = ec2.describe_instances(options)
     instances.reservations.each do |r|
       r.instances.each do |i|
-          instance_ids.push(i[:instance_id])
+        instance_ids.push(i[:instance_id])
       end
     end
 
     begin
-      resp = ec2.describe_instance_status({instance_ids: instance_ids})
+      resp = ec2.describe_instance_status(instance_ids: instance_ids)
       resp.instance_statuses.each do |item|
         id = item.instance_id
         if gather_events(item.events)
