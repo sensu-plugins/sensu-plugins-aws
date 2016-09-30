@@ -5,6 +5,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+- check-s3-object.rb: add an option to check s3 object's size
+
 ## [3.2.1] - 2016-08-10
 ### Fixed
 - check-instance-health.rb: fixed remediated events not working after resolving it (@oba11)
