@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-# check-s3-bucket
+# check-s3-object
 #
 # DESCRIPTION:
 #   This plugin checks if a file exists in a bucket and/or is not too old.
@@ -31,7 +31,7 @@
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
-class CheckS3Bucket < Sensu::Plugin::Check::CLI
+class CheckS3Object < Sensu::Plugin::Check::CLI
   option :aws_access_key,
          short: '-a AWS_ACCESS_KEY',
          long: '--aws-access-key AWS_ACCESS_KEY',
@@ -67,13 +67,6 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
          description: 'The name of key in the bucket',
          required: true
 
-  option :ok_zero_size,
-         description: 'OK if file has zero size',
-         short: '-z',
-         long: '--ok-zero-size',
-         boolean: true,
-         default: false
-
   option :warning_age,
          description: 'Warn if mtime greater than provided age in seconds',
          short: '-w SECONDS',
@@ -84,17 +77,58 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
          short: '-c SECONDS',
          long: '--critical SECONDS'
 
+  option :ok_zero_size,
+         description: 'OK if file has zero size',
+         short: '-z',
+         long: '--ok-zero-size',
+         boolean: true,
+         default: false
+
+  option :warning_size,
+         description: 'Warning threshold for size',
+         long: '--warning-size COUNT'
+
+  option :critical_size,
+         description: 'Critical threshold for size',
+         long: '--critical-size COUNT'
+
+  option :compare_size,
+         description: 'Comparision operator for threshold: equal, not, greater, less',
+         short: '-o OPERATION',
+         long: '--operator-size OPERATION',
+         default: 'equal'
+
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
       region: config[:aws_region] }
   end
 
-  def run_check(type, age)
-    to_check = config["#{type}_age".to_sym].to_i
-    if to_check > 0 && age >= to_check # rubocop:disable GuardClause
-      send(type, "S3 object #{config[:key_name]} is #{age - to_check} seconds past (bucket #{config[:bucket_name]})")
+  def operator
+    op = lambda do |type, a, b|
+      case type
+      when 'age'
+        a > b
+      when 'size'
+        if config[:compare_size] == 'greater'
+          a > b
+        elsif config[:compare_size] == 'less'
+          a < b
+        elsif config[:compare_size] == 'not'
+          a != b
+        end
+      else
+        a == b
+      end
     end
+    op
+  end
+
+  def run_check(type, level, value, msg)
+    key = "#{level}_#{type}".to_sym
+    return if config[key].nil?
+    to_check = config[key].to_i
+    send(level, msg % [config[:key_name], value, config[:bucket_name]]) if operator.call type, value, to_check
   end
 
   def run
@@ -107,21 +141,26 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
     s3 = Aws::S3::Client.new(aws_config.merge!(region: config[:aws_region]))
     begin
       output = s3.head_object(bucket: config[:bucket_name], key: config[:key_name])
+      age = Time.now.to_i - output[:last_modified].to_i
+      size = output[:content_length]
 
-      if output[:content_length] == 0 && !config[:ok_zero_size]
-        critical "S3 object #{config[:key_name]} has zero size (bucket #{config[:bucket_name]})"
+      [:critical, :warning].each do |level|
+        run_check('age', level, age, 'S3 object %s is %s seconds old (bucket %s)')
       end
 
-      if config[:warning_age] || config[:critical_age]
-        age = Time.now.to_i - output[:last_modified].to_i
-        run_check(:critical, age) || run_check(:warning, age) || ok("S3 object #{config[:key_name]} is #{age} seconds old (bucket #{config[:bucket_name]})")
+      if size == 0
+        critical "S3 object #{config[:key_name]} is empty (bucket #{config[:bucket_name]})" unless config[:ok_zero_size]
       else
-        ok("S3 object #{config[:key_name]} exists (bucket #{config[:bucket_name]})")
+        [:critical, :warning].each do |level|
+          run_check('size', level, size, 'S3 %s object\'size : %s octets (bucket %s)')
+        end
       end
+
+      ok("S3 object #{config[:key_name]} exists in bucket #{config[:bucket_name]}")
     rescue Aws::S3::Errors::NotFound => _
       critical "S3 object #{config[:key_name]} not found in bucket #{config[:bucket_name]}"
     rescue => e
-      critical "S3 object #{config[:key_name]} in bucket #{config[:bucket_name]} - #{e.message}"
+      critical "S3 object #{config[:key_name]} in bucket #{config[:bucket_name]} - #{e.message} - #{e.backtrace}"
     end
   end
 end
