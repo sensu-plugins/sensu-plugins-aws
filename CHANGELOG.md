@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 - metrics-s3.rb: added
 - metrics-billing.rb: added
+- add check-cloudfront-tag.rb and check-s3-tag.rb (@obazoud)
 
 ## [3.2.1] - 2016-08-10
 ### Fixed
