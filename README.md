@@ -16,6 +16,8 @@
 
 **check-cloudwatch-alarm**
 
+**check-cloudfront-tag**
+
 **check-configservice-rules**
 
 **check-dynamodb-capacity.rb**
@@ -73,6 +75,8 @@
 **check-s3-bucket.rb**
 
 **check-s3-object.rb**
+
+**check-s3-tag.rb**
 
 **check-ses-limit.rb**
 

@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 - metrics-s3.rb: added
 - metrics-billing.rb: added
+- add check-cloudfront-tag.rb and check-s3-tag.rb (@obazoud)
 
 - check-s3-object.rb: add an option to check s3 object's size
 
