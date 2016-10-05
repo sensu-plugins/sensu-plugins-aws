@@ -4,11 +4,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Added
 - metrics-s3.rb: added
 - metrics-billing.rb: added
 - add check-cloudfront-tag.rb and check-s3-tag.rb (@obazoud)
-
 - check-s3-object.rb: add an option to check s3 object's size
+
+### Fixed
+- check-ses-limits.rb: Fix percentage calculation
 
 ## [3.2.1] - 2016-08-10
 ### Fixed
