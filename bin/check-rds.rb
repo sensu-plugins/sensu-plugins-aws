@@ -96,7 +96,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   option :period,
          short:       '-p N',
          long:        '--period SECONDS',
-         default:     60,
+         default:     180,
          proc:        proc(&:to_i),
          description: 'CloudWatch metric statistics period'
 
@@ -183,11 +183,6 @@ class CheckRDS < Sensu::Plugin::Check::CLI
     end
   end
 
-  def flag_alert(severity, message)
-    @severities[severity] = true
-    @message += message
-  end
-
   def memory_total_bytes(instance_class)
     memory_total_gigabytes = {
       'db.cr1.8xlarge' => 244.0,
@@ -224,84 +219,113 @@ class CheckRDS < Sensu::Plugin::Check::CLI
 
   def check_az(severity, expected_az)
     return if @db_instance.availability_zone == expected_az
-    flag_alert severity, "; AZ is #{@db_instance.availability_zone} (expected #{expected_az})"
+    @severities[severity] = true
+    "; AZ is #{@db_instance.availability_zone} (expected #{expected_az})"
   end
 
   def check_cpu(severity, expected_lower_than)
-    @cpu_metric ||= cloud_watch_metric 'CPUUtilization', 'Percent'
-    @cpu_metric_value ||= latest_value @cpu_metric
-    return if @cpu_metric_value < expected_lower_than
-    flag_alert severity, "; CPUUtilization is #{sprintf '%.2f', @cpu_metric_value}% (expected lower than #{expected_lower_than}%)"
+    cpu_metric ||= cloud_watch_metric 'CPUUtilization', 'Percent'
+    cpu_metric_value ||= latest_value cpu_metric
+    return if cpu_metric_value < expected_lower_than
+    @severities[severity] = true
+    "; CPUUtilization is #{sprintf '%.2f', cpu_metric_value}% (expected lower than #{expected_lower_than}%)"
   end
 
   def check_memory(severity, expected_lower_than)
-    @memory_metric ||= cloud_watch_metric 'FreeableMemory', 'Bytes'
-    @memory_metric_value ||= latest_value @memory_metric
-    @memory_total_bytes ||= memory_total_bytes @db_instance.db_instance_class
-    @memory_usage_bytes ||= @memory_total_bytes - @memory_metric_value
-    @memory_usage_percentage ||= @memory_usage_bytes / @memory_total_bytes * 100
-    return if @memory_usage_percentage < expected_lower_than
-    flag_alert severity, "; Memory usage is #{sprintf '%.2f', @memory_usage_percentage}% (expected lower than #{expected_lower_than}%)"
+    memory_metric ||= cloud_watch_metric 'FreeableMemory', 'Bytes'
+    memory_metric_value ||= latest_value memory_metric
+    memory_total_bytes ||= memory_total_bytes @db_instance.db_instance_class
+    memory_usage_bytes ||= memory_total_bytes - memory_metric_value
+    memory_usage_percentage ||= memory_usage_bytes / memory_total_bytes * 100
+    return if memory_usage_percentage < expected_lower_than
+    @severities[severity] = true
+    "; Memory usage is #{sprintf '%.2f', memory_usage_percentage}% (expected lower than #{expected_lower_than}%)"
   end
 
   def check_disk(severity, expected_lower_than)
-    @disk_metric ||= cloud_watch_metric 'FreeStorageSpace', 'Bytes'
-    @disk_metric_value ||= latest_value @disk_metric
-    @disk_total_bytes ||= @db_instance.allocated_storage * 1024**3
-    @disk_usage_bytes ||= @disk_total_bytes - @disk_metric_value
-    @disk_usage_percentage ||= @disk_usage_bytes / @disk_total_bytes * 100
-    return if @disk_usage_percentage < expected_lower_than
-    flag_alert severity, "; Disk usage is #{sprintf '%.2f', @disk_usage_percentage}% (expected lower than #{expected_lower_than}%)"
+    disk_metric ||= cloud_watch_metric 'FreeStorageSpace', 'Bytes'
+    disk_metric_value ||= latest_value disk_metric
+    disk_total_bytes ||= @db_instance.allocated_storage * 1024**3
+    disk_usage_bytes ||= disk_total_bytes - disk_metric_value
+    disk_usage_percentage ||= disk_usage_bytes / disk_total_bytes * 100
+    return if disk_usage_percentage < expected_lower_than
+    @severities[severity] = true
+    "; Disk usage is #{sprintf '%.2f', disk_usage_percentage}% (expected lower than #{expected_lower_than}%)"
   end
 
   def check_connections(severity, expected_lower_than)
-    @connections_metric ||= cloud_watch_metric 'DatabaseConnections', 'Count'
-    @connections_metric_value ||= latest_value @connections_metric
-    return if @connections_metric_value < expected_lower_than
-    flag_alert severity, "; DatabaseConnections are #{sprintf '%d', @connections_metric_value} (expected lower than #{expected_lower_than})"
+    connections_metric ||= cloud_watch_metric 'DatabaseConnections', 'Count'
+    connections_metric_value ||= latest_value connections_metric
+    return if connections_metric_value < expected_lower_than
+    @severities[severity] = true
+    "; DatabaseConnections are #{sprintf '%d', connections_metric_value} (expected lower than #{expected_lower_than})"
   end
 
   def check_iops(severity, expected_lower_than)
-    @read_iops_metric ||= cloud_watch_metric 'ReadIOPS', 'Count/Second'
-    @read_iops_metric_value ||= latest_value @read_iops_metric
-    @write_iops_metric ||= cloud_watch_metric 'WriteIOPS', 'Count/Second'
-    @write_iops_metric_value ||= latest_value @write_iops_metric
-    @iops_metric_value ||= @read_iops_metric_value + @write_iops_metric_value
-    return if @iops_metric_value < expected_lower_than
-    flag_alert severity, "; IOPS are #{sprintf '%d', @iops_metric_value} (expected lower than #{expected_lower_than})"
+    read_iops_metric ||= cloud_watch_metric 'ReadIOPS', 'Count/Second'
+    read_iops_metric_value ||= latest_value read_iops_metric
+    write_iops_metric ||= cloud_watch_metric 'WriteIOPS', 'Count/Second'
+    write_iops_metric_value ||= latest_value write_iops_metric
+    iops_metric_value ||= read_iops_metric_value + write_iops_metric_value
+    return if iops_metric_value < expected_lower_than
+    @severities[severity] = true
+    "; IOPS are #{sprintf '%d', iops_metric_value} (expected lower than #{expected_lower_than})"
   end
 
   def run
+    instances = []
     if config[:db_instance_id].nil? || config[:db_instance_id].empty?
-      unknown 'No DB instance provided.  See help for usage details'
+      rds.describe_db_instances[:db_instances].map { |db| instances << db }
+    else
+      instances << find_db_instance(config[:db_instance_id])
     end
 
-    @db_instance  = find_db_instance config[:db_instance_id]
-    @message      = "#{config[:db_instance_id]}: "
-    @severities   = {
+    messages = ''
+    severities = {
+      critical: false,
+      warning:  false
+    }
+    instances.each do |instance|
+      @db_instance = instance
+      result = collect(instance)
+      if result[1][:critical]
+        messages += result[0]
+        severities[:critical] = true
+      elsif result[1][:warning]
+        severities[:warning] = true
+        messages += result[0]
+      end
+    end
+
+    if severities[:critical]
+      critical messages
+    elsif severities[:warning]
+      warning messages
+    else
+      ok messages
+    end
+  end
+
+  def collect(instance)
+    message = "\n#{instance[:db_instance_identifier]}: "
+    @severities = {
       critical: false,
       warning:  false
     }
 
     @severities.keys.each do |severity|
-      check_az severity, config[:"availability_zone_#{severity}"] if config[:"availability_zone_#{severity}"]
+      message += check_az severity, config[:"availability_zone_#{severity}"], instance if config[:"availability_zone_#{severity}"]
 
       %w(cpu memory disk connections iops).each do |item|
-        send "check_#{item}", severity, config[:"#{item}_#{severity}_over"] if config[:"#{item}_#{severity}_over"]
+        result = send "check_#{item}", severity, config[:"#{item}_#{severity}_over"] if config[:"#{item}_#{severity}_over"]
+        message += result unless result.nil?
       end
     end
 
     if %w(cpu memory disk connections iops).any? { |item| %w(warning critical).any? { |severity| config[:"#{item}_#{severity}_over"] } }
-      @message += "(#{config[:statistics].to_s.capitalize} within #{config[:period]}s "
-      @message += "between #{config[:end_time] - config[:period]} to #{config[:end_time]})"
+      message += "(#{config[:statistics].to_s.capitalize} within #{config[:period]}s "
+      message += "between #{config[:end_time] - config[:period]} to #{config[:end_time]})"
     end
-
-    if @severities[:critical]
-      critical @message
-    elsif @severities[:warning]
-      warning @message
-    else
-      ok @message
-    end
+    [message, @severities]
   end
 end
