@@ -107,7 +107,7 @@ class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
       if primary_status
         service.deployments.each  do |x|
           if x[:status].include? 'PRIMARY'
-            bucket = bucket_service(service[:running_count] , service[:desired_count])
+            bucket = bucket_service(x[:running_count] , x[:desired_count])
           end
         end
       else
