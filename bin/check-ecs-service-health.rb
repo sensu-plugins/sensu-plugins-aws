@@ -61,6 +61,12 @@ class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
          long: '--warn_as_crit',
          description: 'Consider it critical when any desired tasks are not running. Otherwise, only 0 is critical.'
 
+ option :primary_status,
+        short: '-p',
+        long: '--primary_status',
+        description: 'Checking for deployments which only have a Primary Status.',
+        default: false
+
   def ecs_client
     @ecs_client ||= Aws::ECS::Client.new
   end
@@ -95,22 +101,47 @@ class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
   end
 
   # Unhealthy if service has fewer running tasks than desired
-  def services_by_health(cluster = 'default', services = nil)
-    service_details(cluster, services).group_by { |s| bucket_service(s[:running_count], s[:desired_count]) }
+  def services_by_health(cluster = 'default', services = nil, primary_status = false)
+    bucket = nil
+    services = service_details(cluster, services).group_by do |service|
+      if primary_status
+        service.deployments.each  do |x|
+          if x[:status].include? 'PRIMARY'
+            bucket = bucket_service(service[:running_count] , service[:desired_count])
+          end
+        end
+      else
+        bucket = bucket_service(service[:running_count] , service[:desired_count])
+      end
+      bucket
+    end
   end
 
   def run
-    service_healths = services_by_health(config[:cluster_name], config[:services])
+    service_healths = services_by_health(config[:cluster_name], config[:services], config[:primary_status])
 
     unhealthy = []
     unhealthy.concat(service_healths[:critical]) if service_healths.key? :critical
     unhealthy.concat(service_healths[:warn]) if service_healths.key? :warn
-    unhealthy = unhealthy.collect { |s| "#{s.service_name} (#{s.running_count}/#{s.desired_count})" }
+
+    if config[:primary_status]
+      unhealthy_p = nil
+      unhealthy = unhealthy.collect do |s|
+        s.deployments.each  do |x|
+          if x[:status].include? 'PRIMARY'
+            unhealthy_p = "#{s.service_name} (#{x.running_count}/#{x.desired_count})"
+          end
+        end
+        unhealthy_p
+      end
+    else
+      unhealthy = unhealthy.collect { |s| "#{s.service_name} (#{s.running_count}/#{s.desired_count})" }
+    end
 
     if service_healths.key?(:critical) || (config[:warn_as_crit] && service_healths.key?(:warn))
-      critical("Unhealthy ECS Services: #{unhealthy.join ', '}")
+      critical("Unhealthy ECS Services(Primary only = #{config[:primary_status]}):  #{unhealthy.join ', '}")
     elsif service_healths.key?(:warn)
-      warning("Unhealthy ECS Services: #{unhealthy.join ', '}")
+      warning("Unhealthy ECS Services(Primary only = #{config[:primary_status]}): #{unhealthy.join ', '}")
     else
       ok
     end
