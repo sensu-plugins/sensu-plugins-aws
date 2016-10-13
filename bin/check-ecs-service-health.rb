@@ -61,11 +61,11 @@ class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
          long: '--warn_as_crit',
          description: 'Consider it critical when any desired tasks are not running. Otherwise, only 0 is critical.'
 
- option :primary_status,
-        short: '-p',
-        long: '--primary_status',
-        description: 'Checking for deployments which only have a Primary Status.',
-        default: false
+  option :primary_status,
+         short: '-p',
+         long: '--primary_status',
+         description: 'Checking for deployments which only have a Primary Status.',
+         default: false
 
   def ecs_client
     @ecs_client ||= Aws::ECS::Client.new
@@ -103,15 +103,15 @@ class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
   # Unhealthy if service has fewer running tasks than desired
   def services_by_health(cluster = 'default', services = nil, primary_status = false)
     bucket = nil
-    services = service_details(cluster, services).group_by do |service|
+    service_details(cluster, services).group_by do |service|
       if primary_status
-        service.deployments.each  do |x|
+        service.deployments.each do |x|
           if x[:status].include? 'PRIMARY'
-            bucket = bucket_service(x[:running_count] , x[:desired_count])
+            bucket = bucket_service(x[:running_count], x[:desired_count])
           end
         end
       else
-        bucket = bucket_service(service[:running_count] , service[:desired_count])
+        bucket = bucket_service(service[:running_count], service[:desired_count])
       end
       bucket
     end
@@ -127,7 +127,7 @@ class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
     if config[:primary_status]
       unhealthy_p = nil
       unhealthy = unhealthy.collect do |s|
-        s.deployments.each  do |x|
+        s.deployments.each do |x|
           if x[:status].include? 'PRIMARY'
             unhealthy_p = "#{s.service_name} (#{x.running_count}/#{x.desired_count})"
           end
