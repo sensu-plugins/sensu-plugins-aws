@@ -68,9 +68,9 @@ class S3Metrics < Sensu::Plugin::Metric::CLI::Graphite
               value: 'StandardStorage'
             }
           ],
-          start_time: (now.utc - 6 * 60 * 60).iso8601,
+          start_time: (now.utc - 24 * 60 * 60).iso8601,
           end_time: now.utc.iso8601,
-          period: 6 * 60 * 60,
+          period: 24 * 60 * 60,
           statistics: ['Average'],
           unit: 'Bytes'
         )
@@ -88,9 +88,9 @@ class S3Metrics < Sensu::Plugin::Metric::CLI::Graphite
               value: 'AllStorageTypes'
             }
           ],
-          start_time: (now.utc - 6 * 60 * 60).iso8601,
+          start_time: (now.utc - 24 * 60 * 60).iso8601,
           end_time: now.utc.iso8601,
-          period: 6 * 60 * 60,
+          period: 24 * 60 * 60,
           statistics: ['Average'],
           unit: 'Count'
         )
