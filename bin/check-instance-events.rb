@@ -28,7 +28,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 
 class CheckInstanceEvents < Sensu::Plugin::Check::CLI
   option :aws_access_key,
@@ -74,10 +74,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
   end
 
   def ec2_regions
-    # This is for SDK v2
-    # Aws.partition('aws').regions.map(&:name)
-
-    AWS::EC2.regions.map(&:name)
+    Aws.partition('aws').regions.map(&:name)
   end
 
   def run
@@ -100,15 +97,15 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
     end
 
     aws_regions.each do |r| # Iterate each possible region
-      ec2 = AWS::EC2::Client.new(aws_config.merge!(region: r))
+      ec2 = Aws::EC2::Client.new(aws_config.merge!(region: r))
       begin
         describe_instance_options = {}
         if config[:instance_id].any?
           describe_instance_options = describe_instance_options.merge(instance_ids: config[:instance_id])
         end
 
-        ec2.describe_instance_status(describe_instance_options)[:instance_status_set].each do |i|
-          next if i[:events_set].empty?
+        ec2.describe_instance_status(describe_instance_options).instance_statuses.each do |i|
+          next if i[:events].empty?
 
           # Exclude completed reboots since the events API appearently returns these even after they have been completed:
           # Example:
@@ -121,7 +118,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
           #     }
           # ]
           useful_events =
-            i[:events_set].reject { |x| (x[:code] =~ /system-reboot|instance-stop|system-maintenance/) && (x[:description] =~ /\[Completed\]|\[Canceled\]/) }
+            i[:events].reject { |x| (x[:code] =~ /system-reboot|instance-stop|system-maintenance/) && (x[:description] =~ /\[Completed\]|\[Canceled\]/) }
 
           unless useful_events.empty?
             if config[:include_name]
@@ -132,9 +129,9 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
               rescue => e
                 puts "Issue getting instance details for #{i[:instance_id]} (#{r}).  Exception = #{e}"
               end
-              event_instances << "#{name} (#{i[:instance_id]} #{r}) (#{i[:events_set][0][:code]}) #{i[:events_set][0][:description]}"
+              event_instances << "#{name} (#{i[:instance_id]} #{r}) (#{i[:events][0][:code]}) #{i[:events][0][:description]}"
             else
-              event_instances << "#{i[:instance_id]} (#{r}) (#{i[:events_set][0][:code]}) #{i[:events_set][0][:description]}"
+              event_instances << "#{i[:instance_id]} (#{r}) (#{i[:events][0][:code]}) #{i[:events][0][:description]}"
             end
           end
         end

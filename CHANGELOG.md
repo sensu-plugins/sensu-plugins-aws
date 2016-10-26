@@ -11,8 +11,11 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - check-s3-object.rb: add an option to check s3 object's size
 
 ### Fixed
+- check-instance-events.rb: migrated the script to aws sdk v2 because of incompatibility of sdk v1 with newer regions (@oba11)
+- check-rds-events.rb: migrated the script to aws sdk v2 because of incompatibility of sdk v1 with newer regions (@oba11)
 - check-ses-limits.rb: Fix percentage calculation
 - check-rds.rb: Support added for checking all databases in a region
+- metrics-autoscaling-instance-count.rb: migrated the script to aws sdk v2 and support fetching all autoscaling groups (@oba11)
 
 ## [3.2.1] - 2016-08-10
 ### Fixed
