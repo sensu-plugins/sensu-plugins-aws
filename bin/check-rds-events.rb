@@ -41,7 +41,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 
 class CheckRDSEvents < Sensu::Plugin::Check::CLI
   option :aws_access_key,
@@ -74,10 +74,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
   end
 
   def rds_regions
-    # This is for SDK v2
-    # Aws.partition('aws').regions.map(&:name)
-
-    AWS::RDS.regions.map(&:name)
+    Aws.partition('aws').regions.map(&:name)
   end
 
   def run
@@ -102,7 +99,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
     end
 
     aws_regions.each do |r|
-      rds = AWS::RDS::Client.new aws_config.merge!(region: r)
+      rds = Aws::RDS::Client.new aws_config.merge!(region: r)
 
       begin
         if !config[:db_instance_id].nil? && !config[:db_instance_id].empty?
