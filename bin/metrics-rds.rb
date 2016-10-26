@@ -22,7 +22,7 @@
 #   Returns all RDS statistics for all RDS instances in this account unless you specify --name
 #
 # LICENSE:
-#   Copyright 2013 Bashton Ltd http://www.bashton.com/
+#   Peter Hoppe <peter.hoppe.extern@bertelsmann.de>
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
 #
