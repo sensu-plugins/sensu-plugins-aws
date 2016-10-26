@@ -22,7 +22,7 @@
 #   Based heavily on Yohei Kawahara's check-ec2-network
 #
 # LICENSE:
-#   Gavin Hamill <gavin@bashton.com>
+#   Peter Hoppe <peter.hoppe.extern@bertelsmann.de>
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
 #
