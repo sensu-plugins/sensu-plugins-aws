@@ -16,7 +16,9 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   ./check-autoscaling-instances-inservices.rb -r ${your_region} 
+#   ./check-autoscaling-instances-inservices.rb -r ${your_region}
+#   one autoScalingGroup
+#   ./check-autoscaling-instances-inservices.rb -r ${your_region} -g 'autoScalingGroupName'
 #
 # NOTES:
 #   Based heavily on Yohei Kawahara's check-ec2-network
@@ -31,70 +33,77 @@ require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
 class CheckAsgInstancesInService < Sensu::Plugin::Check::CLI
-  option :aws_access_key,
-         short:       '-a AWS_ACCESS_KEY',
-         long:        '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default:     ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short:       '-k AWS_SECRET_KEY',
-         long:        '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default:     ENV['AWS_SECRET_KEY']
-
   option :aws_region,
          short:       '-r AWS_REGION',
          long:        '--aws-region REGION',
          description: 'AWS Region (defaults to us-east-1).',
-         default:     'us-east-1'
+         default:     ENV['AWS_REGION']
 
   option :group,
          short:       '-g G',
          long:        '--autoscaling-group GROUP',
          description: 'AutoScaling group to check'
 
-
-  def aws_config
-    { access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region] }
-  end
-
   def asg
-    @asg ||= Aws::AutoScaling::Client.new aws_config
+    Aws.config[:region] = config[:aws_region]
+    @asg ||= Aws::AutoScaling::Client.new(region: config[:aws_region])
   end
- 
-  def run 
+
+  def describe_asg(asg_name)
+    asg.describe_auto_scaling_groups(
+      auto_scaling_group_names: ["#{asg_name}"]
+    )
+  end
+
+  def run
     warning = 0
     critical = 0
-    result = ""  
-    asg.describe_auto_scaling_groups.auto_scaling_groups.each do |group|
-      grp_name = group.auto_scaling_group_name 
-      instance_in_service = 0
-      group.instances.each do |instance| 
+    instance_in_service = 0
+    result = ""
+    if config[:group].nil?
+      asg.describe_auto_scaling_groups.auto_scaling_groups.each do |group|
+        grp_name = group.auto_scaling_group_name
+        instance_in_service = 0
+        group.instances.each do |instance|
+          if instance.lifecycle_state == 'InService'
+            instance_in_service = instance_in_service + 1
+          end
+        end
+        if instance_in_service == 0
+          critical = 1
+          result = result + "#{grp_name}: no Instances inService  #{instance_in_service} \n"
+        elsif instance_in_service < group.min_size
+          warning = 1
+          result = result + "#{grp_name} Intance are not okay #{instance_in_service} \n"
+        else
+          result = result + "#{grp_name} Intance are inService #{instance_in_service} \n"
+        end
+      end
+    else
+      selected_group = describe_asg(config[:group])[0][0]
+      min_size = selected_group.min_size
+      selected_group.instances.each do |instance|
         if instance.lifecycle_state == 'InService'
           instance_in_service = instance_in_service + 1
         end
       end
       if instance_in_service == 0
         critical = 1
-        result = result + "#{grp_name}: no Instances inService  #{instance_in_service} \n"
-      elsif instance_in_service < group.min_size
+        result = result + "#{config[:group]}: no Instances inService  #{instance_in_service} \n"
+      elsif instance_in_service < min_size
         warning = 1
-        result = result + "#{grp_name} Intance are not okay #{instance_in_service} \n"
+        result = result + "#{config[:group]} Intance are not okay #{instance_in_service} \n"
       else
-        result = result + "#{grp_name} Intance are inService #{instance_in_service} \n"
+        result = result + "#{config[:group]} Intance are inService #{instance_in_service} \n"
       end
-      end
-      if critical == 1 
-        critical result
-      elsif warning == 1 
-        warning result
-      else
-        ok result
-      end
+    end
+    if critical == 1
+      critical result
+    elsif warning == 1
+      warning result
+    else
+      ok result
+    end
   end
 
 end
-

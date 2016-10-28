@@ -33,7 +33,6 @@ require 'aws-sdk'
 require 'time'
 
 class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
-  include Common
 
   option :aws_access_key,
          short:       '-a AWS_ACCESS_KEY',
