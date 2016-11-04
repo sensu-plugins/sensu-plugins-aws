@@ -29,10 +29,12 @@
 #   for details.
 #
 
+require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
 class CheckAsgInstancesInService < Sensu::Plugin::Check::CLI
+  include Common
   option :aws_region,
          short:       '-r AWS_REGION',
          long:        '--aws-region REGION',
@@ -45,8 +47,7 @@ class CheckAsgInstancesInService < Sensu::Plugin::Check::CLI
          description: 'AutoScaling group to check'
 
   def asg
-    Aws.config[:region] = config[:aws_region]
-    @asg ||= Aws::AutoScaling::Client.new(region: config[:aws_region])
+    @asg ||= Aws::AutoScaling::Client.new
   end
 
   def describe_asg(asg_name)

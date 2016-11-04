@@ -33,24 +33,12 @@ require 'aws-sdk'
 require 'time'
 
 class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
-
-  option :aws_access_key,
-         short:       '-a AWS_ACCESS_KEY',
-         long:        '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default:     ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short:       '-k AWS_SECRET_KEY',
-         long:        '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default:     ENV['AWS_SECRET_KEY']
-
+  include Common
   option :aws_region,
          short:       '-r AWS_REGION',
          long:        '--aws-region REGION',
          description: 'AWS Region (defaults to us-east-1).',
-         default:     'eu-central-1'
+         default:     ENV['AWS_REGION']
 
   option :db_instance_id,
          short:       '-i N',
@@ -79,11 +67,11 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
          description: 'CloudWatch statistics method'
 
   def rds
-    @rds = Aws::RDS::Client.new(aws_config)
+    @rds = Aws::RDS::Client.new
   end
 
   def cloud_watch
-    @cloud_watch = Aws::CloudWatch::Client.new(aws_config)
+    @cloud_watch = Aws::CloudWatch::Client.new
   end
 
   def find_db_instance(id)
