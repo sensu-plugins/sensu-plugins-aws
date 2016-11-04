@@ -39,9 +39,14 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
          long: '--aws-region REGION',
          description: 'AWS Region (defaults to us-east-1).',
          default: 'us-east-1'
+  option :filter,
+         short: '-f FILTER',
+         long: '--filter FILTER',
+         description: 'String representation of the filter to apply',
+         default: '{}'
 
   def gather_events(events)
-    useful_events = events.reject { |x| x[:code] == 'system-reboot' && x[:description] =~ /\[Completed\]/ }
+    useful_events = events.reject { |x| (x[:code] =~ /system-reboot|instance-stop|system-maintenance/) && (x[:description] =~ /\[Completed\]|\[Canceled\]/) }
     !useful_events.empty?
   end
 
@@ -50,10 +55,28 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
   end
 
   def run
+    filter = Filter.parse(config[:filter])
+    options = if filter.empty?
+                {}
+              else
+                { filters: filter }
+              end
+
     messages = []
+
     ec2 = Aws::EC2::Client.new
+    instance_ids = []
+
+    instances = ec2.describe_instances(options)
+    instances.reservations.each do |r|
+      r.instances.each do |i|
+        instance_ids.push(i[:instance_id])
+      end
+    end
+
     begin
-      ec2.describe_instance_status.instance_statuses.each do |item|
+      resp = ec2.describe_instance_status(instance_ids: instance_ids)
+      resp.instance_statuses.each do |item|
         id = item.instance_id
         if gather_events(item.events)
           messages << "#{id} has unscheduled events"

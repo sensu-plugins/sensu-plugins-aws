@@ -103,7 +103,7 @@ class CheckSensuClient < Sensu::Plugin::Check::CLI
     end.reduce(:merge)
     filter_list.delete(nil)
     filter_list.each { |x, y| filter_list[x] = y.strip.gsub(/[\[\]]/, '') }
-    client = Aws::EC2::Client.new aws_config
+    client = Aws::EC2::Client.new
 
     parsed_filter = Filter.parse(config[:filter])
 

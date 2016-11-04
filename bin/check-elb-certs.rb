@@ -127,7 +127,7 @@ class CheckELBCerts < Sensu::Plugin::Check::CLI
       unknown "An error occurred processing AWS ELB API: #{e.message}"
     end
 
-    if !critical_message.length.empty?
+    if !critical_message.empty?
       message = cert_message(critical_message.length, 'expiring within', config[:crit_under])
       message += ': ' + critical_message.sort.join(' ')
       critical message

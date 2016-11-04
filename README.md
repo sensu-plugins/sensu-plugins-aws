@@ -16,6 +16,8 @@
 
 **check-cloudwatch-alarm**
 
+**check-cloudfront-tag**
+
 **check-configservice-rules**
 
 **check-dynamodb-capacity.rb**
@@ -74,6 +76,8 @@
 
 **check-s3-object.rb**
 
+**check-s3-tag.rb**
+
 **check-ses-limit.rb**
 
 **check-ses-statistics.rb**
@@ -81,6 +85,8 @@
 **check-sns-subscriptions**
 
 **check-sqs-messages.rb**
+
+**check-subnet-ip-consumption**
 
 **check-vpc-nameservers**
 
@@ -102,6 +108,8 @@
 
 **metrics-autoscaling-instance-count.rb**
 
+**metrics-billing.rb**
+
 **metrics-ec2-count.rb**
 
 **metrics-ec2-filter.rb**
@@ -113,6 +121,8 @@
 **metrics-elb.rb**
 
 **metrics-emr-steps.rb**
+
+**metrics-s3.rb**
 
 **metrics-ses.rb**
 
@@ -151,6 +161,7 @@
 * /bin/check-ses-limit.rb
 * /bin/check-ses-statistics.rb
 * /bin/check-sqs-messages.rb
+* /bin/check-subnet-ip-consumption.rb
 * /bin/check-vpc-nameservers.rb
 * /bin/check_vpc_vpn.py
 * /bin/check_vpc_vpn.rb
@@ -159,12 +170,14 @@
 * /bin/handler-sns.rb
 * /bin/metrics-autoscaling-instance-count.rb
 * /bin/check-instances-count.rb
+* /bin/metrics-billing.rb
 * /bin/metrics-ec2-count.rb
 * /bin/metrics-ec2-filter.rb
 * /bin/metrics-elasticache.rb
 * /bin/metrics-elb-full.rb
 * /bin/metrics-elb.rb
 * /bin/metrics-emr-steps.rb
+* /bin/metrics-s3.rb
 * /bin/metrics-ses.rb
 * /bin/metrics-sqs.rb
 

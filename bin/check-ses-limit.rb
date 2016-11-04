@@ -75,7 +75,7 @@ class CheckSESLimit < Sensu::Plugin::Check::CLI
 
     unknown 'Empty response from AWS SES API' if response.empty? # Can this happen?
 
-    percent = (response.sent_last_24_hours.to_i / response.max_24_hour_send.to_i) * 100
+    percent = ((response.sent_last_24_hours.to_f / response.max_24_hour_send.to_f) * 100).to_i
     message = "SES sending limit is at #{percent}%"
 
     if config[:crit_percent] > 0 && config[:crit_percent] <= percent

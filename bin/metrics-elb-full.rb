@@ -134,7 +134,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
         next if result.nil?
         result.each do |key, value|
           puts key, value
-          output graphitepath + ".#{key}", value.to_a.last[1], value[:timestamp].to_i
+          output graphitepath + ".#{key}", value[:sum] || value[:average], value[:timestamp].to_i
         end
       end
     rescue => e

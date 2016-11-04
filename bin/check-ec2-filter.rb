@@ -75,11 +75,23 @@ class EC2Filter < Sensu::Plugin::Check::CLI
          short: '-c COUNT',
          long: '--critical COUNT'
 
+  option :exclude_tags,
+         short: '-e {<tag-key>:[VAL1, VAL2]} {<tag-key>:[VAL1, VAL2] }',
+         long: '--exclude_tags {<tag-key>:[VAL1, VAL2] } {<tag-key>:[VAL1, VAL2] }',
+         description: 'Tag Values to exclude by. Values treated as regex. Any matching value will result in exclusion.',
+         default: '{}'
+
   option :compare,
          description: 'Comparision operator for threshold: equal, not, greater, less',
          short: '-o OPERATION',
-         long: '--opertor OPERATION',
+         long: '--operator OPERATION',
          default: 'equal'
+
+  option :detailed_message,
+         short: '-d',
+         long: '--detailed-message',
+         boolean: true,
+         default: false
 
   def aws_config
     { access_key_id: config[:aws_access_key],
@@ -102,6 +114,16 @@ class EC2Filter < Sensu::Plugin::Check::CLI
   end
 
   def run
+    filter_list = config[:exclude_tags].split(/}\s?{/).map do |x|
+      x.gsub(/[{}]/, '')
+    end
+    filter_list = filter_list.map do |y|
+      _, h2, h3 = y.split(/(.*):(.*)/)
+      { h2 => h3 }
+    end.reduce(:merge)
+    filter_list.delete(nil)
+    filter_list.each { |x, y| filter_list[x] = y.strip.gsub(/[\[\]]/, '') }
+
     client = Aws::EC2::Client.new aws_config
 
     filter = Filter.parse(config[:filter])
@@ -114,17 +136,28 @@ class EC2Filter < Sensu::Plugin::Check::CLI
 
     data = client.describe_instances(options)
 
-    instance_ids = Set.new
-
-    data[:reservations].each do |res|
-      res[:instances].each do |i|
-        instance_ids << i[:instance_id]
+    aws_instances = Set.new
+    data.reservations.each do |r|
+      r.instances.each do |i|
+        aws_instances << {
+          id: i[:instance_id],
+          tags: i.tags
+        }
       end
     end
 
-    count = instance_ids.count
+    aws_instances.delete_if do |instance|
+      instance[:tags].any? do |key|
+        filter_list.keys.include?(key.key) && filter_list[key.key].split(',').any? do |v|
+          key.value.match(/#{v.strip}/)
+        end
+      end
+    end
+
+    count = aws_instances.count
     op = convert_operator
     message = "Current count: #{count}"
+    message += " - #{aws_instances.collect { |x| x[:id] }.join(',')}" if config[:detailed_message] && count > 0
 
     unless config[:critical].nil?
       if op.call count, config[:critical].to_i
