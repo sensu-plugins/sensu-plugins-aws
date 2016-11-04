@@ -28,7 +28,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 
 class CheckInstanceEvents < Sensu::Plugin::Check::CLI
   option :aws_access_key,
@@ -54,6 +54,13 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
          long: '--use-iam',
          description: 'Use IAM role authenticiation. Instance must have IAM role assigned for this to work'
 
+  option :instance_id,
+         short: '-i INSTANCE_IDS',
+         long: '--instances INSTANCES_IDS',
+         description: 'Comma separated list of instances ids to check. Defaults to all instances in the region',
+         proc: proc { |a| a.split(',') },
+         default: []
+
   option :include_name,
          short: '-n',
          long: '--include-name',
@@ -66,59 +73,75 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
       region: config[:aws_region] }
   end
 
+  def ec2_regions
+    Aws.partition('aws').regions.map(&:name)
+  end
+
   def run
     event_instances = []
     aws_config = {}
+
+    aws_regions = ec2_regions
+
+    unless config[:aws_region].casecmp('all') == 0
+      if aws_regions.include? config[:aws_region]
+        aws_regions.clear.push(config[:aws_region])
+      else
+        critical 'Invalid region specified!'
+      end
+    end
 
     if config[:use_iam_role].nil?
       aws_config[:access_key_id] = config[:aws_access_key]
       aws_config[:secret_access_key] = config[:aws_secret_access_key]
     end
 
-    ec2 = AWS::EC2::Client.new(aws_config.merge!(region: config[:aws_region]))
-    begin
-      ec2.describe_instance_status[:instance_status_set].each do |i|
-        next if i[:events_set].empty?
-
-        # Exclude completed reboots since the events API appearently returns these even after they have been completed:
-        # Example:
-        #  "events_set": [
-        #     {
-        #         "code": "system-reboot",
-        #         "description": "[Completed] Scheduled reboot",
-        #         "not_before": "2015-01-05 12:00:00 UTC",
-        #         "not_after": "2015-01-05 18:00:00 UTC"
-        #     }
-        # ]
-        useful_events =
-          i[:events_set].reject { |x| (x[:code] == 'system-reboot' || x[:code] == 'instance-stop' || x[:code] == 'system-maintenance') && (x[:description] =~ /\[Completed\]/ || x[:description] =~ /\[Canceled\]/) }
-        unless useful_events.empty?
-          event_instances << i[:instance_id]
+    aws_regions.each do |r| # Iterate each possible region
+      ec2 = Aws::EC2::Client.new(aws_config.merge!(region: r))
+      begin
+        describe_instance_options = {}
+        if config[:instance_id].any?
+          describe_instance_options = describe_instance_options.merge(instance_ids: config[:instance_id])
         end
-      end
-    rescue => e
-      unknown "An error occurred processing AWS EC2 API: #{e.message}"
-    end
 
-    if config[:include_name]
-      event_instances_with_names = []
-      event_instances.each do |id|
-        name = ''
-        begin
-          instance = ec2.describe_instances(instance_ids: [id])
-          # Harvests the 'Name' tag for the instance
-          name = instance[:reservation_index][id][:instances_set][0][:tag_set].select { |tag| tag[:key] == 'Name' }[0][:value]
-        rescue => e
-          puts "Issue getting instance details for #{id}.  Exception = #{e}"
+        ec2.describe_instance_status(describe_instance_options).instance_statuses.each do |i|
+          next if i[:events].empty?
+
+          # Exclude completed reboots since the events API appearently returns these even after they have been completed:
+          # Example:
+          #  "events_set": [
+          #     {
+          #         "code": "system-reboot",
+          #         "description": "[Completed] Scheduled reboot",
+          #         "not_before": "2015-01-05 12:00:00 UTC",
+          #         "not_after": "2015-01-05 18:00:00 UTC"
+          #     }
+          # ]
+          useful_events =
+            i[:events].reject { |x| (x[:code] =~ /system-reboot|instance-stop|system-maintenance/) && (x[:description] =~ /\[Completed\]|\[Canceled\]/) }
+
+          unless useful_events.empty?
+            if config[:include_name]
+              name = ''
+              begin
+                instance_desc = ec2.describe_instances(instance_ids: [i[:instance_id]])
+                name = instance_desc[:reservation_index][i[:instance_id]][:instances_set][0][:tag_set].select { |tag| tag[:key] == 'Name' }[0][:value]
+              rescue => e
+                puts "Issue getting instance details for #{i[:instance_id]} (#{r}).  Exception = #{e}"
+              end
+              event_instances << "#{name} (#{i[:instance_id]} #{r}) (#{i[:events][0][:code]}) #{i[:events][0][:description]}"
+            else
+              event_instances << "#{i[:instance_id]} (#{r}) (#{i[:events][0][:code]}) #{i[:events][0][:description]}"
+            end
+          end
         end
-        # Pushes 'name(i-xxx)' if the Name tag was found, else it just pushes the id
-        event_instances_with_names << (name == '' ? id : "#{name}(#{id})")
+      rescue => e
+        unknown "An error occurred processing AWS EC2 API (#{r}): #{e.message}"
       end
-      event_instances = event_instances_with_names
     end
 
     if event_instances.count > 0
-      critical("#{event_instances.count} instances #{event_instances.count > 1 ? 'have' : 'has'} upcoming scheduled events: #{event_instances.join(',')}")
+      critical("#{event_instances.count} instance#{event_instances.count > 1 ? 's have' : ' has'} upcoming scheduled events: #{event_instances.join(',')}")
     else
       ok
     end
