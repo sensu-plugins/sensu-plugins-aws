@@ -32,8 +32,10 @@
 
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
+require 'sensu-plugins-aws'
 
 class CheckElbInstanceInService < Sensu::Plugin::Check::CLI
+  include Common
   option :aws_region,
          short:       '-r AWS_REGION',
          long:        '--aws-region REGION',
@@ -46,8 +48,7 @@ class CheckElbInstanceInService < Sensu::Plugin::Check::CLI
          description: 'LoadBalancer Name to check'
 
   def elb
-    Aws.config[:region] = config[:aws_region]
-    @elb ||= Aws::ElasticLoadBalancing::Client.new(region: config[:aws_region])
+    @elb ||= Aws::ElasticLoadBalancing::Client.new
   end
 
   def describe_elb(elb_name)
