@@ -42,7 +42,7 @@ class CheckElbInstanceInService < Sensu::Plugin::Check::CLI
          description: 'AWS Region (defaults to us-east-1).',
          default:     ENV['AWS_REGION']
 
-  option :load_balancer ,
+  option :load_balancer,
          short:       '-l L',
          long:        '--load_balancer LoudBalancer',
          description: 'LoadBalancer Name to check'
@@ -53,23 +53,23 @@ class CheckElbInstanceInService < Sensu::Plugin::Check::CLI
 
   def describe_elb(elb_name)
     elb.describe_instance_health(
-      load_balancer_name: "#{elb_name}"
+      load_balancer_name: elb_name.to_s
     )
   end
 
   def run
     warning = 0
     critical = 0
-    result = ""
+    result = ''
     if config[:load_balancer].nil?
       elb.describe_load_balancers.load_balancer_descriptions.each do |load_balancer|
         describe_elb(load_balancer.load_balancer_name).each do |instances|
           instances.instance_states.each do |instance|
-            if instance.state == "InService"
-              result = result + "#{instance.instance_id} state InService "
+            if instance.state == 'InService'
+              result += "#{instance.instance_id} state InService "
             else
-              result = result + "#{instance.instance_id} state not InService "
-              warning = warning + 1
+              result += "#{instance.instance_id} state not InService "
+              warning += 1
             end
           end
           if warning == instances.instance_states.length
@@ -80,11 +80,11 @@ class CheckElbInstanceInService < Sensu::Plugin::Check::CLI
     else
       describe_elb(config[:load_balancer]).each do |instances|
         instances.instance_states.each do |instance|
-          if instance.state == "InService"
-            result = result + "#{instance.instance_id} state InService "
+          if instance.state == 'InService'
+            result += "#{instance.instance_id} state InService "
           else
-            result = result + "#{instance.instance_id} state not InService "
-            warning = warning + 1
+            result += "#{instance.instance_id} state not InService "
+            warning += 1
           end
         end
         if warning == instances.instance_states.length
@@ -100,5 +100,4 @@ class CheckElbInstanceInService < Sensu::Plugin::Check::CLI
       ok result
     end
   end
-  
 end

@@ -52,7 +52,7 @@ class CheckAsgInstancesInService < Sensu::Plugin::Check::CLI
 
   def describe_asg(asg_name)
     asg.describe_auto_scaling_groups(
-      auto_scaling_group_names: ["#{asg_name}"]
+      auto_scaling_group_names: [asg_name.to_s]
     )
   end
 
@@ -60,24 +60,24 @@ class CheckAsgInstancesInService < Sensu::Plugin::Check::CLI
     warning = 0
     critical = 0
     instance_in_service = 0
-    result = ""
+    result = ''
     if config[:group].nil?
       asg.describe_auto_scaling_groups.auto_scaling_groups.each do |group|
         grp_name = group.auto_scaling_group_name
         instance_in_service = 0
         group.instances.each do |instance|
           if instance.lifecycle_state == 'InService'
-            instance_in_service = instance_in_service + 1
+            instance_in_service += 1
           end
         end
         if instance_in_service == 0
           critical = 1
-          result = result + "#{grp_name}: no Instances inService  #{instance_in_service} \n"
+          result += "#{grp_name}: no Instances inService  #{instance_in_service} \n"
         elsif instance_in_service < group.min_size
           warning = 1
-          result = result + "#{grp_name} Intance are not okay #{instance_in_service} \n"
+          result += "#{grp_name} Intance are not okay #{instance_in_service} \n"
         else
-          result = result + "#{grp_name} Intance are inService #{instance_in_service} \n"
+          result += "#{grp_name} Intance are inService #{instance_in_service} \n"
         end
       end
     else
@@ -85,17 +85,17 @@ class CheckAsgInstancesInService < Sensu::Plugin::Check::CLI
       min_size = selected_group.min_size
       selected_group.instances.each do |instance|
         if instance.lifecycle_state == 'InService'
-          instance_in_service = instance_in_service + 1
+          instance_in_service += 1
         end
       end
       if instance_in_service == 0
         critical = 1
-        result = result + "#{config[:group]}: no Instances inService  #{instance_in_service} \n"
+        result += "#{config[:group]}: no Instances inService  #{instance_in_service} \n"
       elsif instance_in_service < min_size
         warning = 1
-        result = result + "#{config[:group]} Intance are not okay #{instance_in_service} \n"
+        result += "#{config[:group]} Intance are not okay #{instance_in_service} \n"
       else
-        result = result + "#{config[:group]} Intance are inService #{instance_in_service} \n"
+        result += "#{config[:group]} Intance are inService #{instance_in_service} \n"
       end
     end
     if critical == 1
@@ -106,5 +106,4 @@ class CheckAsgInstancesInService < Sensu::Plugin::Check::CLI
       ok result
     end
   end
-
 end
