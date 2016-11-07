@@ -32,6 +32,12 @@ require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
 class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
+  option :aws_region,
+         short: '-r AWS_REGION',
+         long: '--aws-region REGION',
+         description: 'AWS Region (defaults to us-east-1).',
+         default: 'us-east-1'
+
   option :namespace,
          description: 'CloudWatch namespace for metric',
          short: '-n NAME',
