@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ### Added
+- check-cloudwatch-alarm.rb: Add region support (@ptqa)
 - metrics-s3.rb: added
 - metrics-billing.rb: added
 - add check-cloudfront-tag.rb and check-s3-tag.rb (@obazoud)

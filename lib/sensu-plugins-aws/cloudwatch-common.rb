@@ -1,6 +1,8 @@
 require 'aws-sdk'
 
 module CloudwatchCommon
+  include Common
+
   def client
     Aws::CloudWatch::Client.new
   end
