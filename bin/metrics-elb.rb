@@ -36,7 +36,6 @@
 #   Updated by Peter Hoppe <peter.hoppe.extern@bertelsmann.de> 09.11.2016
 #   Using aws sdk version 2
 
-
 require 'sensu-plugin/metric/cli'
 require 'aws-sdk'
 require 'sensu-plugins-aws'
@@ -80,7 +79,6 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
          long: '--aws-region REGION',
          description: 'AWS Region (defaults to us-east-1).',
          default: ENV['AWS_REGION']
-
 
   def cloud_watch
     @cloud_watch = Aws::CloudWatch::Client.new
