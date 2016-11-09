@@ -12,8 +12,10 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
+#   gem: sensu-plugin-aws
+#   gem: time
 #
 # USAGE:
 #   #YELLOW
@@ -31,12 +33,16 @@
 #   Copyright 2013 Bashton Ltd http://www.bashton.com/
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
-#
+#   Updated by Peter Hoppe <peter.hoppe.extern@bertelsmann.de> 09.11.2016
+#   Using aws sdk version 2
 
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
+require 'sensu-plugins-aws'
+require 'time'
 
 class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
+  include Common
   option :elbname,
          description: 'Name of the Elastic Load Balancer',
          short: '-n ELB_NAME',
@@ -68,28 +74,14 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
          long: '--statistic',
          default: ''
 
-  option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default: ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short: '-k AWS_SECRET_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default: ENV['AWS_SECRET_KEY']
-
   option :aws_region,
          short: '-r AWS_REGION',
          long: '--aws-region REGION',
          description: 'AWS Region (defaults to us-east-1).',
-         default: 'us-east-1'
+         default: ENV['AWS_REGION']
 
-  def aws_config
-    { access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region] }
+  def cloud_watch
+    @cloud_watch = Aws::CloudWatch::Client.new
   end
 
   def run
@@ -117,24 +109,22 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
     begin
       et = Time.now - config[:fetch_age]
       st = et - 60
-
-      cw = AWS::CloudWatch::Client.new aws_config
-
       options = {
-        'namespace' => 'AWS/ELB',
-        'metric_name' => config[:metric],
-        'dimensions' => [
+        namespace: 'AWS/ELB',
+        metric_name: config[:metric],
+        dimensions: [
           {
-            'name' => 'LoadBalancerName',
-            'value' => config[:elbname]
+            name: 'LoadBalancerName',
+            value: config[:elbname]
           }
         ],
-        'statistics' => [statistic],
-        'start_time' => st.iso8601,
-        'end_time' => et.iso8601,
-        'period' => 60
+        statistics: [statistic],
+        start_time: st.iso8601,
+        end_time: et.iso8601,
+        period: 60
       }
-      result = cw.get_metric_statistics(options)
+
+      result = cloud_watch.get_metric_statistics(options)
       data = result[:datapoints][0]
       unless data.nil?
         # We only return data when we have some to return
@@ -142,6 +132,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
         if config[:scheme] == ''
           graphitepath = "#{config[:elbname]}.#{config[:metric].downcase}"
         end
+        print statistic.downcase.to_sym
         output graphitepath, data[statistic.downcase.to_sym], data[:timestamp].to_i
       end
     rescue => e
