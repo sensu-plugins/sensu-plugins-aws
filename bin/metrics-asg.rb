@@ -113,7 +113,6 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
         period: 60
       }
 
-
       result = cloud_watch.get_metric_statistics(options)
       data = result[:datapoints][0]
       unless data.nil?
