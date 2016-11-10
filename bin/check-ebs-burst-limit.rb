@@ -56,8 +56,8 @@ class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
 
   def run
     errors = []
-    @ec2 = Aws::EC2::Client.new
-    volumes = @ec2.describe_volumes(
+    ec2 = Aws::EC2::Client.new
+    volumes = ec2.describe_volumes(
       filters: [
         {
           name: 'attachment.status',
