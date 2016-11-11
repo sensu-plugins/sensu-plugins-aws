@@ -69,7 +69,6 @@ class ElasticMetrics < Sensu::Plugin::Metric::CLI::Graphite
          proc:        proc(&:to_i),
          description: 'CloudWatch metric statistics period'
 
-
   def cloud_watch
     @cloud_watch = Aws::CloudWatch::Client.new
   end
@@ -78,7 +77,7 @@ class ElasticMetrics < Sensu::Plugin::Metric::CLI::Graphite
     @elasticaches = Aws::ElastiCache::Client.new
   end
 
-  def cloud_watch_metric (metric_name, value, cache_cluster_id)
+  def cloud_watch_metric(metric_name, value, cache_cluster_id)
     cloud_watch.get_metric_statistics(
       namespace: 'AWS/ElastiCache',
       metric_name: metric_name,
@@ -95,7 +94,7 @@ class ElasticMetrics < Sensu::Plugin::Metric::CLI::Graphite
     )
   end
 
-  def print_statistics (cache_cluster_id, statistics)
+  def print_statistics(cache_cluster_id, statistics)
     result = {}
     statistics.each do |key, _value|
       r = cloud_watch_metric(key, _value, cache_cluster_id)
@@ -109,7 +108,6 @@ class ElasticMetrics < Sensu::Plugin::Metric::CLI::Graphite
   end
 
   def run
-
     elasticaches.describe_cache_clusters.cache_clusters.each do |elasticache|
       if elasticache.engine.include? 'redis'
         if config[:statistic] == ''
