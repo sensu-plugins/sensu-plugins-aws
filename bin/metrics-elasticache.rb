@@ -3,7 +3,7 @@
 # elasticache-metrics
 #
 # DESCRIPTION:
-#   Fetch Elasticache metrics from CloudWatch
+#   Gets latency metrics from CloudWatch and puts them in Graphite for longer term storage
 #
 # OUTPUT:
 #   metric-data
@@ -12,203 +12,157 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
+#   gem: sensu-plugin-aws
+#   gem: time
 #
 # USAGE:
-#   elasticache-metrics.rb -n rediscluster -c redis -a key -k secret
-#   elasticache-metrics.rb -n memcachedcluster -c memcached -a key -k secret
+#
 #
 # NOTES:
-#   Redis: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/CacheMetrics.Redis.html
-#   Memcached: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/CacheMetrics.Memcached.html
-#
-#   By default fetches all available statistics from one minute ago.  You may need to fetch further back than this;
+#   Returns latency statistics by default.  You can specify any valid ASG metric type, see
+#   http://http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/as-metricscollected.html
 #
 # LICENSE:
-#   Copyright 2014 Yann Verry
+#   Peter Hoppe <peter.hoppe.extern@bertelsmann.de>
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
 #
 
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
+require 'sensu-plugins-aws'
+require 'time'
 
-class ElastiCacheMetrics < Sensu::Plugin::Metric::CLI::Graphite
-  option :cacheclusterid,
-         description: 'Name of the Cache Cluster',
-         short: '-n ELASTICACHE_NAME',
-         long: '--name ELASTICACHE_NAME',
-         required: true
-
-  option :cachenodeid,
-         description: 'Cache Node ID',
-         short: '-i CACHE_NODE_ID',
-         long: '--cache-node-id CACHE_NODE_ID',
-         default: '0001'
-
-  option :elasticachetype,
-         description: 'Elasticache type redis or memcached',
-         short: '-c TYPE',
-         long: '--cachetype TYPE',
-         required: true
-
+class ElasticMetrics < Sensu::Plugin::Metric::CLI::Graphite
+  include Common
   option :scheme,
          description: 'Metric naming scheme, text to prepend to metric',
          short: '-s SCHEME',
          long: '--scheme SCHEME',
          default: ''
 
-  option :fetch_age,
-         description: 'How long ago to fetch metrics for',
-         short: '-f AGE',
-         long: '--fetch_age',
-         default: 60,
-         proc: proc(&:to_i)
-
-  option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default: ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short: '-k AWS_SECRET_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default: ENV['AWS_SECRET_KEY']
+  option :statistic,
+         description: 'Statistics type',
+         short: '-t STATISTIC',
+         long: '--statistic',
+         default: ''
 
   option :aws_region,
          short: '-r AWS_REGION',
          long: '--aws-region REGION',
          description: 'AWS Region (defaults to us-east-1).',
-         default: 'us-east-1'
+         default: ENV['AWS_REGION']
 
-  def aws_config
-    { access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region] }
+  option :end_time,
+         short:       '-t T',
+         long:        '--end-time TIME',
+         default:     Time.now,
+         proc:        proc { |a| Time.parse a },
+         description: 'CloudWatch metric statistics end time'
+
+  option :period,
+         short:       '-p N',
+         long:        '--period SECONDS',
+         default:     60,
+         proc:        proc(&:to_i),
+         description: 'CloudWatch metric statistics period'
+
+
+  def cloud_watch
+    @cloud_watch = Aws::CloudWatch::Client.new
+  end
+
+  def elasticaches
+    @elasticaches = Aws::ElastiCache::Client.new
+  end
+
+  def cloud_watch_metric (metric_name, value, cache_cluster_id)
+    cloud_watch.get_metric_statistics(
+      namespace: 'AWS/ElastiCache',
+      metric_name: metric_name,
+      dimensions: [
+        {
+          name: 'CacheClusterId',
+          value: cache_cluster_id
+        }
+      ],
+      statistics: [value],
+      start_time: config[:end_time] - config[:period],
+      end_time: config[:end_time],
+      period: config[:period]
+    )
+  end
+
+  def print_statistics (cache_cluster_id, statistics)
+    result = {}
+    statistics.each do |key, _value|
+      r = cloud_watch_metric(key, _value, cache_cluster_id)
+      result['elasticache.' + cache_cluster_id + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
+    end
+    unless result.nil?
+      result.each do |key, value|
+        output key.downcase.to_s, value.average, value[:timestamp].to_i
+      end
+    end
   end
 
   def run
-    graphitepath = if config[:scheme] == ''
-                     "elasticache.#{config[:cacheclusterid]}"
-                   else
-                     config[:scheme]
-                   end
 
-    dimensions = if config[:cachenodeid]
-                   [{
-                     'name' => 'CacheClusterId',
-                     'value' => config[:cacheclusterid]
-                   }, {
-                     'name' => 'CacheNodeId',
-                     'value' => config[:cachenodeid]
-                   }]
-                 else
-                   [{
-                     'name' => 'CacheClusterId',
-                     'value' => config[:cacheclusterid]
-                   }]
-                 end
-
-    statistic_type = {
-      'redis' => {
-        'CPUUtilization' => 'Percent',
-        'BytesUsedForCache' => 'Bytes',
-        'SwapUsage' => 'Bytes',
-        'FreeableMemory' => 'Bytes',
-        'NetworkBytesIn' => 'Bytes',
-        'NetworkBytesOut' => 'Bytes',
-        'GetTypeCmds' => 'Count',
-        'SetTypeCmds' => 'Count',
-        'KeyBasedCmds' => 'Count',
-        'StringBasedCmds' => 'Count',
-        'HashBasedCmds' => 'Count',
-        'ListBasedCmds' => 'Count',
-        'SetBasedCmds' => 'Count',
-        'SortedSetBasedCmds' => 'Count',
-        'CurrItems' => 'Count'
-      },
-      'memcached' => {
-        'CPUUtilization' => 'Percent',
-        'SwapUsage' => 'Bytes',
-        'FreeableMemory' => 'Bytes',
-        'NetworkBytesIn' => 'Bytes',
-        'NetworkBytesOut' => 'Bytes',
-        'BytesUsedForCacheItems' => 'Bytes',
-        'BytesReadIntoMemcached' => 'Bytes',
-        'BytesWrittenOutFromMemcached' => 'Bytes',
-        'CasBadval' => 'Count',
-        'CasHits' => 'Count',
-        'CasMisses' => 'Count',
-        'CmdFlush' => 'Count',
-        'CmdGet' => 'Count',
-        'CmdSet' => 'Count',
-        'CurrConnections' => 'Count',
-        'CurrItems' => 'Count',
-        'DecrHits' => 'Count',
-        'DecrMisses' => 'Count',
-        'DeleteHits' => 'Count',
-        'DeleteMisses' => 'Count',
-        'Evictions' => 'Count',
-        'GetHits' => 'Count',
-        'GetMisses' => 'Count',
-        'IncrHits' => 'Count',
-        'IncrMisses' => 'Count',
-        'Reclaimed' => 'Count',
-        'BytesUsedForHash' => 'Bytes',
-        'CmdConfigGet' => 'Count',
-        'CmdConfigSet' => 'Count',
-        'CmdTouch' => 'Count',
-        'CurrConfig' => 'Count',
-        'EvictedUnfetched' => 'Count',
-        'ExpiredUnfetched' => 'Count',
-        'SlabsMoved' => 'Count',
-        'TouchHits' => 'Count',
-        'TouchMisses' => 'Count',
-        'NewConnections' => 'Count',
-        'NewItems' => 'Count',
-        'UnusedMemory' => 'Bytes'
-      }
-    }
-
-    begin
-      et = Time.now - config[:fetch_age]
-      st = et - 60
-
-      cw = AWS::CloudWatch::Client.new aws_config
-
-      # define all options
-      options = {
-        'namespace' => 'AWS/ElastiCache',
-        'metric_name' => config[:metric],
-        'dimensions' => dimensions,
-        'start_time' => st.iso8601,
-        'end_time' => et.iso8601,
-        'period' => 60,
-        'statistics' => ['Average']
-      }
-
-      result = {}
-
-      # Fetch all metrics by elasticachetype (redis or memcached).
-      statistic_type[config[:elasticachetype]].each do |m|
-        options['metric_name'] = m[0] # override metric
-        r = cw.get_metric_statistics(options)
-        result[m[0]] = r[:datapoints][0] unless r[:datapoints][0].nil?
-      end
-
-      unless result.nil?
-        result.each do |name, d|
-          # We only return data when we have some to return
-          output graphitepath + '.' + name.downcase, d[:average], d[:timestamp].to_i
+    elasticaches.describe_cache_clusters.cache_clusters.each do |elasticache|
+      if elasticache.engine.include? 'redis'
+        if config[:statistic] == ''
+          default_statistic_per_metric = {
+            'BytesUsedForCache' => 'Average',
+            'CacheHits' => 'Average',
+            'CacheMisses' => 'Average',
+            'CurrConnections' => 'Average',
+            'Evictions' => 'Average',
+            'HyperLogLogBasedCmds' => 'Average',
+            'NewConnections' => 'Average',
+            'Reclaimed' => 'Average',
+            'ReplicationBytes' => 'Average',
+            'ReplicationLag' => 'Average',
+            'SaveInProgress' => 'Average'
+          }
+          statistic = default_statistic_per_metric
+        else
+          statistic = config[:statistic]
         end
+        print_statistics(elasticache.cache_cluster_id, statistic)
+      elsif elasticache.engine.include? 'memcached'
+        if config[:statistic] == ''
+          default_statistic_per_metric = {
+            'BytesReadIntoMemcached' => 'Average',
+            'BytesUsedForCacheItems' => 'Average',
+            'BytesWrittenOutFromMemcached' => 'Average',
+            'CasBadval' => 'Average',
+            'CasHits' => 'Average',
+            'CasMisses' => 'Average',
+            'CmdFlush' => 'Average',
+            'CmdGet' => 'Average',
+            'CmdSet' => 'Average',
+            'CurrConnections' => 'Average',
+            'CurrItems' => 'Average',
+            'DecrHits' => 'Average',
+            'DecrMisses' => 'Average',
+            'DeleteHits' => 'Average',
+            'DeleteMisses' => 'Average',
+            'Evictions' => 'Average',
+            'GetHits' => 'Average',
+            'GetMisses' => 'Average',
+            'IncrHits' => 'Average',
+            'IncrMisses' => 'Average',
+            'Reclaimed' => 'Average'
+          }
+          statistic = default_statistic_per_metric
+        else
+          statistic = config[:statistic]
+        end
+        print_statistics(elasticache.cache_cluster_id, statistic)
       end
-    rescue => e
-      puts "Error: exception: #{e}"
-      critical
     end
-    ok
+    exit
   end
 end
