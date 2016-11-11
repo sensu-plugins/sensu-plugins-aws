@@ -27,7 +27,7 @@
 #   for details.
 #
 
-require 'sensu-plugins-aws/cloudwatch-common'
+require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
 require 'aws-sdk'
 
