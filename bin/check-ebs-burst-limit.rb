@@ -27,12 +27,10 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'sensu-plugins-aws/cloudwatch-common'
 require 'sensu-plugins-aws'
 require 'aws-sdk'
 
-class CheckEbsSnapshots < Sensu::Plugin::Check::CLI
-  include Common
+class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
   include CloudwatchCommon
 
   option :aws_region,

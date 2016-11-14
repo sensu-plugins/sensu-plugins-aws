@@ -1,4 +1,3 @@
-require 'aws-sdk'
 
 module CloudwatchCommon
   include Common
