@@ -13,7 +13,8 @@
 #
 # DEPENDENCIES:
 #   gem: sensu-plugin
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
+#   gem: sensu-plugins-aws
 #
 # USAGE:
 #  ./check-vpc-vpn.rb --aws-region us-east-1 --vpn-connection-id vpn-abc1234
@@ -25,31 +26,15 @@
 #   John Dyer johntdyer@gmail.com
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
+#   Updated by Peter Hoppe <peter.hoppe.extern@bertelsmann.de> to aws-sdk-v2
 #
 
+require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 
 class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
-  @aws_config = {}
-  # rubocop:disable Style/AlignParameters
-  option :access_key,
-    short: '-a AWS_ACCESS_KEY',
-    long: '--aws-access-key AWS_ACCESS_KEY',
-    description: 'AWS Access Key',
-    default: ENV['AWS_ACCESS_KEY_ID']
-
-  option :secret_key,
-    short: '-s AWS_SECRET_ACCESS_KEY',
-    long: '--aws-secret-access-key AWS_SECRET_ACCESS_KEY',
-    description: 'AWS Secret Access Key.',
-    default: ENV['AWS_SECRET_ACCESS_KEY']
-
-  option :use_iam_role,
-    short: '-u',
-    long: '--use-iam',
-    description: 'Use IAM authentication'
-
+  include Common
   option :vpn_id,
     short: '-v VPN_ID',
     long: '--vpn-connection-id VPN_ID',
@@ -57,29 +42,21 @@ class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
     description: 'VPN connection ID'
 
   option :aws_region,
-    short: '-r AWS_REGION',
-    long: '--aws-region REGION',
-    description: 'AWS Region (such as eu-west-1).',
-    default: 'us-east-1'
+     short: '-r AWS_REGION',
+     long: '--aws-region REGION',
+     description: 'AWS Region (defaults to us-east-1).',
+     default: ENV['AWS_REGION']
 
-  def aws_config
-    aws_connection_config = { region: config[:aws_region] }
-    if config[:use_iam_role].nil?
-      aws_connection_config[:access_key_id] = config[:access_key]
-      aws_connection_config[:secret_access_key] = config[:secret_key]
-    end
-    aws_connection_config
-  end
 
   def fetch_connection_data
     begin
-      ec2 = AWS::EC2::Client.new(aws_config)
-      vpn_info = ec2.describe_vpn_connections(vpn_connection_ids: [config[:vpn_id]]).vpn_connection_set
+      ec2 = Aws::EC2::Client.new
+      vpn_info = ec2.describe_vpn_connections(vpn_connection_ids: [config[:vpn_id]]).vpn_connections
       down_connections = vpn_info.first.vgw_telemetry.select { |x| x.status != 'UP' }
       results = { down_count: down_connections.count }
-      results[:down_connection_status] = down_connections.map { |x| "#{x.outside_ip_address} => #{x.status_message.nil? ? 'none' : x.status_message}" }
-      results[:connection_name] = vpn_info[0].tag_set.find { |x| x.key == 'Name' }.value
-    rescue AWS::EC2::Errors::InvalidVpnConnectionID::NotFound
+      results[:down_connection_status] = down_connections.map { |x| "#{x.outside_ip_address} => #{x.status_message.empty? ? 'none' : x.status_message}" }
+      results[:connection_name] = vpn_info[0].tags.find { |x| x.key == 'Name' }.value
+    rescue Aws::EC2::Errors::ServiceError
       warning "The vpnConnection ID '#{config[:vpn_id]}' does not exist"
     rescue => e
       warning e.backtrace.join(' ')
