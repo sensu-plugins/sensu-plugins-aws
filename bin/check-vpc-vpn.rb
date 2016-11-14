@@ -36,17 +36,16 @@ require 'aws-sdk'
 class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
   include Common
   option :vpn_id,
-    short: '-v VPN_ID',
-    long: '--vpn-connection-id VPN_ID',
-    required: true,
-    description: 'VPN connection ID'
+         short: '-v VPN_ID',
+         long: '--vpn-connection-id VPN_ID',
+         required: true,
+         description: 'VPN connection ID'
 
   option :aws_region,
-     short: '-r AWS_REGION',
-     long: '--aws-region REGION',
-     description: 'AWS Region (defaults to us-east-1).',
-     default: ENV['AWS_REGION']
-
+         short: '-r AWS_REGION',
+         long: '--aws-region REGION',
+         description: 'AWS Region (defaults to us-east-1).',
+         default: ENV['AWS_REGION']
 
   def fetch_connection_data
     begin
