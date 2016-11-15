@@ -40,8 +40,7 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
   option :asgname,
          description: 'Name of the Auto Scaling Group',
          short: '-n ASG_NAME',
-         long: '--name ASG_NAME',
-         required: true
+         long: '--name ASG_NAME'
 
   option :scheme,
          description: 'Metric naming scheme, text to prepend to metric',
@@ -74,59 +73,84 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
          description: 'AWS Region (defaults to us-east-1).',
          default: ENV['AWS_REGION']
 
+  option :end_time,
+         short:       '-t T',
+         long:        '--end-time TIME',
+         default:     Time.now,
+         proc:        proc { |a| Time.parse a },
+         description: 'CloudWatch metric statistics end time'
+
+  option :period,
+         short:       '-p N',
+         long:        '--period SECONDS',
+         default:     60,
+         proc:        proc(&:to_i),
+         description: 'CloudWatch metric statistics period'
+
   def cloud_watch
     @cloud_watch = Aws::CloudWatch::Client.new
+  end
+
+  def asg
+    @asg = Aws::AutoScaling::Client.new
+  end
+
+  def cloud_watch_metric(metric_name, value, asg_name)
+    cloud_watch.get_metric_statistics(
+      namespace: 'AWS/AutoScaling',
+      metric_name: metric_name,
+      dimensions: [
+        {
+          name: 'AutoScaling',
+          value: asg_name
+        }
+      ],
+      statistics: [value],
+      start_time: config[:end_time] - config[:period],
+      end_time: config[:end_time],
+      period: config[:period]
+    )
+  end
+
+  def print_statistics(asg_name, statistics)
+    result = {}
+    static_value = {}
+    statistics.each do |key, static|
+      r = cloud_watch_metric(key, static, asg_name)
+      static_value['AutoScalingGroup.' + asg_name + '.' + key + '.' + static] = static
+      result['AutoScalingGroup.' + asg_name + '.' + key + '.' + static] = r[:datapoints][0] unless r[:datapoints][0].nil?
+    end
+    result.each do |key, value|
+      output key.downcase.to_s, value[static_value[key].downcase], value[:timestamp].to_i
+    end
   end
 
   def run
     if config[:statistic] == ''
       default_statistic_per_metric = {
-        'GroupMinSize' => 'Sum',
-        'GroupMaxSize' => 'Sum',
-        'GroupDesiredCapacity' => 'Sum',
-        'GroupInServiceInstances' => 'Sum',
-        'GroupPendingInstances' => 'Sum',
-        'GroupStandbyInstances' => 'Sum',
-        'GroupTerminatingInstances' => 'Sum',
-        'GroupTotalInstances' => 'Sum'
+        'GroupMinSize' => 'Average',
+        'GroupMaxSize' => 'Average',
+        'GroupDesiredCapacity' => 'Average',
+        'GroupInServiceInstances' => 'Average',
+        'GroupPendingInstances' => 'Average',
+        'GroupStandbyInstances' => 'Average',
+        'GroupTerminatingInstances' => 'Average',
+        'GroupTotalInstances' => 'Average'
       }
-      statistic = default_statistic_per_metric[config[:metric]]
+      statistic = default_statistic_per_metric
     else
       statistic = config[:statistic]
     end
 
     begin
-      et = Time.now - config[:fetch_age]
-      st = et - 60
-      options = {
-        namespace: 'AWS/AutoScaling',
-        metric_name: config[:metric],
-        dimensions: [
-          {
-            name: 'AutoScaling',
-            value: config[:asgname]
-          }
-        ],
-        statistics: [statistic],
-        start_time: st.iso8601,
-        end_time: et.iso8601,
-        period: 60
-      }
-
-      result = cloud_watch.get_metric_statistics(options)
-      data = result[:datapoints][0]
-      unless data.nil?
-        # We only return data when we have some to return
-        graphitepath = config[:scheme]
-        if config[:scheme] == ''
-          graphitepath = "#{config[:asgname]}.#{config[:metric].downcase}"
+      if config[:asgname].nil?
+        asg.describe_auto_scaling_groups.auto_scaling_groups.each do |autoascalinggroup|
+          print_statistics(autoascalinggroup.auto_scaling_group_name, statistic)
         end
-        print statistic.downcase.to_sym
-        output graphitepath, data[statistic.downcase.to_sym], data[:timestamp].to_i
+      else
+        print_statistics(config[:asgname], statistic)
       end
-    rescue => e
-      critical "Error: exception: #{e}"
+      ok
     end
-    ok
   end
 end
