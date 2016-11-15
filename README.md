@@ -26,6 +26,8 @@
 
 **check-ebs-snapshots.rb**
 
+**check-ebs-burst-limit.rb**
+
 **check-ec2-cpu_balance.rb**
 
 **check-ec2-filter.rb**
@@ -138,6 +140,7 @@
 * /bin/check-cloudwatch-alarm.rb
 * /bin/check-dynamodb-capacity.rb
 * /bin/check-dynamodb-throttle.rb
+* /bin/check-ebs-burst-limit.rb
 * /bin/check-ebs-snapshots.rb
 * /bin/check-ec2-filter.rb
 * /bin/check-ec2-network.rb

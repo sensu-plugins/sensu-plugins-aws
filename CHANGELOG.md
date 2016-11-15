@@ -5,10 +5,12 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 ### Added
+- check-cloudwatch-alarm.rb: Add region support (@ptqa)
 - metrics-s3.rb: added
 - metrics-billing.rb: added
 - add check-cloudfront-tag.rb and check-s3-tag.rb (@obazoud)
 - check-s3-object.rb: add an option to check s3 object's size
+- check-ebs-burst-limit.rb: added
 
 ### Fixed
 - check-instance-events.rb: migrated the script to aws sdk v2 because of incompatibility of sdk v1 with newer regions (@oba11)
