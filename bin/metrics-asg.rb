@@ -82,7 +82,6 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
          proc:        proc(&:to_i),
          description: 'CloudWatch metric statistics period'
 
-
   def cloud_watch
     @cloud_watch = Aws::CloudWatch::Client.new
   end
@@ -106,20 +105,20 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
       end_time: config[:end_time],
       period: config[:period]
     )
-end
+  end
 
-def print_statistics(asg_name, statistics)
-  result = {}
-  static_value = {}
-  statistics.each do |key, static|
-    r = cloud_watch_metric(key, static, asg_name)
-    static_value['AutoScalingGroup.' + asg_name + '.' + key + '.' + static] = static
-    result['AutoScalingGroup.' + asg_name + '.' + key + '.' + static] = r[:datapoints][0] unless r[:datapoints][0].nil?
+  def print_statistics(asg_name, statistics)
+    result = {}
+    static_value = {}
+    statistics.each do |key, static|
+      r = cloud_watch_metric(key, static, asg_name)
+      static_value['AutoScalingGroup.' + asg_name + '.' + key + '.' + static] = static
+      result['AutoScalingGroup.' + asg_name + '.' + key + '.' + static] = r[:datapoints][0] unless r[:datapoints][0].nil?
+    end
+    result.each do |key, value|
+      output key.downcase.to_s, value[static_value[key].downcase], value[:timestamp].to_i
+    end
   end
-  result.each do |key, value|
-    output key.downcase.to_s, value[static_value[key].downcase], value[:timestamp].to_i
-  end
-end
 
   def run
     if config[:statistic] == ''
@@ -140,9 +139,9 @@ end
 
     begin
       asg.describe_auto_scaling_groups.auto_scaling_groups.each do |autoascalinggroup|
-       print_statistics(autoascalinggroup.auto_scaling_group_name, statistic)
+        print_statistics(autoascalinggroup.auto_scaling_group_name, statistic)
       end
-    ok
+      ok
     end
   end
 end
