@@ -44,9 +44,9 @@ require 'time'
 class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
   include Common
   option :elbname,
-        description: 'Name of the Elastic Load Balancer',
-        short: '-n ELB_NAME',
-        long: '--name ELB_NAME'
+         description: 'Name of the Elastic Load Balancer',
+         short: '-n ELB_NAME',
+         long: '--name ELB_NAME'
 
   option :scheme,
          description: 'Metric naming scheme, text to prepend to metric',
@@ -148,7 +148,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
     end
 
     begin
-      if config[:elbname].nil ?
+      if config[:elbname].nil?
         loadbalancer.describe_load_balancers.load_balancer_descriptions.each do |elb|
           print_statistics(elb.load_balancer_name, statistic)
         end
