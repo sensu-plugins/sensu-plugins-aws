@@ -46,8 +46,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
   option :elbname,
          description: 'Name of the Elastic Load Balancer',
          short: '-n ELB_NAME',
-         long: '--name ELB_NAME',
-         required: true
+         long: '--name ELB_NAME'
 
   option :scheme,
          description: 'Metric naming scheme, text to prepend to metric',
@@ -62,12 +61,6 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
          default: 60,
          proc: proc(&:to_i)
 
-  option :metric,
-         description: 'Metric to fetch',
-         short: '-m METRIC',
-         long: '--metric',
-         default: 'Latency'
-
   option :statistic,
          description: 'Statistics type',
          short: '-t STATISTIC',
@@ -80,8 +73,56 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
          description: 'AWS Region (defaults to us-east-1).',
          default: ENV['AWS_REGION']
 
+  option :end_time,
+         short:       '-t T',
+         long:        '--end-time TIME',
+         default:     Time.now,
+         proc:        proc { |a| Time.parse a },
+         description: 'CloudWatch metric statistics end time'
+
+  option :period,
+         short:       '-p N',
+         long:        '--period SECONDS',
+         default:     60,
+         proc:        proc(&:to_i),
+         description: 'CloudWatch metric statistics period'
+
   def cloud_watch
     @cloud_watch = Aws::CloudWatch::Client.new
+  end
+
+  def loadbalancer
+    @loadbalancer = Aws::ElasticLoadBalancing::Client.new
+  end
+
+  def cloud_watch_metric(metric_name, value, load_balancer_name)
+    cloud_watch.get_metric_statistics(
+      namespace: 'AWS/ELB',
+      metric_name: metric_name,
+      dimensions: [
+        {
+          name: 'LoadBalancerName',
+          value: load_balancer_name
+        }
+      ],
+      statistics: [value],
+      start_time: config[:end_time] - config[:period],
+      end_time: config[:end_time],
+      period: config[:period]
+    )
+  end
+
+  def print_statistics(load_balancer_name, statistics)
+    result = {}
+    static_value = {}
+    statistics.each do |key, static|
+      r = cloud_watch_metric(key, static, load_balancer_name)
+      static_value['loadbalancer.' + load_balancer_name + '.' + key + '.' + static] = static
+      result['loadbalancer.' + load_balancer_name + '.' + key + '.' + static] = r[:datapoints][0] unless r[:datapoints][0].nil?
+    end
+    result.each do |key, value|
+      output key.downcase.to_s, value[static_value[key].downcase], value[:timestamp].to_i
+    end
   end
 
   def run
@@ -101,43 +142,20 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
         'SurgeQueueLength' => 'Maximum',
         'SpilloverCount' => 'Sum'
       }
-      statistic = default_statistic_per_metric[config[:metric]]
+      statistic = default_statistic_per_metric
     else
       statistic = config[:statistic]
     end
 
     begin
-      et = Time.now - config[:fetch_age]
-      st = et - 60
-      options = {
-        namespace: 'AWS/ELB',
-        metric_name: config[:metric],
-        dimensions: [
-          {
-            name: 'LoadBalancerName',
-            value: config[:elbname]
-          }
-        ],
-        statistics: [statistic],
-        start_time: st.iso8601,
-        end_time: et.iso8601,
-        period: 60
-      }
-
-      result = cloud_watch.get_metric_statistics(options)
-      data = result[:datapoints][0]
-      unless data.nil?
-        # We only return data when we have some to return
-        graphitepath = config[:scheme]
-        if config[:scheme] == ''
-          graphitepath = "#{config[:elbname]}.#{config[:metric].downcase}"
+      if config[:elbname].nil?
+        loadbalancer.describe_load_balancers.load_balancer_descriptions.each do |elb|
+          print_statistics(elb.load_balancer_name, statistic)
         end
-        print statistic.downcase.to_sym
-        output graphitepath, data[statistic.downcase.to_sym], data[:timestamp].to_i
+      else
+        print_statistics(config[:elbname], statistic)
       end
-    rescue => e
-      critical "Error: exception: #{e}"
+      ok
     end
-    ok
   end
 end
