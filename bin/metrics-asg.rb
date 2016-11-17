@@ -128,14 +128,14 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
   def run
     if config[:statistic] == ''
       default_statistic_per_metric = {
-        'GroupMinSize' => 'Average',
-        'GroupMaxSize' => 'Average',
-        'GroupDesiredCapacity' => 'Average',
-        'GroupInServiceInstances' => 'Average',
-        'GroupPendingInstances' => 'Average',
-        'GroupStandbyInstances' => 'Average',
-        'GroupTerminatingInstances' => 'Average',
-        'GroupTotalInstances' => 'Average'
+        'GroupMinSize' => 'Sum',
+        'GroupMaxSize' => 'Sum',
+        'GroupDesiredCapacity' => 'Sum',
+        'GroupInServiceInstances' => 'Sum',
+        'GroupPendingInstances' => 'Sum',
+        'GroupStandbyInstances' => 'Sum',
+        'GroupTerminatingInstances' => 'Sum',
+        'GroupTotalInstances' => 'Sum'
       }
       statistic = default_statistic_per_metric
     else
