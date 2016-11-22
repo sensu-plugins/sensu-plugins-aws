@@ -19,6 +19,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - check-rds.rb: Support added for checking all databases in a region
 - metrics-autoscaling-instance-count.rb: migrated the script to aws sdk v2 and support fetching all autoscaling groups (@oba11)
 - check-ec2-cpu_balance.rb: fix warning and critical message
+- check-instance-events.rb: fixed missing events code; instance-reboot
 
 ## [3.2.1] - 2016-08-10
 ### Fixed

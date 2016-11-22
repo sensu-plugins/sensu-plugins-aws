@@ -118,7 +118,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
           #     }
           # ]
           useful_events =
-            i[:events].reject { |x| (x[:code] =~ /system-reboot|instance-stop|system-maintenance/) && (x[:description] =~ /\[Completed\]|\[Canceled\]/) }
+            i[:events].reject { |x| (x[:code] =~ /system-reboot|instance-reboot|instance-stop|system-maintenance/) && (x[:description] =~ /\[Completed\]|\[Canceled\]/) }
 
           unless useful_events.empty?
             if config[:include_name]
