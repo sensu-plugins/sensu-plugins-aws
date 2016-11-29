@@ -11,6 +11,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - add check-cloudfront-tag.rb and check-s3-tag.rb (@obazoud)
 - check-s3-object.rb: add an option to check s3 object's size
 - check-ebs-burst-limit.rb: added
+- check-sqs-messages.rb added support for checking different metric types (@majormoses)
+- check-sqs-messages.rb upgraded to aws sdk v2 (@majormoses)
 
 ### Fixed
 - check-instance-events.rb: migrated the script to aws sdk v2 because of incompatibility of sdk v1 with newer regions (@oba11)

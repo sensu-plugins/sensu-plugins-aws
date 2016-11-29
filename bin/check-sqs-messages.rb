@@ -28,23 +28,14 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'sensu-plugins-aws'
+require 'aws-sdk'
 
 #
 # Check SQS Messages
 #
 class SQSMsgs < Sensu::Plugin::Check::CLI
-  option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default: ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short: '-k AWS_SECRET_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default: ENV['AWS_SECRET_KEY']
+  include Common
 
   option :aws_region,
          short: '-r AWS_REGION',
@@ -63,6 +54,12 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
          long: '--prefix PREFIX',
          description: 'The prefix of the queues you want to check the number of messages for',
          default: ''
+
+  option :metric,
+         short: '-m METTIC',
+         long: '--metric METRIC',
+         description: 'The metric of the queues you want to check the number of messages for',
+         default: 'ApproximateNumberOfMessages'
 
   option :warn_over,
          short: '-w WARN_OVER',
@@ -99,15 +96,16 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
   end
 
   def run
-    AWS.config aws_config
-    sqs = AWS::SQS.new
+    Aws.config.update(aws_config)
+    sqs = Aws::SQS::Resource.new
 
     if config[:prefix] == ''
       if config[:queue] == ''
         critical 'Error, either QUEUE or PREFIX must be specified'
       end
 
-      messages = sqs.queues.named(config[:queue]).approximate_number_of_messages
+      url = sqs.get_queue_by_name(queue_name: config[:queue]).url
+      messages = sqs.client.get_queue_attributes(queue_url: url, attribute_names: ['All']).attributes[config[:metric]].to_i
 
       if (config[:crit_under] >= 0 && messages < config[:crit_under]) || (config[:crit_over] >= 0 && messages > config[:crit_over])
         critical "#{messages} message(s) in #{config[:queue]} queue"
@@ -121,9 +119,9 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
       crit = false
       queues = []
 
-      sqs.queues.with_prefix(config[:prefix]).each do |q|
-        queue_name = q.arn.split(':').last
-        messages = q.approximate_number_of_messages
+      sqs.queues(queue_name_prefix: config[:prefix]).each do |q|
+        messages = sqs.client.get_queue_attributes(queue_url: q.url, attribute_names: ['All']).attributes[config[:metric]].to_i
+        queue_name = q.attributes['QueueArn'].split(':').last
 
         if (config[:crit_under] >= 0 && messages < config[:crit_under]) || (config[:crit_over] >= 0 && messages > config[:crit_over])
           crit = true
