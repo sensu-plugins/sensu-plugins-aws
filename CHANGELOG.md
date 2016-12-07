@@ -13,6 +13,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - check-ebs-burst-limit.rb: added
 - check-sqs-messages.rb added support for checking different metric types (@majormoses)
 - check-sqs-messages.rb upgraded to aws sdk v2 (@majormoses)
+- check-instances-count.rb fixed issues related to aws sdk version bump (@majormoses)
 
 ### Fixed
 - check-instance-events.rb: migrated the script to aws sdk v2 because of incompatibility of sdk v1 with newer regions (@oba11)
