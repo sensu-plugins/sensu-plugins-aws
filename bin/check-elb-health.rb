@@ -16,7 +16,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   ./check-elb-health.rb -r ${your_region} -i ${your_instance_id} -r ${your_region}
+#   ./check-elb-health.rb -r ${your_region} -i ${your_instance_id} -n ${your_ELB_name}
 #
 # NOTES:
 #
