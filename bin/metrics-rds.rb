@@ -66,6 +66,18 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
          proc:        proc { |a| a.downcase.intern },
          description: 'CloudWatch statistics method'
 
+  option :aws_access_key,
+         short: '-a AWS_ACCESS_KEY',
+         long: '--aws-access-key AWS_ACCESS_KEY',
+         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
+         default: ENV['AWS_ACCESS_KEY']
+
+  option :aws_secret_access_key,
+         short: '-k AWS_SECRET_KEY',
+         long: '--aws-secret-access-key AWS_SECRET_KEY',
+         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
+         default: ENV['AWS_SECRET_KEY']
+
   def rds
     @rds = Aws::RDS::Client.new
   end
