@@ -47,6 +47,20 @@ class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
          description: 'AWS Region (defaults to us-east-1).',
          default: ENV['AWS_REGION']
 
+  option :warn_count,
+         short: '-W WARN_COUNT',
+         long: '--warn_count WARN_COUNT',
+         description: 'Warn when the count of down tunnels is at or above this number',
+         default: 1,
+         proc: proc(&:to_i)
+
+  option :crit_count,
+         short: '-C CRIT_COUNT',
+         long: '--crit_count CRIT_COUNT',
+         description: 'Critical when the count of down tunnels is at or above this number',
+         default: 2,
+         proc: proc(&:to_i)
+
   def fetch_connection_data
     begin
       ec2 = Aws::EC2::Client.new
@@ -68,12 +82,17 @@ class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
     msg = data[:down_connection_status].join(' | ')
     name = data[:connection_name]
     case data[:down_count]
-    when 2 then critical "'#{name}' shows both tunnels as DOWN - [ #{msg} ]"
-    when 1 then warning "'#{name}' shows 1 of 2 tunnels as DOWN - [ #{msg} ]"
-    when 0 then ok "'#{name}' shows 2 of 2 tunnels as UP"
+    when 2 then message="'#{name}' shows both tunnels as DOWN - [ #{msg} ]"
+    when 1 then message="'#{name}' shows 1 of 2 tunnels as DOWN - [ #{msg} ]"
+    end
+
+    if data[:down_count] >= config[:crit_count]
+      critical message
+    elsif data[:down_count] >= config[:warn_count]
+      warning message
     else
-      # Not sure this could ever happen
-      unknown "Unknown connection count - #{data[:down_count]}"
+      up_count = 2 - data[:down_count]
+      ok "'#{name}' shows #{up_count} of 2 tunnels as UP"
     end
   end
 end
