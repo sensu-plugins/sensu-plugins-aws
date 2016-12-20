@@ -82,8 +82,8 @@ class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
     msg = data[:down_connection_status].join(' | ')
     name = data[:connection_name]
     case data[:down_count]
-    when 2 then message="'#{name}' shows both tunnels as DOWN - [ #{msg} ]"
-    when 1 then message="'#{name}' shows 1 of 2 tunnels as DOWN - [ #{msg} ]"
+    when 2 then message = "'#{name}' shows both tunnels as DOWN - [ #{msg} ]"
+    when 1 then message = "'#{name}' shows 1 of 2 tunnels as DOWN - [ #{msg} ]"
     end
 
     if data[:down_count] >= config[:crit_count]
