@@ -74,6 +74,8 @@
 
 **check-reserved-instances.rb**
 
+**check-route53-domain-expiration.rb**
+
 **check-s3-bucket.rb**
 
 **check-s3-object.rb**
@@ -160,6 +162,7 @@
 * /bin/check-rds-pending.rb
 * /bin/check-rds.rb
 * /bin/check-redshift-events.rb
+* /bin/check-route53-domain-expiration.rb
 * /bin/check-s3-object.rb
 * /bin/check-ses-limit.rb
 * /bin/check-ses-statistics.rb

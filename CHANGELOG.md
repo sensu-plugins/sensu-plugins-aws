@@ -16,6 +16,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - check-instances-count.rb fixed issues related to aws sdk version bump (@majormoses)
 - check-rds.rb Support added for Aurora Clusters (@daanemanz)
 - check-vpc-vpn.rb added warning/critical flags (@bootswithdefer)
+- add check-route53-domain-expiration.rb that checks when domains registered in Route53 are close to expiration (@eheydrick)
 
 ### Fixed
 - check-instance-events.rb: migrated the script to aws sdk v2 because of incompatibility of sdk v1 with newer regions (@oba11)
