@@ -8,6 +8,10 @@
 
 ## Functionality
 
+**check-asg-instances-created.rb**
+
+**check-asg-instances-inservice.rb**
+
 **check-autoscaling-cpucredits.rb**
 
 **check-beanstalk-elb-metric.rb**
@@ -47,6 +51,8 @@
 **check-elb-health-sdk.rb**
 
 **check-elb-health.rb**
+
+**check-elb-instances-inservice.rb**
 
 **check-elb-latency.rb**
 
@@ -110,6 +116,8 @@
 
 **handler-sns.rb**
 
+**metrics-asg.rb**
+
 **metrics-autoscaling-instance-count.rb**
 
 **metrics-billing.rb**
@@ -126,6 +134,8 @@
 
 **metrics-emr-steps.rb**
 
+**metrics-rds.rb**
+
 **metrics-s3.rb**
 
 **metrics-ses.rb**
@@ -135,10 +145,13 @@
 
 ## Files
 
+* /bin/check-asg-instances-created.rb
 * /bin/check-autoscaling-cpucredits.rb
+* /bin/check-asg-instances-inservice.rb
 * /bin/check-beanstalk-elb-metric.rb
 * /bin/check-certificate-expiry.rb
 * /bin/check-configservice-rules.rb
+* /bin/check-cloudfront-tag.rb
 * /bin/check-cloudwatch-alarm.rb
 * /bin/check-dynamodb-capacity.rb
 * /bin/check-dynamodb-throttle.rb
@@ -152,6 +165,7 @@
 * /bin/check-elb-health-fog.rb
 * /bin/check-elb-health-sdk.rb
 * /bin/check-elb-health.rb
+* /bin/check-elb-instances-inservice.rb
 * /bin/check-elb-latency.rb
 * /bin/check-elb-nodes.rb
 * /bin/check-elb-sum-requests.rb
@@ -164,6 +178,7 @@
 * /bin/check-redshift-events.rb
 * /bin/check-route53-domain-expiration.rb
 * /bin/check-s3-object.rb
+* /bin/check-s3-tag.rb
 * /bin/check-ses-limit.rb
 * /bin/check-ses-statistics.rb
 * /bin/check-sqs-messages.rb
@@ -176,6 +191,7 @@
 * /bin/handler-sns.rb
 * /bin/metrics-autoscaling-instance-count.rb
 * /bin/check-instances-count.rb
+* /bin/metrics-asg.rb
 * /bin/metrics-billing.rb
 * /bin/metrics-ec2-count.rb
 * /bin/metrics-ec2-filter.rb
@@ -183,6 +199,7 @@
 * /bin/metrics-elb-full.rb
 * /bin/metrics-elb.rb
 * /bin/metrics-emr-steps.rb
+* /bin/metrics-rds.rb
 * /bin/metrics-s3.rb
 * /bin/metrics-ses.rb
 * /bin/metrics-sqs.rb
