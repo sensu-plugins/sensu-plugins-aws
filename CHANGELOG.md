@@ -7,7 +7,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ### Breaking Changes
 - `check-sqs-messages.rb`, `check-vpc-vpn.rb`, and `metrics-elb.rb` were updated to aws-sdk v2 and no longer take `aws_access_key` and `aws_secret_access_key` options.
-  Credentials should be set in environment variables or ideally with an IAM instance profile.
+  Credentials should be set in environment variables, a credential file, or with an IAM instance profile.
+  See http://docs.aws.amazon.com/sdkforruby/api/#Configuration for details on setting credentials
 
 ### Added
 - check-cloudwatch-alarm.rb: Add region support (@ptqa)
