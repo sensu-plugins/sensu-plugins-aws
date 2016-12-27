@@ -4,28 +4,47 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+### Breaking Changes
+- `check-sqs-messages.rb`, `check-vpc-vpn.rb`, and `metrics-elb.rb` were updated to aws-sdk v2 and no longer take `aws_access_key` and `aws_secret_access_key` options.
+  Credentials should be set in environment variables or ideally with an IAM instance profile.
+
 ### Added
 - check-cloudwatch-alarm.rb: Add region support (@ptqa)
-- metrics-s3.rb: added
-- metrics-billing.rb: added
+- metrics-s3.rb: added (@obazoud)
+- metrics-billing.rb: added (@obazoud)
 - add check-cloudfront-tag.rb and check-s3-tag.rb (@obazoud)
-- check-s3-object.rb: add an option to check s3 object's size
-- check-ebs-burst-limit.rb: added
-- check-sqs-messages.rb added support for checking different metric types (@majormoses)
-- check-sqs-messages.rb upgraded to aws sdk v2 (@majormoses)
-- check-instances-count.rb fixed issues related to aws sdk version bump (@majormoses)
-- check-rds.rb Support added for Aurora Clusters (@daanemanz)
-- check-vpc-vpn.rb added warning/critical flags (@bootswithdefer)
+- check-s3-object.rb: add an option to check s3 object's size (@obazoud)
+- check-ebs-burst-limit.rb: added (@nyxcharon)
+- check-sqs-messages.rb: added support for checking different metric types (@majormoses)
+- check-rds.rb: Support added for Aurora Clusters (@daanemanz)
+- check-vpc-vpn.rb: added warning/critical flags (@bootswithdefer)
 - add check-route53-domain-expiration.rb that checks when domains registered in Route53 are close to expiration (@eheydrick)
+- check-ec2-filter.rb: Add exclude tags option (@obazoud)
+- add metrics-rds.rb (@phoppe93)
+- check-instance-health.rb: Add support for filters (@AlexKulbiy)
+- check-rds.rb: Support added for checking all databases in a region (@sstarcher)
+- check-ecs-service-health.rb: Add `primary_status` option to limit checks to primary deployments (@matthew-watson1)
+- Add check-asg-instances-created.rb to check for recent autoscaling events (@phoppe93)
+- Add check-asg-instances-inservice.rb to check autoscaling group size (@phoppe93)
+- Add check-elb-instances-inservice.rb to check service status of ELB instances (@phoppe93)
+- Add metrics-asg.rb to grab metrics from autoscaling groups (@phoppe93)
 
 ### Fixed
+- check-ses-limits.rb: Fix percentage calculation (@eheydrick)
+- check-ec2-cpu_balance.rb: fix warning and critical message (@mool)
+- check-instance-events.rb: fixed missing events code; instance-reboot (@TorPeeto)
+- check-instances-count.rb: fixed issues related to aws sdk version bump (@majormoses)
+- metrics-elb-full.rb: Fix output (@obazoud)
+- Fix cloudwatch imports (@nyxcharon)
+
+### Changed
+- check-sqs-messages.rb: upgrade to aws-sdk v2 (@majormoses)
+- check-vpc-vpn: upgrade to aws-sdk v2 (@phoppe93)
 - check-instance-events.rb: migrated the script to aws sdk v2 because of incompatibility of sdk v1 with newer regions (@oba11)
 - check-rds-events.rb: migrated the script to aws sdk v2 because of incompatibility of sdk v1 with newer regions (@oba11)
-- check-ses-limits.rb: Fix percentage calculation
-- check-rds.rb: Support added for checking all databases in a region
 - metrics-autoscaling-instance-count.rb: migrated the script to aws sdk v2 and support fetching all autoscaling groups (@oba11)
-- check-ec2-cpu_balance.rb: fix warning and critical message
-- check-instance-events.rb: fixed missing events code; instance-reboot
+- metrics-elb.rb: upgrade to aws-sdk v2 (@phoppe93)
 
 ## [3.2.1] - 2016-08-10
 ### Fixed
