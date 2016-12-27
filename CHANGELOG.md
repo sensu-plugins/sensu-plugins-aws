@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+## [4.0.0] - 2016-12-27
 ### Breaking Changes
 - `check-sqs-messages.rb`, `check-vpc-vpn.rb`, and `metrics-elb.rb` were updated to aws-sdk v2 and no longer take `aws_access_key` and `aws_secret_access_key` options.
   Credentials should be set in environment variables, a credential file, or with an IAM instance profile.
@@ -274,7 +275,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.2.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/4.0.0...HEAD
+[4.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.2.1...4.0.0
 [3.2.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.2.0...3.2.1
 [3.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.1.0...3.2.0
 [3.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.0.0...3.1.0
