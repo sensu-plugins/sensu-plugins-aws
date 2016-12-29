@@ -69,6 +69,17 @@ class ElasticMetrics < Sensu::Plugin::Metric::CLI::Graphite
          proc:        proc(&:to_i),
          description: 'CloudWatch metric statistics period'
 
+ option :cache_cluster_id,
+        description: 'Name of the elasticache cached',
+        short: '-i cache_cluster_id',
+        long: '--id cache_cluster_id'
+
+  option :type,
+         description: 'Memcached or Redis',
+         short: '-t type',
+         long: '--type TYPE'
+
+
   def cloud_watch
     @cloud_watch = Aws::CloudWatch::Client.new
   end
@@ -98,68 +109,121 @@ class ElasticMetrics < Sensu::Plugin::Metric::CLI::Graphite
     result = {}
     statistics.each do |key, static|
       r = cloud_watch_metric(key, static, cache_cluster_id)
-      result['elasticache.' + cache_cluster_id + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
+      result[config[:scheme] + '.' + cache_cluster_id + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
     end
-    return unless result.nil?
     result.each do |key, value|
       output key.downcase.to_s, value.average, value[:timestamp].to_i
     end
   end
 
   def run
-    elasticaches.describe_cache_clusters.cache_clusters.each do |elasticache|
-      if elasticache.engine.include? 'redis'
-        if config[:statistic] == ''
-          default_statistic_per_metric = {
-            'BytesUsedForCache' => 'Average',
-            'CacheHits' => 'Average',
-            'CacheMisses' => 'Average',
-            'CurrConnections' => 'Average',
-            'Evictions' => 'Average',
-            'HyperLogLogBasedCmds' => 'Average',
-            'NewConnections' => 'Average',
-            'Reclaimed' => 'Average',
-            'ReplicationBytes' => 'Average',
-            'ReplicationLag' => 'Average',
-            'SaveInProgress' => 'Average'
-          }
-          statistic = default_statistic_per_metric
-        else
-          statistic = config[:statistic]
+    if config[:cache_cluster_id].nil?
+      elasticaches.describe_cache_clusters.cache_clusters.each do |elasticache|
+        if elasticache.engine.include? 'redis'
+          if config[:statistic] == ''
+            default_statistic_per_metric = {
+              'BytesUsedForCache' => 'Average',
+              'CacheHits' => 'Average',
+              'CacheMisses' => 'Average',
+              'CurrConnections' => 'Average',
+              'Evictions' => 'Average',
+              'HyperLogLogBasedCmds' => 'Average',
+              'NewConnections' => 'Average',
+              'Reclaimed' => 'Average',
+              'ReplicationBytes' => 'Average',
+              'ReplicationLag' => 'Average',
+              'SaveInProgress' => 'Average'
+            }
+            statistic = default_statistic_per_metric
+          else
+            statistic = config[:statistic]
+          end
+          print_statistics(elasticache.cache_cluster_id, statistic)
+        elsif elasticache.engine.include? 'memcached'
+          if config[:statistic] == ''
+            default_statistic_per_metric = {
+              'BytesReadIntoMemcached' => 'Average',
+              'BytesUsedForCacheItems' => 'Average',
+              'BytesWrittenOutFromMemcached' => 'Average',
+              'CasBadval' => 'Average',
+              'CasHits' => 'Average',
+              'CasMisses' => 'Average',
+              'CmdFlush' => 'Average',
+              'CmdGet' => 'Average',
+              'CmdSet' => 'Average',
+              'CurrConnections' => 'Average',
+              'CurrItems' => 'Average',
+              'DecrHits' => 'Average',
+              'DecrMisses' => 'Average',
+              'DeleteHits' => 'Average',
+              'DeleteMisses' => 'Average',
+              'Evictions' => 'Average',
+              'GetHits' => 'Average',
+              'GetMisses' => 'Average',
+              'IncrHits' => 'Average',
+              'IncrMisses' => 'Average',
+              'Reclaimed' => 'Average'
+            }
+            statistic = default_statistic_per_metric
+          else
+            statistic = config[:statistic]
+          end
+          print_statistics(elasticache.cache_cluster_id, statistic)
         end
-        print_statistics(elasticache.cache_cluster_id, statistic)
-      elsif elasticache.engine.include? 'memcached'
-        if config[:statistic] == ''
-          default_statistic_per_metric = {
-            'BytesReadIntoMemcached' => 'Average',
-            'BytesUsedForCacheItems' => 'Average',
-            'BytesWrittenOutFromMemcached' => 'Average',
-            'CasBadval' => 'Average',
-            'CasHits' => 'Average',
-            'CasMisses' => 'Average',
-            'CmdFlush' => 'Average',
-            'CmdGet' => 'Average',
-            'CmdSet' => 'Average',
-            'CurrConnections' => 'Average',
-            'CurrItems' => 'Average',
-            'DecrHits' => 'Average',
-            'DecrMisses' => 'Average',
-            'DeleteHits' => 'Average',
-            'DeleteMisses' => 'Average',
-            'Evictions' => 'Average',
-            'GetHits' => 'Average',
-            'GetMisses' => 'Average',
-            'IncrHits' => 'Average',
-            'IncrMisses' => 'Average',
-            'Reclaimed' => 'Average'
-          }
-          statistic = default_statistic_per_metric
-        else
-          statistic = config[:statistic]
-        end
-        print_statistics(elasticache.cache_cluster_id, statistic)
       end
-    end
+      else
+          if config[:type].to_s.include? 'redis'
+            if config[:statistic] == ''
+              default_statistic_per_metric = {
+                'BytesUsedForCache' => 'Average',
+                'CacheHits' => 'Average',
+                'CacheMisses' => 'Average',
+                'CurrConnections' => 'Average',
+                'Evictions' => 'Average',
+                'HyperLogLogBasedCmds' => 'Average',
+                'NewConnections' => 'Average',
+                'Reclaimed' => 'Average',
+                'ReplicationBytes' => 'Average',
+                'ReplicationLag' => 'Average',
+                'SaveInProgress' => 'Average'
+              }
+              statistic = default_statistic_per_metric
+            else
+              statistic = config[:statistic]
+            end
+            print_statistics(config[:cache_cluster_id], statistic)
+          elsif config[:type].to_s.include? 'memcached'
+            if config[:statistic] == ''
+              default_statistic_per_metric = {
+                'BytesReadIntoMemcached' => 'Average',
+                'BytesUsedForCacheItems' => 'Average',
+                'BytesWrittenOutFromMemcached' => 'Average',
+                'CasBadval' => 'Average',
+                'CasHits' => 'Average',
+                'CasMisses' => 'Average',
+                'CmdFlush' => 'Average',
+                'CmdGet' => 'Average',
+                'CmdSet' => 'Average',
+                'CurrConnections' => 'Average',
+                'CurrItems' => 'Average',
+                'DecrHits' => 'Average',
+                'DecrMisses' => 'Average',
+                'DeleteHits' => 'Average',
+                'DeleteMisses' => 'Average',
+                'Evictions' => 'Average',
+                'GetHits' => 'Average',
+                'GetMisses' => 'Average',
+                'IncrHits' => 'Average',
+                'IncrMisses' => 'Average',
+                'Reclaimed' => 'Average'
+              }
+              statistic = default_statistic_per_metric
+            else
+              statistic = config[:statistic]
+            end
+            print_statistics(config[:cache_cluster_id], statistic)
+        end
+      end
     exit
   end
 end

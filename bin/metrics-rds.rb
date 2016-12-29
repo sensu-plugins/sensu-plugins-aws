@@ -66,6 +66,12 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
          proc:        proc { |a| a.downcase.intern },
          description: 'CloudWatch statistics method'
 
+ option :scheme,
+        description: 'Metric naming scheme, text to prepend to metric',
+        short: '-s SCHEME',
+        long: '--scheme SCHEME',
+        default: ''
+
   def rds
     @rds = Aws::RDS::Client.new
   end
@@ -123,7 +129,7 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
 
     statistic_type.each do |key, _value|
       r = cloud_watch_metric key, rdsname
-      result[rdsname + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
+      result[config[:scheme] + '.' + rdsname + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
     end
     unless result.nil?
       result.each do |key, value|
