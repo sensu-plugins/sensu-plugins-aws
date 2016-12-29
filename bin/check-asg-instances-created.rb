@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-# check-asg-instance-terminated
+# check-asg-instances-created
 #
 # DESCRIPTION:
 #   Check AutoScalingGroup Instances are Terminated & Launching last hour.
@@ -17,9 +17,9 @@
 #
 # USAGE:
 #   all AutoScalingGroup
-#   ./check-asg-instance-terminated -r ${your_region}
+#   ./check-asg-instances-created -r ${your_region}
 #   one AutoScalingGroup
-#   ./check-asg-instance-terminated -r ${your_region} -g 'AutoScalingGroupName'
+#   ./check-asg-instance-created -r ${your_region} -g 'AutoScalingGroupName'
 #
 # NOTES:
 #   Based heavily on Peter Hoppe check-asg-instance-created
