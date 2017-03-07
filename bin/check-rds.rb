@@ -86,6 +86,11 @@ class CheckRDS < Sensu::Plugin::Check::CLI
          long:        '--db-instance-id NAME',
          description: 'DB instance identifier'
 
+  option :db_cluster_id,
+         short:       '-l N',
+         long:        '--db-cluster-id NAME',
+         description: 'DB cluster identifier'
+
   option :end_time,
          short:       '-t T',
          long:        '--end-time TIME',
@@ -152,6 +157,12 @@ class CheckRDS < Sensu::Plugin::Check::CLI
     db = rds.describe_db_instances.db_instances.detect { |db_instance| db_instance.db_instance_identifier == id }
     unknown 'DB instance not found.' if db.nil?
     db
+  end
+
+  def find_db_cluster_writer(id)
+    wr = rds.describe_db_clusters(db_cluster_identifier: id).db_clusters[0].db_cluster_members.detect(&:is_cluster_writer).db_instance_identifier
+    unknown 'DB cluster not found.' if cl.nil?
+    wr
   end
 
   def cloud_watch_metric(metric_name, unit)
@@ -274,6 +285,11 @@ class CheckRDS < Sensu::Plugin::Check::CLI
 
   def run
     instances = []
+    if config[:db_cluster_id]
+      db_cluster_writer_id = find_db_cluster_writer(db_cluster_id)
+      instances << find_db_instance(db_cluster_writer_id)
+    end
+
     if config[:db_instance_id].nil? || config[:db_instance_id].empty?
       rds.describe_db_instances[:db_instances].map { |db| instances << db }
     else

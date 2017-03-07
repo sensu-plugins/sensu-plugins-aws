@@ -44,9 +44,9 @@ class CheckSNSSubscriptions < Sensu::Plugin::Check::CLI
 
     subscriptions = sns.list_subscriptions.subscriptions
 
-    pending_confirmations = subscriptions.select { |subscription| subscription.subscription_arn == 'PendingConfirmation' }
+    pending_confirmations = subscriptions.select { |subscription| subscription.subscription_arn == 'PendingConfirmation' }.map(&:topic_arn)
 
-    critical "#{pending_confirmations.size} pending confirmations" unless pending_confirmations.empty?
+    critical "#{pending_confirmations.size} pending confirmations (#{pending_confirmations})" unless pending_confirmations.empty?
     ok
   end
 end
