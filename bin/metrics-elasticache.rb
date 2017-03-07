@@ -100,7 +100,7 @@ class ElasticMetrics < Sensu::Plugin::Metric::CLI::Graphite
       r = cloud_watch_metric(key, static, cache_cluster_id)
       result['elasticache.' + cache_cluster_id + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
     end
-    return unless result.nil?
+    return if result.nil?
     result.each do |key, value|
       output key.downcase.to_s, value.average, value[:timestamp].to_i
     end
