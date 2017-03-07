@@ -63,7 +63,19 @@ class CheckInstanceCount < Sensu::Plugin::Check::CLI
          default: 25
 
   def instance_count
-    AWS::AutoScaling.new.groups[config[:groupname]].auto_scaling_instances.map(&:lifecycle_state).count('InService').to_i
+    client = Aws::AutoScaling::Client.new
+    resp = client.describe_auto_scaling_groups(
+      auto_scaling_group_names: [config[:groupname]]
+    ).to_h
+    instances = []
+    resp[:auto_scaling_groups].each do |g|
+      g[:instances].each do |i|
+        if i[:lifecycle_state] == 'InService' && i[:health_status] == 'Healthy'
+          instances << i[:instance_id]
+        end
+      end
+    end
+    instances.length
   rescue => e
     critical "There was an error reaching AWS - #{e.message}"
   end
