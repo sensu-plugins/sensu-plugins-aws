@@ -43,9 +43,9 @@ class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI
          default:     ENV['AWS_REGION']
 
   option :asg_group_name,
-         short:       '-g G',
-         long:        '--asg_group_name AutoScalingGroupName',
-         description: 'AutoScalingGroupName to check'
+         description: 'Name of the Auto Scaling Group',
+         short: '-n name',
+         long: '--name AutoScalingGroupName'
 
   option :warning_limit,
          short:       '-w W',
@@ -57,8 +57,17 @@ class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI
          long:        '--critical_limit Critical Limit',
          description: 'Critical Limit for launching and terminated instances'
 
+  option :time_limit,
+         short:       '-t T',
+         long:        '--time Timelimit',
+         description: 'Time Limit for launching and terminated instances (default 1800s)'
+
   def asg
     @asg = Aws::AutoScaling::Client.new
+  end
+
+  def ec2
+    @ec2 = Aws::EC2::Client.new
   end
 
   def describe_activities(asg_group_name)
@@ -67,31 +76,38 @@ class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI
     )
   end
 
+  def describe_instance(instance_id)
+    ec2.describe_instances(
+      instance_ids: [instance_id]
+    )
+  end
+
   def run
-    warning = 3
-    critical = 4
-    result_launched = ''
+    warning = 2
+    critical = 3
+    time = 1800
     result_terminated = ''
-    instance_launching = 0
     instance_terminating = 0
     time_now = Time.now
     time_utc_offset = time_now - time_now.utc_offset
 
-    if !config[:warning_limit].nil?
+    unless config[:warning_limit].nil?
       warning = config[:warning_limit]
-    elsif !config[:critical_limit].nil?
+    end
+    unless config[:critical_limit].nil?
       critical = config[:critical_limit]
+    end
+    unless config[:time_limit].nil?
+      time = config[:time_limit].to_i
     end
 
     if config[:asg_group_name].nil?
       asg.describe_auto_scaling_groups.auto_scaling_groups.each do |asg_group|
         describe_activities(asg_group.auto_scaling_group_name).each do |activities|
           activities.activities.each do |activity|
-            if Time.parse(activity.start_time.inspect) > (time_utc_offset - 3600)
-              if activity.description.include? 'Launching'
-                instance_launching += 1
-                result_launched = " #{instance_launching} Instances Launching in AutoScalingGroup #{asg_group.auto_scaling_group_name}"
-              elsif activity.description.include? 'Terminating'
+            if Time.parse(activity.start_time.inspect) > (time_utc_offset - time) && activity.description.include?('Terminating')
+              id = activity.description.gsub!(/^.*: ([a-z0-9-]+)$/, '\1')
+              if Time.parse(describe_instance(id).reservations[0].instances[0].launch_time.inspect) > (time_utc_offset - time)
                 instance_terminating += 1
                 result_terminated = " #{instance_terminating} Instances Terminated in AutoScalingGroup #{asg_group.auto_scaling_group_name}"
               end
@@ -102,11 +118,9 @@ class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI
     else
       describe_activities(config[:asg_group_name]).each do |activities|
         activities.activities.each do |activity|
-          if Time.parse(activity.start_time.inspect) > (time_utc_offset - 3600)
-            if activity.description.include? 'Launching'
-              instance_launching += 1
-              result_launched = " #{instance_launching} Instances Launching in AutoScalingGroup #{config[:asg_group_name]}"
-            elsif activity.description.include? 'Terminating'
+          if Time.parse(activity.start_time.inspect) > (time_utc_offset - time) && activity.description.include?('Terminating')
+            id = activity.description.gsub!(/^.*: ([a-z0-9-]+)$/, '\1')
+            if Time.parse(describe_instance(id).reservations[0].instances[0].launch_time.inspect) > (time_utc_offset - time)
               instance_terminating += 1
               result_terminated = " #{instance_terminating} Instances Terminated in AutoScalingGroup #{config[:asg_group_name]}"
             end
@@ -114,14 +128,15 @@ class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI
         end
       end
     end
-    if instance_terminating == 0 && instance_launching == 0
+
+    if instance_terminating == 0
       ok 'No instances Launched & Terminated last hour'
-    elsif instance_terminating >= critical && instance_launching >= critical
-      critical "#{result_launched} \n #{result_terminated}"
-    elsif instance_terminating >= warning && instance_launching >= warning
-      warning "#{result_launched} \n #{result_terminated}"
+    elsif instance_terminating >= critical
+      critical result_terminated.to_s
+    elsif instance_terminating >= warning
+      warning result_terminated.to_s
     else
-      ok "#{result_launched} \n #{result_terminated}"
+      ok result_terminated.to_s
     end
   end
 end
