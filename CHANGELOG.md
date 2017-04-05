@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+- check-s3-object.rb: Add an option to check a file by his prefix (@julio-ogury)
 
 ## [5.0.0] - 2017-05-03
 ### Breaking Change
