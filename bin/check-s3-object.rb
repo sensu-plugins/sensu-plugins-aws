@@ -64,8 +64,12 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
   option :key_name,
          short: '-n KEY_NAME',
          long: '--key-name',
-         description: 'The name of key in the bucket',
-         required: true
+         description: 'The name of key in the bucket'
+
+  option :key_prefix,
+         short: '-p KEY_PREFIX',
+         long: '--key-prefix',
+         description: 'Prefix key to search on the bucket'
 
   option :warning_age,
          description: 'Warn if mtime greater than provided age in seconds',
@@ -124,15 +128,20 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
     op
   end
 
-  def run_check(type, level, value, msg)
+  def run_check(type, level, value, element, msg)
     key = "#{level}_#{type}".to_sym
     return if config[key].nil?
     to_check = config[key].to_i
-    send(level, msg % [config[:key_name], value, config[:bucket_name]]) if operator.call type, value, to_check
+    send(level, msg % [element, value, config[:bucket_name]]) if operator.call type, value, to_check
   end
 
   def run
     aws_config = {}
+
+    if (config[:key_name].nil? && config[:key_prefix].nil?) || (!config[:key_name].nil? && !config[:key_prefix].nil?)
+      critical 'Need one option between "key_name" and "key_prefix"'
+    end
+
     if config[:use_iam_role].nil?
       aws_config[:access_key_id] = config[:aws_access_key]
       aws_config[:secret_access_key] = config[:aws_secret_access_key]
@@ -140,27 +149,42 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
 
     s3 = Aws::S3::Client.new(aws_config.merge!(region: config[:aws_region]))
     begin
-      output = s3.head_object(bucket: config[:bucket_name], key: config[:key_name])
-      age = Time.now.to_i - output[:last_modified].to_i
-      size = output[:content_length]
+      if !config[:key_name].nil?
+        key_search = config[:key_name]
+        key_fullname = key_search
+        output = s3.head_object(bucket: config[:bucket_name], key: key_search)
+        age = Time.now.to_i - output[:last_modified].to_i
+        size = output[:content_length]
+      elsif !config[:key_prefix].nil?
+        key_search = config[:key_prefix]
+        output = s3.list_objects(bucket: config[:bucket_name], prefix: key_search)
+        key_fullname = output.contents[0].key
 
-      [:critical, :warning].each do |level|
-        run_check('age', level, age, 'S3 object %s is %s seconds old (bucket %s)')
+        if output.contents.size.to_i > 1
+          critical "Your prefix \"#{key_search}\" return too much files, you need to be more specific"
+        end
+
+        age = Time.now.to_i - output.contents[0].last_modified.to_i
+        size = output.contents[0].size
       end
 
-      if size == 0
-        critical "S3 object #{config[:key_name]} is empty (bucket #{config[:bucket_name]})" unless config[:ok_zero_size]
+      [:critical, :warning].each do |level|
+        run_check('age', level, age, key_fullname, 'S3 object %s is %s seconds old (bucket %s)')
+      end
+
+      if size.zero?
+        critical "S3 object #{key_fullname} is empty (bucket #{config[:bucket_name]})" unless config[:ok_zero_size]
       else
         [:critical, :warning].each do |level|
-          run_check('size', level, size, 'S3 %s object\'size : %s octets (bucket %s)')
+          run_check('size', level, size, key_fullname, 'S3 %s object\'size : %s octets (bucket %s)')
         end
       end
 
-      ok("S3 object #{config[:key_name]} exists in bucket #{config[:bucket_name]}")
+      ok("S3 object #{key_fullname} exists in bucket #{config[:bucket_name]}")
     rescue Aws::S3::Errors::NotFound => _
-      critical "S3 object #{config[:key_name]} not found in bucket #{config[:bucket_name]}"
+      critical "S3 object #{key_fullname} not found in bucket #{config[:bucket_name]}"
     rescue => e
-      critical "S3 object #{config[:key_name]} in bucket #{config[:bucket_name]} - #{e.message} - #{e.backtrace}"
+      critical "S3 object #{key_fullname} in bucket #{config[:bucket_name]} - #{e.message} - #{e.backtrace}"
     end
   end
 end
