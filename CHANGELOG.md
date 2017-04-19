@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Added
+- check-cloudwatch-metric.rb: Fix opertor typo
 
 ## [4.0.0] - 2016-12-27
 ### Breaking Changes
