@@ -123,7 +123,7 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
   end
 
   def metric_desc
-    "#{config[:namespace]}-#{config[:metric_name]}(#{dimension_string})"
+    "#{config[:namespace]}-#{config[:numerator_metric_name]}/#{config[:denominator_metric_name]}(#{dimension_string})"
   end
 
   def run
