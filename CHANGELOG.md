@@ -4,7 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
-### Added
+###  Added
+- check-cloudwatch-composite-metric.rb: Allow calculation of percentage for cloudwatch metrics  by composing two metrics (numerator_metric/denominator_metric * 100) as a percentage. This is useful to skip pushing such metrics to graphite in order to get the percentage metric computed.
 - check-cloudwatch-metric.rb: Fix opertor typo
 
 ## [4.0.0] - 2016-12-27
