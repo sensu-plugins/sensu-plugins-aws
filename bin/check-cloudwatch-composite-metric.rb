@@ -20,7 +20,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   ./check-cloudwatch-composite-metric -m CPUUtilization -d InstanceId=i-12345678,AvailabilityZone=us-east-1a -c 90
+#   ./check-cloudwatch-composite-metric.rb --namespace AWS/ELB -N HTTPCode_Backend_4XX -D RequestCount --dimensions LoadBalancerName=test-elb --period 60 --statistics Maximum --operator equal --critical 0
 #
 # NOTES:
 #
