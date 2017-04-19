@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+## [4.1.0]
+###  Added
+- check-cloudwatch-composite-metric.rb: Allow calculation of percentage for cloudwatch metrics  by composing two metrics (numerator_metric/denominator_metric * 100) as a percentage. This is useful to skip pushing such metrics to graphite in order to get the percentage metric computed.
+
 ## [4.0.0] - 2016-12-27
 ### Breaking Changes
 - `check-sqs-messages.rb`, `check-vpc-vpn.rb`, and `metrics-elb.rb` were updated to aws-sdk v2 and no longer take `aws_access_key` and `aws_secret_access_key` options.
