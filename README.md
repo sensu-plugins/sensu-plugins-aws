@@ -20,9 +20,9 @@
 
 **check-cloudwatch-alarm**
 
-**check-cloudwatch-metric
+**check-cloudwatch-metric**
 
-**check-cloudwatch-composite-metric
+**check-cloudwatch-composite-metric**
 
 **check-cloudfront-tag**
 
