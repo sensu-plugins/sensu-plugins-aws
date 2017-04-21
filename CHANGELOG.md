@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ###  Added
 - check-cloudwatch-composite-metric.rb: Allow calculation of percentage for cloudwatch metrics  by composing two metrics (numerator_metric/denominator_metric * 100) as a percentage. This is useful to skip pushing such metrics to graphite in order to get the percentage metric computed.
+- check-sqs-messages.rb now supports specifying multiple queues wihtout a prefix
 
 ## [4.0.0] - 2016-12-27
 ### Breaking Changes

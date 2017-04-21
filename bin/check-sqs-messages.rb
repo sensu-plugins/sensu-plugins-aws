@@ -46,7 +46,7 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
   option :queue,
          short: '-q SQS_QUEUE',
          long: '--queue SQS_QUEUE',
-         description: 'The name of the SQS you want to check the number of messages for',
+         description: 'A comma seperated list of the SQS queue(s) you want to check the number of messages for',
          default: ''
 
   option :prefix,
@@ -99,20 +99,33 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
     Aws.config.update(aws_config)
     sqs = Aws::SQS::Resource.new
 
-    if config[:prefix] == ''
-      if config[:queue] == ''
+    if config[:prefix].empty?
+      if config[:queue].empty?
         critical 'Error, either QUEUE or PREFIX must be specified'
       end
 
-      url = sqs.get_queue_by_name(queue_name: config[:queue]).url
-      messages = sqs.client.get_queue_attributes(queue_url: url, attribute_names: ['All']).attributes[config[:metric]].to_i
+      warnings = []
+      crits = []
+      passing = []
+      queues = config[:queue].split(',')
+      queues.each do |q|
+        url = sqs.get_queue_by_name(queue_name: q).url
+        messages = sqs.client.get_queue_attributes(queue_url: url, attribute_names: ['All']).attributes[config[:metric]].to_i
 
-      if (config[:crit_under] >= 0 && messages < config[:crit_under]) || (config[:crit_over] >= 0 && messages > config[:crit_over])
-        critical "#{messages} message(s) in #{config[:queue]} queue"
-      elsif (config[:warn_under] >= 0 && messages < config[:warn_under]) || (config[:warn_over] >= 0 && messages > config[:warn_over])
-        warning "#{messages} message(s) in #{config[:queue]} queue"
+        if (config[:crit_under] >= 0 && messages < config[:crit_under]) || (config[:crit_over] >= 0 && messages > config[:crit_over])
+          crits << "#{messages} message(s) in #{q}"
+        elsif (config[:warn_under] >= 0 && messages < config[:warn_under]) || (config[:warn_over] >= 0 && messages > config[:warn_over])
+          warnings << "#{messages} message(s) in #{q}"
+        else
+          passing << "#{messages} message(s) in #{q}"
+        end
+      end
+      if crits.any?
+        critical crits.join(', ').to_s
+      elsif warnings.any?
+        warning warnings.join(', ').to_s
       else
-        ok "#{messages} messages in #{config[:queue]} queue"
+        ok "all queue(s): #{queues} are OK"
       end
     else
       warn = false
