@@ -65,11 +65,16 @@ module CloudwatchCommon
     elsif no_data && !config[:no_data_ok]
       unknown "#{metric_desc} could not be retrieved"
     end
-    value = (read_value(numerator_metric_resp, config[:statistics]).to_f / \
-             read_value(denominator_metric_resp, config[:statistics]).to_f * 100).to_i
+
+    denominator_value = read_value(denominator_metric_resp, config[:statistics]).to_f
+    if denominator_value.zero?
+      ok "#{metric_desc} denominator value is zero but that's ok"
+    end
+    numerator_value = read_value(numerator_metric_resp, config[:statistics]).to_f
+    value = (numerator_value / denominator_value * 100).to_i
     base_msg = "#{metric_desc} is #{value}: comparison=#{config[:compare]}"
 
-    if compare value, config[:critical], config[:compare]
+    if compare(value, config[:critical], config[:compare])
       critical "#{base_msg} threshold=#{config[:critical]}"
     elsif config[:warning] && compare(value, config[:warning], config[:compare])
       warning "#{base_msg} threshold=#{config[:warning]}"
