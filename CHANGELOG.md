@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Fixed
+- check-instance-health.rb now supports checking more than 100 instances (aws api limit) by batching into multiple requests if needed. (@majormoses)
 
 ## [4.1.0] - 2017-05-01
 ###  Added
