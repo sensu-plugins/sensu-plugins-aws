@@ -75,19 +75,24 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
     end
 
     begin
-      resp = ec2.describe_instance_status(instance_ids: instance_ids)
-      resp.instance_statuses.each do |item|
-        id = item.instance_id
-        if gather_events(item.events)
-          messages << "#{id} has unscheduled events"
-        end
+      resp = []
+      instance_ids.each_slice(100) do |batch|
+        resp << ec2.describe_instance_status(instance_ids: batch)
+      end
+      resp.each do |r|
+        r.instance_statuses.each do |item|
+          id = item.instance_id
+          if gather_events(item.events)
+            messages << "#{id} has unscheduled events"
+          end
 
-        if gather_status(item.system_status)
-          messages << "#{id} has failed system status checks"
-        end
+          if gather_status(item.system_status)
+            messages << "#{id} has failed system status checks"
+          end
 
-        if gather_status(item.instance_status)
-          messages << "#{id} has failed instance status checks"
+          if gather_status(item.instance_status)
+            messages << "#{id} has failed instance status checks"
+          end
         end
       end
     rescue => e
