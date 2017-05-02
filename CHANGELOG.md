@@ -4,9 +4,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [4.1.0] - 2017-05-01
 ###  Added
-- check-cloudwatch-composite-metric.rb: Allow calculation of percentage for cloudwatch metrics  by composing two metrics (numerator_metric/denominator_metric * 100) as a percentage. This is useful to skip pushing such metrics to graphite in order to get the percentage metric computed.
-- check-sqs-messages.rb now supports specifying multiple queues wihtout a prefix
+- check-cloudwatch-composite-metric.rb: Allow calculation of percentage for cloudwatch metrics  by composing two metrics (@cornelf) (numerator_metric/denominator_metric * 100) as a percentage. This is useful to skip pushing such metrics to graphite in order to get the percentage metric computed.
+- check-cloudwatch-composite-metric.rb: protect against zero division errors (@cornelf)
+- check-sqs-messages.rb now supports specifying multiple queues wihtout a prefix (@majormoses)
+- check-asg-instances-created.rb is a new check that allows looking at the number od instances created in the last hour (@phoppe93)
+
+### Changed
+- check-sns-subscriptions.rb improved error messages (@obazoud)
+
+### Fixed
+- lib/sensu-plugins-aws/cloudwatch-common.rb use the most recent datapoint (@mivok)
+
 
 ## [4.0.0] - 2016-12-27
 ### Breaking Changes
@@ -278,7 +289,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/4.0.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/4.1.0...HEAD
+[4.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/4.1.0...4.0.0
 [4.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.2.1...4.0.0
 [3.2.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.2.0...3.2.1
 [3.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.1.0...3.2.0
