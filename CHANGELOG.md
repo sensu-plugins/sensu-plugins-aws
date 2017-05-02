@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Breaking Change
+- removed check_vpc_vpn.py as it is broken and not worth fixing when `check-vpc-vpn.rb` is the direction forward.
+
 ### Fixed
 - check-instance-health.rb now supports checking more than 100 instances (aws api limit) by batching into multiple requests if needed. (@majormoses)
 

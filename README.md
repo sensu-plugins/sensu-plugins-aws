@@ -104,8 +104,6 @@
 
 **check-vpc-nameservers**
 
-**check_vpc_vpn.py**
-
 **check-instances-count.rb**
 
 **check-vpc-vpn.rb**
