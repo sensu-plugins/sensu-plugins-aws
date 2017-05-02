@@ -81,8 +81,8 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   end
 
   def aws_config
-    { access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
+    { aws_access_key_id: config[:aws_access_key],
+      aws_secret_access_key: config[:aws_secret_access_key],
       region: config[:aws_region] }
   end
 
