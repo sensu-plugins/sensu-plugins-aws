@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ### Fixed
 - check-instance-health.rb now supports checking more than 100 instances (aws api limit) by batching into multiple requests if needed. (@majormoses)
+- check-elb-fog.rb set the variable name fog expects (@majormoses)
 
 ## [4.1.0] - 2017-05-01
 ###  Added
