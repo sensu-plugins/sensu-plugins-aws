@@ -4,8 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [5.0.0] - 2017-05-03
 ### Breaking Change
-- removed check_vpc_vpn.py as it is broken and not worth fixing when `check-vpc-vpn.rb` is the direction forward.
+- removed check_vpc_vpn.py as it is broken and not worth fixing when `check-vpc-vpn.rb` is the direction forward. (@majormoses)
 
 ### Fixed
 - check-instance-health.rb now supports checking more than 100 instances (aws api limit) by batching into multiple requests if needed. (@majormoses)
@@ -295,7 +297,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/4.1.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/5.0.0...HEAD
+[5.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/5.0.0...4.1.0
 [4.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/4.1.0...4.0.0
 [4.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.2.1...4.0.0
 [3.2.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.2.0...3.2.1
