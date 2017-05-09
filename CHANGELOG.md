@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+## [5.0.1] - 2017-05-09
+### Changed
+- check-elb-nodes.rb returns critical instead of unknown if total number of nodes equals zero
+
 ## [5.0.0] - 2017-05-03
 ### Breaking Change
 - removed check_vpc_vpn.py as it is broken and not worth fixing when `check-vpc-vpn.rb` is the direction forward. (@majormoses)
