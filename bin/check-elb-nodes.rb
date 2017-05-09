@@ -125,7 +125,9 @@ class CheckELBNodes < Sensu::Plugin::Check::CLI
       message << " (#{state['Unknown'].join(', ')})"
     end
 
-    if state['Unknown'].count == num_instances
+    if num_instances.zero?
+      critical 'ELB has no nodes'
+    elsif state['Unknown'].count == num_instances
       unknown 'All nodes in unknown state'
     elsif state['InService'].count == 0
       critical message
