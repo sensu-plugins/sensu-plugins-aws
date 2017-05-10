@@ -5,7 +5,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
-## [5.0.1] - 2017-05-09
+## 2017-05-09
 ### Changed
 - check-elb-nodes.rb returns critical instead of unknown if total number of nodes equals zero
 
