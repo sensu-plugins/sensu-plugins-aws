@@ -13,7 +13,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -121,18 +121,22 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
             i[:events].reject { |x| (x[:code] =~ /system-reboot|instance-reboot|instance-stop|system-maintenance/) && (x[:description] =~ /\[Completed\]|\[Canceled\]/) }
 
           unless useful_events.empty?
+            name = ''
             if config[:include_name]
-              name = ''
               begin
                 instance_desc = ec2.describe_instances(instance_ids: [i[:instance_id]])
-                name = instance_desc[:reservation_index][i[:instance_id]][:instances_set][0][:tag_set].select { |tag| tag[:key] == 'Name' }[0][:value]
+                name_tag = instance_desc.reservations[0].instances[0].tags.find { |tag| tag[:key] == 'Name' }
+                name = name_tag.nil? ? '' : name_tag.value
               rescue => e
                 puts "Issue getting instance details for #{i[:instance_id]} (#{r}).  Exception = #{e}"
               end
-              event_instances << "#{name} (#{i[:instance_id]} #{r}) (#{i[:events][0][:code]}) #{i[:events][0][:description]}"
-            else
-              event_instances << "#{i[:instance_id]} (#{r}) (#{i[:events][0][:code]}) #{i[:events][0][:description]}"
             end
+
+            event_instances << if name.empty?
+                                 "#{i[:instance_id]} (#{r}) (#{i[:events][0][:code]}) #{i[:events][0][:description]}"
+                               else
+                                 "#{name} (#{i[:instance_id]} #{r}) (#{i[:events][0][:code]}) #{i[:events][0][:description]}"
+                               end
           end
         end
       rescue => e
