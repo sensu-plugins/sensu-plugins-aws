@@ -46,6 +46,8 @@
 
 **check-eip-allocation.rb**
 
+**check-elasticache-events.rb **
+
 **check-elasticache-failover.rb**
 
 **check-elb-certs.rb**
