@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Added
+- check-elasticache-events.rb: check for latest ElastiCache events (@swibowo)
+
 ## [6.0.1] 2017-05-11
 ### Fixed
 - check-instance-events.rb: fix instance Name tag retrieval that broke upon aws sdk v2 update, and update output message handling (@swibowo)
