@@ -4,11 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
-## [6.0.1] 2017-05-11
+## [6.0.1] - 2017-05-11
 ### Fixed
 - check-instance-events.rb: fix instance Name tag retrieval that broke upon aws sdk v2 update, and update output message handling (@swibowo)
 
-## 6.0.0
+## [6.0.0] - 2017-05-10
 ### Breaking Change
 - check-elb-nodes.rb returns critical instead of unknown if total number of nodes equals zero (@autarchprinceps)
 
@@ -310,9 +310,9 @@ WARNING:  This release contains major breaking changes that will impact all user
 [Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.0.1...HEAD
 [6.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.0.0...6.0.1
 [6.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/5.1.0...6.0.0
-[5.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/5.1.0...5.0.0
-[5.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/5.0.0...4.1.0
-[4.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/4.1.0...4.0.0
+[5.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/5.0.0...5.1.0
+[5.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/4.1.0...5.0.0
+[4.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.2.1...4.0.0
 [3.2.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.2.0...3.2.1
 [3.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/3.1.0...3.2.0
