@@ -40,14 +40,14 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
          default: 'us-east-1'
 
   option :critical,
-         description: 'Trigger a critical when ebs purst limit is under VALUE',
+         description: 'Trigger a critical when ebs burst limit is under VALUE',
          short: '-c VALUE',
          long: '--critical VALUE',
          proc: proc(&:to_f),
          required: true
 
   option :warning,
-         description: 'Trigger a warning when ebs purst limit is under VALUE',
+         description: 'Trigger a warning when ebs burst limit is under VALUE',
          short: '-w VALUE',
          long: '--warning VALUE',
          proc: proc(&:to_f)
