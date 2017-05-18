@@ -12,12 +12,12 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk-v2
 #   gem: sensu-plugin
 #
 # USAGE:
-#   check-sqs-messages -q my_queue -a key -k secret -w 500 -c 1000
-#   check-sqs-messages -p queue_prefix_ -a key -k secret -W 100 -C 50
+#   check-sqs-messages -q my_queue -w 500 -c 1000
+#   check-sqs-messages -p queue_prefix_ -W 100 -C 50
 #
 # NOTES:
 #
@@ -56,7 +56,7 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
          default: ''
 
   option :metric,
-         short: '-m METTIC',
+         short: '-m METRIC',
          long: '--metric METRIC',
          description: 'The metric of the queues you want to check the number of messages for',
          default: 'ApproximateNumberOfMessages'
