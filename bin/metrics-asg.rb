@@ -101,7 +101,7 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
       metric_name: metric_name,
       dimensions: [
         {
-          name: 'AutoScaling',
+          name: 'AutoScalingGroupName',
           value: asg_name
         }
       ],
@@ -117,8 +117,9 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
     static_value = {}
     statistics.each do |key, static|
       r = cloud_watch_metric(key, static, asg_name)
-      static_value['AutoScalingGroup.' + asg_name + '.' + key + '.' + static] = static
-      result['AutoScalingGroup.' + asg_name + '.' + key + '.' + static] = r[:datapoints][0] unless r[:datapoints][0].nil?
+      static_value[config[:scheme] + '.' + asg_name + '.' + key + '.' + static] = static
+      result[config[:scheme] + '.' + asg_name + '.' + key + '.' + static] = r[:datapoints][0] unless r[:datapoints][0].nil?
+
     end
     result.each do |key, value|
       output key.downcase.to_s, value[static_value[key].downcase], value[:timestamp].to_i
