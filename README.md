@@ -68,6 +68,8 @@
 
 **check-emr-steps.rb**
 
+**check-eni-status.rb**
+
 **check-instance-events.rb**
 
 **check-instance-health.rb**
@@ -175,6 +177,7 @@
 * /bin/check-elb-sum-requests.rb
 * /bin/check-emr-cluster.rb
 * /bin/check-emr-steps.rb
+* /bin/check-eni-status.rb
 * /bin/check-instance-events.rb
 * /bin/check-rds-events.rb
 * /bin/check-rds-pending.rb
