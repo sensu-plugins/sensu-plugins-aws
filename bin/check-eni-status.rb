@@ -69,20 +69,20 @@ class ENIStatus < Sensu::Plugin::Check::CLI
 
   def run
     Aws.config.update(aws_config)
-    client= Aws::EC2::Client.new()    
+    client = Aws::EC2::Client.new
 
-      status = client.describe_network_interfaces(filters: [{ name: 'network-interface-id', values: ["#{config[:eni]}"] }])[:network_interfaces].first
+    status = client.describe_network_interfaces(filters: [{ name: 'network-interface-id', values: [config[:eni].to_s] }])[:network_interfaces].first
 
-      if ! status
-          critical "No Information found for #{config[:eni]}"
-      end
+    unless status
+      critical "No Information found for #{config[:eni]}"
+    end
 
-      if (config[:warn_status].casecmp status[:status])
-          critical "#{config[:eni]} is #{status[:status]}"
-      elsif (config[:warn_status].casecmp status[:status])
-          warning "#{config[:eni]} is #{status[:status]}"
-      else
-          ok "#{config[:eni]} is #{status[:status]}"
-      end
+    if config[:warn_status].casecmp status[:status]
+      critical "#{config[:eni]} is #{status[:status]}"
+    elsif config[:warn_status].casecmp status[:status]
+      warning "#{config[:eni]} is #{status[:status]}"
+    else
+      ok "#{config[:eni]} is #{status[:status]}"
+    end
   end
 end
