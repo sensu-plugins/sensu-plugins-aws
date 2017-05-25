@@ -12,8 +12,9 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
 #   gem: sensu-plugin
+#   gem: aws-sdk
+#
 #
 # USAGE:
 #   metrics-sqs -q my_queue -a key -k secret
@@ -28,20 +29,23 @@
 #
 
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk-v1'
+require 'sensu-plugins-aws'
+require 'aws-sdk'
 
 class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
+  include Common
+
   option :queue,
          description: 'Name of the queue',
          short: '-q QUEUE',
          long: '--queue QUEUE',
-         default: ''
+         default: false
 
   option :prefix,
          description: 'Queue name prefix',
          short: '-p PREFIX',
          long: '--prefix PREFIX',
-         default: ''
+         default: false
 
   option :scheme,
          description: 'Metric naming scheme, text to prepend to metric',
@@ -78,25 +82,23 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
     "#{scheme}.#{queue_name.tr('-', '_')}.message_count"
   end
 
-  def record_queue_metrics(q_name, q)
-    output scheme(q_name), q.approximate_number_of_messages
-    output "#{scheme(q_name)}.delayed", q.approximate_number_of_messages_delayed
-    output "#{scheme(q_name)}.not_visible", q.approximate_number_of_messages_not_visible
+  def record_queue_metrics(q_name, attributes)
+    output scheme(q_name), attributes['ApproximateNumberOfMessages']
+    output "#{scheme(q_name)}.delayed", attributes['ApproximateNumberOfMessagesDelayed']
+    output "#{scheme(q_name)}.not_visible", attributes['ApproximateNumberOfMessagesNotVisible']
   end
 
   def run
     begin
-      sqs = AWS::SQS.new aws_config
+      sqs = Aws::SQS::Client.new(aws_config)
 
-      if config[:prefix] == ''
-        if config[:queue] == ''
-          critical 'Error, either QUEUE or PREFIX must be specified'
-        end
-
-        record_queue_metrics(config[:queue], sqs.queues.named(config[:queue]))
+      if config[:queue]
+        url = sqs.get_queue_url(queue_name: config[:queue]).queue_url
+        record_queue_metrics(config[:queue], sqs.get_queue_attributes(queue_url: url, attribute_names: ['All']).attributes)
       else
-        sqs.queues.with_prefix(config[:prefix]).each do |q|
-          record_queue_metrics(q.arn.split(':').last, q)
+        prefix = config[:prefix] ? { queue_name_prefix: config[:prefix] } : {}
+        sqs.list_queues(prefix).queue_urls.each do |u|
+          record_queue_metrics(u.split('/').last, sqs.get_queue_attributes(queue_url: u, attribute_names: ['All']).attributes)
         end
       end
     rescue => e
