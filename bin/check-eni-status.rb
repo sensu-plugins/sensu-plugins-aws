@@ -3,7 +3,7 @@
 # check-eni-status
 #
 # DESCRIPTION:
-#   This plugin checks the status of an elastic number interface
+#   This plugin checks the status of an elastic network interface
 #
 # OUTPUT:
 #   plain-text
@@ -32,7 +32,7 @@ require 'sensu-plugins-aws'
 require 'aws-sdk'
 
 #
-# Check SQS Messages
+# Check ENI Status
 #
 class ENIStatus < Sensu::Plugin::Check::CLI
   include Common
@@ -46,7 +46,7 @@ class ENIStatus < Sensu::Plugin::Check::CLI
   option :eni,
          short: '-e ENI_ID',
          long: '--eni ENI_ID',
-         description: 'The Eleastic Network Interface to check',
+         description: 'A comma seperated list of the Elastic Network Interfaces to check',
          default: ''
 
   option :warn_status,
@@ -71,18 +71,37 @@ class ENIStatus < Sensu::Plugin::Check::CLI
     Aws.config.update(aws_config)
     client = Aws::EC2::Client.new
 
-    status = client.describe_network_interfaces(filters: [{ name: 'network-interface-id', values: [config[:eni].to_s] }])[:network_interfaces].first
-
-    unless status
-      critical "No Information found for #{config[:eni]}"
+    if config[:eni].empty?
+        critical 'Error, ENI(s) should be specified.'
     end
 
-    if config[:warn_status].casecmp status[:status]
-      critical "#{config[:eni]} is #{status[:status]}"
-    elsif config[:warn_status].casecmp status[:status]
-      warning "#{config[:eni]} is #{status[:status]}"
+    warnings = []
+    crits = []
+    passing = []
+
+    eni = config[:eni].split(',')
+    eni.each do |e|
+      status = client.describe_network_interfaces(
+         filters: [{ name: 'network-interface-id', values: [e] }]
+      )[:network_interfaces].first
+      
+      unless status
+        warnings << "No Information found for #{e}"
+      else
+        if config[:warn_status].casecmp status[:status]
+          crits << "#{e} is #{status[:status]}"
+        elsif config[:warn_status].casecmp status[:status]
+          warnings << "#{e} is #{status[:status]}"
+        end
+      end
+    end
+
+    if crits.any?
+      critical crits.join(', ').to_s
+    elsif warnings.any?
+      warning warnings.join(', ').to_s
     else
-      ok "#{config[:eni]} is #{status[:status]}"
+      ok "all queue(s): #{queues} are OK"
     end
   end
 end
