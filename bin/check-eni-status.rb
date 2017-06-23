@@ -72,27 +72,30 @@ class ENIStatus < Sensu::Plugin::Check::CLI
     client = Aws::EC2::Client.new
 
     if config[:eni].empty?
-        critical 'Error, ENI(s) should be specified.'
+      critical 'Error, ENI(s) should be specified.'
+    end
+
+    if config[:crit_status].empty?
+      if config[:warn_status].empty?
+        critical 'Error, either crit_status or warn_status must be specified'
+      end
     end
 
     warnings = []
     crits = []
-    passing = []
 
     eni = config[:eni].split(',')
     eni.each do |e|
       status = client.describe_network_interfaces(
-         filters: [{ name: 'network-interface-id', values: [e] }]
+        filters: [{ name: 'network-interface-id', values: [e] }]
       )[:network_interfaces].first
-      
-      unless status
+
+      if status.nil?
         warnings << "No Information found for #{e}"
-      else
-        if config[:warn_status].casecmp status[:status]
-          crits << "#{e} is #{status[:status]}"
-        elsif config[:warn_status].casecmp status[:status]
-          warnings << "#{e} is #{status[:status]}"
-        end
+      elsif config[:crit_status].casecmp(status[:status]) == 0
+        crits << "#{e} is #{status[:status]}"
+      elsif config[:warn_status].casecmp(status[:status]) == 0
+        warnings << "#{e} is #{status[:status]}"
       end
     end
 
