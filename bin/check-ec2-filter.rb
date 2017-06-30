@@ -93,6 +93,10 @@ class EC2Filter < Sensu::Plugin::Check::CLI
          boolean: true,
          default: false
 
+  option :min_running_secs,
+         long: '--min-running-secs SECONDS',
+         default: nil
+
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
@@ -141,6 +145,7 @@ class EC2Filter < Sensu::Plugin::Check::CLI
       r.instances.each do |i|
         aws_instances << {
           id: i[:instance_id],
+          launch_time: i.launch_time,
           tags: i.tags
         }
       end
@@ -151,6 +156,12 @@ class EC2Filter < Sensu::Plugin::Check::CLI
         filter_list.keys.include?(key.key) && filter_list[key.key].split(',').any? do |v|
           key.value.match(/#{v.strip}/)
         end
+      end
+    end
+
+    unless config[:min_running_secs].nil?
+      aws_instances.delete_if do |instance|
+        (Time.now.utc - instance[:launch_time]).to_i < config[:min_running_secs].to_i
       end
     end
 
