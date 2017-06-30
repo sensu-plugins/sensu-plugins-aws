@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+- check-ec2-filter.rb: add --min-running-secs flag for specifying
+  minimum number of seconds an instance should be running before it is
+  included in the instance count.
+
 ## [6.1.1] - 2017-07-07
 ### Added
 - ruby 2.4 testing (@majormoses)
