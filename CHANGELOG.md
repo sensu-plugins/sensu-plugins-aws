@@ -10,6 +10,9 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ### Changed
 - misc repo fixes (@majormoses)
 
+### Fixed
+- check-asg-instances-created check fails due to int and string comparison
+
 ## [6.1.0] - 2017-06-23
 ### Added
 - check-eni-status.rb: new check to monitor the status of one or more ENI
