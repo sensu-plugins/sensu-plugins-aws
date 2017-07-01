@@ -78,9 +78,9 @@ class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI
     time_utc_offset = time_now - time_now.utc_offset
 
     if !config[:warning_limit].nil?
-      warning = config[:warning_limit]
+      warning = config[:warning_limit].to_i
     elsif !config[:critical_limit].nil?
-      critical = config[:critical_limit]
+      critical = config[:critical_limit].to_i
     end
 
     if config[:asg_group_name].nil?
