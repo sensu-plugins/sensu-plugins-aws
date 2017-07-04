@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+- Add check-rds-cpu_balance.rb to check cpu-balanced for RDS instance
+
 ### Added
 - ruby 2.4 testing (@majormoses)
 

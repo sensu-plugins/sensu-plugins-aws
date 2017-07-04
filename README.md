@@ -76,6 +76,8 @@
 
 **check-kms-key.rb**
 
+**check-rds-cpu_balance.rb**
+
 **check-rds-events.rb**
 
 **check-rds-pending.rb**
