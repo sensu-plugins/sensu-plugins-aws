@@ -5,11 +5,11 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+## [6.2.0] 2017-07-07
 ### Added
-
 - check-ec2-filter.rb: add --min-running-secs flag for specifying
   minimum number of seconds an instance should be running before it is
-  included in the instance count.
+  included in the instance count. (@cwjohnston)
 
 ## [6.1.1] - 2017-07-07
 ### Added
@@ -328,7 +328,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.1.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.2.0...HEAD
+[6.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.1.1...6.2.0
 [6.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.1.0...6.1.1
 [6.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.0.1...6.1.0
 [6.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.0.0...6.0.1
