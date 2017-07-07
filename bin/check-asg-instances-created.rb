@@ -51,11 +51,13 @@ class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI
          short:       '-w W',
          long:        '--warning_limit Warning Limit',
          description: 'Warning Limit for launching and terminated instances'
+         proc: proc(&:to_i)
 
   option :critical_limit,
          short:       '-c C',
          long:        '--critical_limit Critical Limit',
          description: 'Critical Limit for launching and terminated instances'
+         proc: proc(&:to_i)
 
   def asg
     @asg = Aws::AutoScaling::Client.new
@@ -78,9 +80,9 @@ class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI
     time_utc_offset = time_now - time_now.utc_offset
 
     if !config[:warning_limit].nil?
-      warning = config[:warning_limit].to_i
+      warning = config[:warning_limit]
     elsif !config[:critical_limit].nil?
-      critical = config[:critical_limit].to_i
+      critical = config[:critical_limit]
     end
 
     if config[:asg_group_name].nil?
