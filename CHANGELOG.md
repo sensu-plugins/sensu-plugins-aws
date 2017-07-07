@@ -5,6 +5,8 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+### Added
+
 - check-ec2-filter.rb: add --min-running-secs flag for specifying
   minimum number of seconds an instance should be running before it is
   included in the instance count.
