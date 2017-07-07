@@ -50,13 +50,13 @@ class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI
   option :warning_limit,
          short:       '-w W',
          long:        '--warning_limit Warning Limit',
-         description: 'Warning Limit for launching and terminated instances'
+         description: 'Warning Limit for launching and terminated instances',
          proc: proc(&:to_i)
 
   option :critical_limit,
          short:       '-c C',
          long:        '--critical_limit Critical Limit',
-         description: 'Critical Limit for launching and terminated instances'
+         description: 'Critical Limit for launching and terminated instances',
          proc: proc(&:to_i)
 
   def asg
