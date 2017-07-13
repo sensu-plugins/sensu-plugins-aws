@@ -1,9 +1,11 @@
-#Change Log
+# Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [6.3.0] 2017-07-13
 ### Added
 - add check-cloudwatch-alarms.rb (@obazoud)
 
@@ -330,7 +332,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.2.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.3.0...HEAD
+[6.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.2.0...6.3.0
 [6.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.1.1...6.2.0
 [6.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.1.0...6.1.1
 [6.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.0.1...6.1.0
