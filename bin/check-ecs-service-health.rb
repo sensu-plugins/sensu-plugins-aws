@@ -27,6 +27,9 @@
 #
 # NOTES:
 #
+# MULTIPLE CLUSTERS/SERVICES AUTOMATION
+#   Create multiple clusters/services with these scripts: https://github.com/ay-b/ecs-service-check-autocreate
+#
 # LICENSE:
 #   Norm MacLennan <nmaclennan@cimpress.com>
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
