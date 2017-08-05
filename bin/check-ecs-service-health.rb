@@ -29,6 +29,7 @@
 #
 # MULTIPLE CLUSTERS/SERVICES AUTOMATION
 #   Create multiple clusters/services with these scripts: https://github.com/ay-b/ecs-service-check-autocreate
+#   Don't forget to edit template file
 #
 # LICENSE:
 #   Norm MacLennan <nmaclennan@cimpress.com>
