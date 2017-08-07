@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Breaking Change
+- Dependency on sensu-plugin is now compatible with 2.x. This would also mean we drop support for sensu-plugin 1.x.
 
 ## [6.3.0] 2017-07-13
 ### Added
