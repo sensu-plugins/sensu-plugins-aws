@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
   # https://github.com/fog/fog-core/issues/206
   s.add_runtime_dependency 'fog-core',          '1.43.0'
   s.add_runtime_dependency 'right_aws',         '3.1.0'
-  s.add_runtime_dependency 'sensu-plugin',      '~> 1.3'
+  s.add_runtime_dependency 'sensu-plugin',      '~> 2.0'
   s.add_runtime_dependency 'erubis',            '2.7.0'
   s.add_runtime_dependency 'rest-client',       '1.8.0'
 
