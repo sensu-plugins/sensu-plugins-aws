@@ -4,14 +4,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
-### Breaking Change
-- Dependency on sensu-plugin is now compatible with 2.x. This would also mean we drop support for sensu-plugin 1.x.
 
-## [6.3.0] 2017-07-13
+## [7.0.0] - 2017-08-07
+### Breaking Change
+- Bump min dependency on `sensu-plugin` to 2.x (@huynt1979)
+
+## [6.3.0] - 2017-07-13
 ### Added
 - add check-cloudwatch-alarms.rb (@obazoud)
 
-## [6.2.0] 2017-07-07
+## [6.2.0] - 2017-07-07
 ### Added
 - check-ec2-filter.rb: add --min-running-secs flag for specifying
   minimum number of seconds an instance should be running before it is
@@ -334,7 +336,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.3.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.0...HEAD
+[7.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.3.0...7.0.0
 [6.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.2.0...6.3.0
 [6.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.1.1...6.2.0
 [6.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.1.0...6.1.1
