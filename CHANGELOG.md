@@ -7,6 +7,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ### Fixed
 - check-cloudwatch-metric.rb, check-cloudwatch-composite-metric.rb: fixed defaults to work (@majormoses)
+- check-cloudwatch-metric.rb: short option `-n` was conflicting with `no_data_ok` and `namespace` as `check-cloudwatch-composite-metric.rb` uses `-O` I opted for that for consistency (@majormoses)
 
 ### Changed
 - check-cloudwatch-metric.rb, check-cloudwatch-composite-metric.rb: `self.parse_dimensions` and `dimension_string` were the same in both checks This fix was common mamong both checks so I moved it into the module
