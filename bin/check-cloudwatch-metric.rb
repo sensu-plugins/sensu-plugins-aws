@@ -95,7 +95,7 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
          default: 'greater'
 
   option :no_data_ok,
-         short: '-n',
+         short: '-O',
          long: '--allow-no-data',
          description: 'Returns ok if no data is returned from the metric',
          boolean: true,
