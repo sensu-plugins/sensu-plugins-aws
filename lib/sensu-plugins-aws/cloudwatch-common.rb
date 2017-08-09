@@ -83,6 +83,16 @@ module CloudwatchCommon
     end
   end
 
+  def self.parse_dimensions(dimension_string)
+    dimension_string.split(',')
+                    .collect { |d| d.split '=' }
+                    .collect { |a| { name: a[0], value: a[1] } }
+  end
+
+  def dimension_string
+    config[:dimensions].map { |d| "#{d[:name]}=#{d[:value]}" }.join('&')
+  end
+
   def check(config)
     resp = client.get_metric_statistics(metrics_request(config))
 

@@ -54,8 +54,8 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
          description: 'Comma delimited list of DimName=Value',
          short: '-d DIMENSIONS',
          long: '--dimensions DIMENSIONS',
-         proc: proc { |d| CloudWatchMetricCheck.parse_dimensions d },
-         default: ''
+         proc: proc { |d| CloudwatchCommon.parse_dimensions d },
+         default: []
 
   option :period,
          description: 'CloudWatch metric statistics period. Must be a multiple of 60',
