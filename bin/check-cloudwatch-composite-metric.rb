@@ -63,8 +63,8 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
          description: 'Comma delimited list of DimName=Value',
          short: '-d DIMENSIONS',
          long: '--dimensions DIMENSIONS',
-         proc: proc { |d| CloudWatchCompositeMetricCheck.parse_dimensions d },
-         default: ''
+         proc: proc { |d| CloudwatchCommon.parse_dimensions d },
+         default: []
 
   option :period,
          description: 'CloudWatch metric statistics period. Must be a multiple of 60',
@@ -111,16 +111,6 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
          default: false
 
   include CloudwatchCommon
-
-  def self.parse_dimensions(dimension_string)
-    dimension_string.split(',')
-                    .collect { |d| d.split '=' }
-                    .collect { |a| { name: a[0], value: a[1] } }
-  end
-
-  def dimension_string
-    config[:dimensions].map { |d| "#{d[:name]}=#{d[:value]}" }.join('&')
-  end
 
   def metric_desc
     "#{config[:namespace]}-#{config[:numerator_metric_name]}/#{config[:denominator_metric_name]}(#{dimension_string})"
