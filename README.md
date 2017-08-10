@@ -8,6 +8,8 @@
 
 ## Functionality
 
+**check-alb-target-group-health.rb**
+
 **check-asg-instances-created.rb**
 
 **check-asg-instances-inservice.rb**
@@ -151,6 +153,7 @@
 
 ## Files
 
+* /bin/check-alb-target-group-health.rb
 * /bin/check-asg-instances-created.rb
 * /bin/check-autoscaling-cpucredits.rb
 * /bin/check-asg-instances-inservice.rb
