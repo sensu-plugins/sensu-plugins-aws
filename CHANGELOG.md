@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [7.1.0] - 2017-08-14
 ### Added
 - Add `check-alb-target-group-health.rb` that checks the health of ALB target groups (@eheydrick)
 
@@ -13,7 +15,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 - check-cloudwatch-metric.rb: short option `-n` was conflicting with `no_data_ok` and `namespace` as `check-cloudwatch-composite-metric.rb` uses `-O` I opted for that for consistency (@majormoses)
 
 ### Changed
-- check-cloudwatch-metric.rb, check-cloudwatch-composite-metric.rb: `self.parse_dimensions` and `dimension_string` were the same in both checks This fix was common mamong both checks so I moved it into the module
+- check-cloudwatch-metric.rb, check-cloudwatch-composite-metric.rb: `self.parse_dimensions` and `dimension_string` were the same in both checks. This fix was common among both checks so I moved it into the module
 
 ## [7.0.0] - 2017-08-07
 ### Breaking Change
@@ -346,7 +348,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.1.0...HEAD
+[7.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.1...7.1.0
 [7.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.0...7.0.1
 [7.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.3.0...7.0.0
 [6.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.2.0...6.3.0
