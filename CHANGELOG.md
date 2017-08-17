@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Breaking Changes
+- check-beanstalk-elb-metric.rb and check-cloudwatch-metric.rb: `--opertor` flag was a typo, please use `--operator` now.
 
 ## [7.1.0] - 2017-08-14
 ### Added
