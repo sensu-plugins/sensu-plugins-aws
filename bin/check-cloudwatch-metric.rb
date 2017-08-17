@@ -91,7 +91,7 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
   option :compare,
          description: 'Comparision operator for threshold: equal, not, greater, less',
          short: '-o OPERATION',
-         long: '--opertor OPERATION',
+         long: '--operator OPERATION',
          default: 'greater'
 
   option :no_data_ok,
