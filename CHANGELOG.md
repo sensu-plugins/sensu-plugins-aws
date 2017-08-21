@@ -4,8 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [8.0.0] - 2017-08-20
 ### Breaking Changes
-- check-beanstalk-elb-metric.rb and check-cloudwatch-metric.rb: `--opertor` flag was a typo, please use `--operator` now.
+- check-beanstalk-elb-metric.rb and check-cloudwatch-metric.rb: `--opertor` flag was a typo, please use `--operator` now. (@guikcd)
 
 ## [7.1.0] - 2017-08-14
 ### Added
@@ -350,7 +352,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.1.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.0.0...HEAD
+[8.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.1.0...8.0.0
 [7.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.1...7.1.0
 [7.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.0...7.0.1
 [7.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.3.0...7.0.0
