@@ -33,7 +33,6 @@ require 'aws-sdk'
 require 'net/http'
 
 class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
-
   include CloudwatchCommon
 
   option :aws_region,
@@ -68,9 +67,9 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
     # Set the describe-volumes filter depending on whether -s was specified
     if config[:check_self] == true
       # Get the region from the availability zone, and override the -r option
-      my_instance_az  = Net::HTTP.get( URI.parse('http://169.254.169.254/latest/meta-data/placement/availability-zone'))
+      my_instance_az = Net::HTTP.get(URI.parse('http://169.254.169.254/latest/meta-data/placement/availability-zone'))
       Aws.config[:region] = my_instance_az.chop
-      my_instance_id = Net::HTTP.get( URI.parse('http://169.254.169.254/latest/meta-data/instance-id'))
+      my_instance_id = Net::HTTP.get(URI.parse('http://169.254.169.254/latest/meta-data/instance-id'))
       volume_filters = [
         {
           name: 'attachment.instance-id',
@@ -89,7 +88,7 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
 
     ec2 = Aws::EC2::Client.new
     volumes = ec2.describe_volumes(
-       filters: volume_filters
+      filters: volume_filters
     )
     config[:metric_name] = 'BurstBalance'
     config[:namespace] = 'AWS/EBS'
