@@ -106,7 +106,7 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
         if resp.datapoints.first[:average] < config[:critical]
           errors << "#{volume[:volume_id]} #{resp.datapoints.first[:average]}"
           crit = true
-        elsif resp.datapoints.first[:average] < config[:warning]
+        elsif config[:warning] && resp.datapoints.first[:average] < config[:warning]
           errors << "#{volume[:volume_id]} #{resp.datapoints.first[:average]}"
           should_warn = true
         end
