@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Added
+- check-ebs-burst-balance.rb: Only check volumes attached to the current instance with a new `-s` option, which also overrides the `-r` option for EC2 region. (@ivanfetch)
 
 ## [8.0.0] - 2017-08-20
 ### Breaking Changes
