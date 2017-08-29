@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [8.1.0] - 2017-08-28
 ### Fixed
 check-ebs-burst-limit.rb: Only compare the warning threshold if a `-w` option was specified on the command-line, as usage shows `-w` is optional. (@ivanfetch)
 
@@ -358,6 +360,7 @@ WARNING:  This release contains major breaking changes that will impact all user
 - initial release
 
 [Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.0.0...HEAD
+[8.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.1.0...8.0.0
 [7.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.1...7.1.0
 [7.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.0...7.0.1
