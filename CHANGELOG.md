@@ -4,7 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
-- Add option 'scheme' for metrics-rds.rb
+
+## [8.2.0] - 2017-09-05
+### Added
+- metrics-rds.rb: adding option `--scheme` to allow changing the default scheme (@julio-ogury)
 
 ## [8.1.0] - 2017-08-28
 ### Fixed
@@ -360,7 +363,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.0.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.2.0...HEAD
+[8.2.0]:https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.1.0...8.2.0
 [8.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.1.0...8.0.0
 [7.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.1...7.1.0
