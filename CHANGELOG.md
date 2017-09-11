@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+### Added
+- check-ec2-cpu_balance.rb: Add option `--tag`/`-t` to add a specified instace tag (e.g. instace name) to message. (@snadorp)
 
 ## [8.2.0] - 2017-09-05
 ### Added

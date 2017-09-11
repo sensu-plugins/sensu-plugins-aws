@@ -17,6 +17,8 @@
 #
 # USAGE:
 #   ./check-ec2-cpu_balance -c 20
+#   ./check-ec2-cpu_balance -w 25 -c 20
+#   ./check-ec2-cpu_balance -c 20 -t 'Name'
 #
 # NOTES:
 #
@@ -52,6 +54,11 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
          description: 'AWS region',
          default: 'us-east-1'
 
+  option :tag,
+         description: 'Add instance TAG value to warn/critical message.',
+         short: '-t TAG',
+         long: '--tag TAG'
+
   def data(instance)
     client = Aws::CloudWatch::Client.new
     stats = 'Average'
@@ -59,10 +66,12 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
     resp = client.get_metric_statistics(
       namespace: 'AWS/EC2',
       metric_name: 'CPUCreditBalance',
-      dimensions: [{
-        name: 'InstanceId',
-        value: instance
-      }],
+      dimensions: [
+        {
+          name: 'InstanceId',
+          value: instance
+        }
+      ],
       start_time: Time.now - period * 10,
       end_time: Time.now,
       period: period,
@@ -70,6 +79,11 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
     )
 
     return resp.datapoints.first.send(stats.downcase) unless resp.datapoints.first.nil?
+  end
+
+  def instance_tag(instance, tag_name)
+    tag = instance.tags.select { |t| t.key == tag_name }.first
+    tag.nil? ? '' : tag.value
   end
 
   def run
@@ -90,13 +104,14 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
         next unless instance.instance_type.start_with? 't2.'
         id = instance.instance_id
         result = data id
+        tag = config[:tag] ? " (#{instance_tag(instance, config[:tag])})" : ''
         unless result.nil?
           if result < config[:critical]
             level = 2
-            messages << "#{id} is below critical threshold [#{result} < #{config[:critical]}]\n"
+            messages << "#{id}#{tag} is below critical threshold [#{result} < #{config[:critical]}]\n"
           elsif config[:warning] && result < config[:warning]
             level = 1 if level == 0
-            messages << "#{id} is below warning threshold [#{result} < #{config[:warning]}]\n"
+            messages << "#{id}#{tag} is below warning threshold [#{result} < #{config[:warning]}]\n"
           end
         end
       end
