@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [8.3.0] - 2017-09-16
 ### Added
 - check-ec2-cpu_balance.rb: Add option `--tag`/`-t` to add a specified instace tag (e.g. instace name) to message. (@snadorp)
 
@@ -365,7 +367,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.2.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.3.0...HEAD
+[8.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.2.0...8.3.0
 [8.2.0]:https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.1.0...8.2.0
 [8.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.1.0...8.0.0
