@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+## [8.4.0] - 2017-09-29
+### Added
+- check-elb-instances-endpoints.rb: Check each instance attached to a ELB for a HTTP 200 response (@markwallsgrove)
+
 ## [8.3.0] - 2017-09-16
 ### Added
 - check-ec2-cpu_balance.rb: Add option `--tag`/`-t` to add a specified instace tag (e.g. instace name) to message. (@snadorp)
