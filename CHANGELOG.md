@@ -4,8 +4,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
-
-## [8.4.0] - 2017-09-29
 ### Added
 - check-elb-instances-endpoints.rb: Check each instance attached to a ELB for a HTTP 200 response (@markwallsgrove)
 

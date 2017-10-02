@@ -73,13 +73,13 @@ class HTTPCheckELBNodes < Sensu::Plugin::Check::CLI
   option :aws_region,
          short: '-r AWS_REGION',
          long: '--aws-region REGION',
-         description: 'AWS Region (defaults to eu-west-1).',
+         description: 'AWS Region (defaults to eu-west-1)',
          default: 'eu-west-1'
 
-  option :load_balancer,
+  option :instance_name,
          short: '-n ELB_NAME',
          long: '--name ELB_NAME',
-         description: 'The name of the ELB',
+         description: 'Regular expression to describe the elb name',
          required: true
 
   option :path,
@@ -88,10 +88,9 @@ class HTTPCheckELBNodes < Sensu::Plugin::Check::CLI
          description: 'path to check',
          required: true
 
-  option :use_https,
-         short: '-s',
-         long: '--https',
-         description: 'use https (default: false)',
+  option :use_http,
+         long: '--http',
+         description: 'use http (default: false)',
          boolean: true,
          default: false
 
@@ -102,6 +101,23 @@ class HTTPCheckELBNodes < Sensu::Plugin::Check::CLI
          default: 0,
          proc: proc(&:to_i)
 
+  option :timeout,
+         long: '--timeout TIMEOUT',
+         description: 'HTTP timeout',
+         default: 2,
+         proc: proc(&:to_i)
+
+  option :private_dns,
+         long: '--private-dns',
+         description: 'Use the private DNS name (default is the public dns)',
+         default: false,
+         boolean: true
+
+  option :response_code,
+         long: '--response-code',
+         description: 'Expected response code (default HTTP200)',
+         default: '200'
+
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
@@ -110,30 +126,61 @@ class HTTPCheckELBNodes < Sensu::Plugin::Check::CLI
 
   def run
     instances = get_instances((AWS::ELB.new aws_config))
-
     errors = {}
+
     instances.each do |inst|
       resp = call_endpoint(inst)
       errors[inst.id] = resp unless resp.nil?
+    end.empty? && begin
+      errors['amount'] = 'zero instances found'
     end
 
     errors.keys.count.zero? ? (ok 'all is good') : (critical errors.to_s)
   end
 
-  def get_instances(elb)
-    elb.load_balancers[config[:load_balancer]].instances
-  rescue AWS::ELB::Errors::LoadBalancerNotFound
-    unknown "Load balancer unknown: '#{config[:load_balancer]}'"
+  def get_instances(elbs)
+    instances = []
+    elbs.load_balancers.each do |elb|
+      elb.instances.each { |instance| instances << instance if /#{config[:instance_name]}/ =~ instance.tags['Name'] }
+    end
+    instances
+  rescue => e
+    unknown "retrieving load balancer describtors: #{e}"
+  end
+
+  def name
+    config[:load_balancer_name]
   end
 
   def call_endpoint(inst)
-    host = inst.dns_name
-    res = Net::HTTP.get_response(URI("#{schema}://#{host}#{port}#{path}"))
-    res.code != '200' ? res.body : nil
+    url = URI("#{schema}://#{host(inst)}#{port}#{path}")
+    http = Net::HTTP.new(url.host, url.port)
+    http.read_timeout = timeout
+    http.open_timeout = timeout
+    resp = http.start { |session| session.get(url.path) }
+    invalid_code = resp.code != response_code
+    return 'Page not found' if invalid_code && resp.code == '404'
+    return 'Invalid status' if invalid_code && resp.body.empty?
+    return resp.body if invalid_code
+    nil
+  rescue
+    'Timeout'
+  end
+
+  def host(inst)
+    private_dns ? inst.private_dns_name : inst.public_dns_name
+  end
+
+  def private_dns
+    config[:private_dns]
+  end
+
+  def timeout
+    config[:timeout]
   end
 
   def schema
-    config[:use_https] ? 'https' : 'http'
+    config[:use_http] ? 'http' : 'https'
   end
 
   def port
@@ -142,5 +189,9 @@ class HTTPCheckELBNodes < Sensu::Plugin::Check::CLI
 
   def path
     config[:path]
+  end
+
+  def response_code
+    config[:response_code]
   end
 end
