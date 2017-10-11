@@ -3,7 +3,7 @@
 # check-elb-certs
 #
 # DESCRIPTION:
-#   This plugin looks up all ELBs in the organization and checks https
+#   This plugin looks up all ELBs in the region and checks https
 #   endpoints for expiring certificates
 #
 # OUTPUT:
@@ -13,13 +13,11 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
-#  ./check-ec2-network.rb -r ${you_region} -i ${your_instance_id} --warning-over 1000000 --critical-over 1500000
-#  ./check-ec2-network.rb -r ${you_region} -i ${your_instance_id} -d NetworkIn --warning-over 1000000 --critical-over 1500000
-#  ./check-ec2-network.rb -r ${you_region} -i ${your_instance_id} -d NetworkOut --warning-over 1000000 --critical-over 1500000
+#  ./check-elb-certs.rb -r ${your_region} -w ${days_to_warn} -c ${days_to_critical}
 #
 # NOTES:
 #
@@ -30,22 +28,13 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'sensu-plugins-aws'
+require 'aws-sdk'
 require 'net/http'
 require 'openssl'
 
 class CheckELBCerts < Sensu::Plugin::Check::CLI
-  option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default: ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short: '-k AWS_SECRET_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default: ENV['AWS_SECRET_KEY']
+  include Common
 
   option :aws_region,
          short: '-r AWS_REGION',
@@ -90,15 +79,14 @@ class CheckELBCerts < Sensu::Plugin::Check::CLI
     warning_message = []
     critical_message = []
 
-    AWS.start_memoizing
-
-    elb = AWS::ELB.new aws_config
+    elb = Aws::ElasticLoadBalancing::Client.new(aws_config)
 
     begin
-      elb.load_balancers.each do |lb|
-        lb.listeners.each do |listener|
-          if listener.protocol.to_s == 'https'
-            url = URI.parse("https://#{lb.dns_name}:#{listener.port}")
+      elb.describe_load_balancers.load_balancer_descriptions.each do |lb|
+        lb.listener_descriptions.each do |listener|
+          elb_listener = listener['listener']
+          if elb_listener.protocol.to_s == 'HTTPS'
+            url = URI.parse("https://#{lb.dns_name}:#{elb_listener.load_balancer_port}")
             http = Net::HTTP.new(url.host, url.port)
             http.use_ssl = true
             http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -111,7 +99,7 @@ class CheckELBCerts < Sensu::Plugin::Check::CLI
             end
 
             cert_days_remaining = ((cert.not_after - Time.now) / 86_400).to_i
-            message = sprintf '%s(%d)', lb.name, cert_days_remaining
+            message = sprintf '%s(%d)', lb.load_balancer_name, cert_days_remaining
 
             if config[:crit_under] > 0 && config[:crit_under] >= cert_days_remaining
               critical_message << message
