@@ -1,13 +1,16 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
+This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
 
 ### Fixed
 - check-eni-status.rb: fixed `ok` message to be correct (@damiendurant)
 - check-eni-status.rb: made it executable after merge (@majormoses)
+
+### Changed
+- updated changelog guideline location (@majormoses)
 
 ## [8.3.0] - 2017-09-16
 ### Added
