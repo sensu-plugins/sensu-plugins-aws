@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [8.3.1] - 2017-10-12
 ### Fixed
 - check-eni-status.rb: fixed `ok` message to be correct (@damiendurant)
 - check-eni-status.rb: made it executable after merge (@majormoses)
@@ -374,7 +375,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.3.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.3.1...HEAD
+[8.3.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.3.0...8.3.1
 [8.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.2.0...8.3.0
 [8.2.0]:https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.1.0...8.2.0
 [8.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.0.0...8.1.0
