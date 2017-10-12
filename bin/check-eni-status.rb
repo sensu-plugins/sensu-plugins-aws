@@ -104,7 +104,7 @@ class ENIStatus < Sensu::Plugin::Check::CLI
     elsif warnings.any?
       warning warnings.join(', ').to_s
     else
-      ok "all queue(s): #{queues} are OK"
+      ok "all interfaces(s): #{eni} are OK"
     end
   end
 end
