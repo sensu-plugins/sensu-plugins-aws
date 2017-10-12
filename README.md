@@ -8,6 +8,8 @@
 
 ## Functionality
 
+**check-alb-target-group-health.rb**
+
 **check-asg-instances-created.rb**
 
 **check-asg-instances-inservice.rb**
@@ -20,9 +22,11 @@
 
 **check-cloudwatch-alarm**
 
-**check-cloudwatch-metric**
+**check-cloudwatch-alarms**
 
 **check-cloudwatch-composite-metric**
+
+**check-cloudwatch-metric**
 
 **check-cloudfront-tag**
 
@@ -149,6 +153,7 @@
 
 ## Files
 
+* /bin/check-alb-target-group-health.rb
 * /bin/check-asg-instances-created.rb
 * /bin/check-autoscaling-cpucredits.rb
 * /bin/check-asg-instances-inservice.rb

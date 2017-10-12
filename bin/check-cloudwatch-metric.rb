@@ -54,8 +54,8 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
          description: 'Comma delimited list of DimName=Value',
          short: '-d DIMENSIONS',
          long: '--dimensions DIMENSIONS',
-         proc: proc { |d| CloudWatchMetricCheck.parse_dimensions d },
-         default: ''
+         proc: proc { |d| CloudwatchCommon.parse_dimensions d },
+         default: []
 
   option :period,
          description: 'CloudWatch metric statistics period. Must be a multiple of 60',
@@ -91,11 +91,11 @@ class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
   option :compare,
          description: 'Comparision operator for threshold: equal, not, greater, less',
          short: '-o OPERATION',
-         long: '--opertor OPERATION',
+         long: '--operator OPERATION',
          default: 'greater'
 
   option :no_data_ok,
-         short: '-n',
+         short: '-O',
          long: '--allow-no-data',
          description: 'Returns ok if no data is returned from the metric',
          boolean: true,

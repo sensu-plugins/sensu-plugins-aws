@@ -16,9 +16,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   ./check-ec2-network.rb -r ${you_region} -i ${your_instance_id} --warning-over 1000000 --critical-over 1500000
-#   ./check-ec2-network.rb -r ${you_region} -i ${your_instance_id} -d NetworkIn --warning-over 1000000 --critical-over 1500000
-#   ./check-ec2-network.rb -r ${you_region} -i ${your_instance_id} -d NetworkOut --warning-over 1000000 --critical-over 1500000
+#   ./check-elb-health.rb --elb-name MyELB
 #
 # NOTES:
 #

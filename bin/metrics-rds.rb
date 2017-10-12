@@ -34,6 +34,11 @@ require 'time'
 
 class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
   include Common
+  option :scheme,
+         description: 'Metric naming scheme, text to prepend to metric',
+         short: '-s SCHEME',
+         long: '--scheme SCHEME'
+
   option :aws_region,
          short:       '-r AWS_REGION',
          long:        '--aws-region REGION',
@@ -120,10 +125,16 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
     result = {}
 
     rdsname = @db_instance.db_instance_identifier
+    full_scheme =
+      if config[:scheme].nil?
+        rdsname
+      else
+        config[:scheme] + '.' + rdsname
+      end
 
     statistic_type.each do |key, _value|
       r = cloud_watch_metric key, rdsname
-      result[rdsname + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
+      result[full_scheme + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
     end
     unless result.nil?
       result.each do |key, value|

@@ -1,9 +1,69 @@
-#Change Log
+# Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [8.3.0] - 2017-09-16
+### Added
+- check-ec2-cpu_balance.rb: Add option `--tag`/`-t` to add a specified instace tag (e.g. instace name) to message. (@snadorp)
+
+## [8.2.0] - 2017-09-05
+### Added
+- metrics-rds.rb: adding option `--scheme` to allow changing the default scheme (@julio-ogury)
+
+## [8.1.0] - 2017-08-28
+### Fixed
+check-ebs-burst-limit.rb: Only compare the warning threshold if a `-w` option was specified on the command-line, as usage shows `-w` is optional. (@ivanfetch)
+
+### Added
+- check-ebs-burst-limit.rb: Only check volumes attached to the current instance with a new `-s` option, which also overrides the `-r` option for EC2 region. (@ivanfetch)
+
+## [8.0.0] - 2017-08-20
+### Breaking Changes
+- check-beanstalk-elb-metric.rb and check-cloudwatch-metric.rb: `--opertor` flag was a typo, please use `--operator` now. (@guikcd)
+
+## [7.1.0] - 2017-08-14
+### Added
+- Add `check-alb-target-group-health.rb` that checks the health of ALB target groups (@eheydrick)
+
+## [7.0.1] - 2017-08-12
+### Fixed
+- check-cloudwatch-metric.rb, check-cloudwatch-composite-metric.rb: fixed defaults to work (@majormoses)
+- check-cloudwatch-metric.rb: short option `-n` was conflicting with `no_data_ok` and `namespace` as `check-cloudwatch-composite-metric.rb` uses `-O` I opted for that for consistency (@majormoses)
+
+### Changed
+- check-cloudwatch-metric.rb, check-cloudwatch-composite-metric.rb: `self.parse_dimensions` and `dimension_string` were the same in both checks. This fix was common among both checks so I moved it into the module
+
+## [7.0.0] - 2017-08-07
+### Breaking Change
+- Bump min dependency on `sensu-plugin` to 2.x (@huynt1979)
+
+## [6.3.0] - 2017-07-13
+### Added
+- add check-cloudwatch-alarms.rb (@obazoud)
+
+## [6.2.0] - 2017-07-07
+### Added
+- check-ec2-filter.rb: add --min-running-secs flag for specifying
+  minimum number of seconds an instance should be running before it is
+  included in the instance count. (@cwjohnston)
+
+## [6.1.1] - 2017-07-07
+### Added
+- ruby 2.4 testing (@majormoses)
+
+### Changed
+- misc repo fixes (@majormoses)
+
+### Fixed
+- check-asg-instances-created check fails due to int and string comparison
+
+## [6.1.0] - 2017-06-23
+### Added
+- check-eni-status.rb: new check to monitor the status of one or more ENI
+
 ## [6.0.1] - 2017-05-11
 ### Fixed
 - check-instance-events.rb: fix instance Name tag retrieval that broke upon aws sdk v2 update, and update output message handling (@swibowo)
@@ -307,7 +367,18 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.0.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.3.0...HEAD
+[8.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.2.0...8.3.0
+[8.2.0]:https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.1.0...8.2.0
+[8.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.0.0...8.1.0
+[8.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.1.0...8.0.0
+[7.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.1...7.1.0
+[7.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.0...7.0.1
+[7.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.3.0...7.0.0
+[6.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.2.0...6.3.0
+[6.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.1.1...6.2.0
+[6.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.1.0...6.1.1
+[6.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.0.1...6.1.0
 [6.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/6.0.0...6.0.1
 [6.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/5.1.0...6.0.0
 [5.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/5.0.0...5.1.0
