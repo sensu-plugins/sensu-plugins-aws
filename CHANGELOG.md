@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## [Unreleased]
 
+### Fixed
+- check-eni-status.rb: fixed `ok` message to be correct (@damiendurant)
+- check-eni-status.rb: made it executable after merge (@majormoses)
+
 ## [8.3.0] - 2017-09-16
 ### Added
 - check-ec2-cpu_balance.rb: Add option `--tag`/`-t` to add a specified instace tag (e.g. instace name) to message. (@snadorp)
