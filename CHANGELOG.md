@@ -5,7 +5,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 ### Breaking Changes
-- metrics-sqs.rb, check-elb-certs.rb: Update to AWS-SDK v2. With the update to SDK v2 this check no longer takes `aws_access_key` and `aws_secret_access_key` options.
+- metrics-sqs.rb, check-elb-certs.rb, check-elb-nodes.rb, check-elb-health-sdk.rb: Update to AWS-SDK v2.
+  With the update to SDK v2 these checks no longer take `aws_access_key` and `aws_secret_access_key` options.
   Credentials should be set in environment variables, a credential file, or with an IAM instance profile.
   See http://docs.aws.amazon.com/sdkforruby/api/#Configuration for details on setting credentials (@eheydrick)
 
