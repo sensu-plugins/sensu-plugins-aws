@@ -99,7 +99,10 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   def check_health(elb)
     unhealthy_instances = {}
     instance_health = if config[:instances]
-                        @elb.describe_instance_health(load_balancer_name: elb.load_balancer_name, instances: instances_to_check(config[:instances]))
+                        @elb.describe_instance_health(
+                          load_balancer_name: elb.load_balancer_name,
+                          instances: instances_to_check(config[:instances])
+                        )
                       else
                         @elb.describe_instance_health(load_balancer_name: elb.load_balancer_name)
                       end
@@ -110,7 +113,9 @@ class ELBHealth < Sensu::Plugin::Check::CLI
         state_message = instance_health_states.state
 
         if config[:instance_tag]
-          selected_tag = ec2.describe_tags(filters: [{ name: 'resource-id', values: [instance_id] }]).tags.select { |tag| tag[:key] == config[:instance_tag] }
+          selected_tag = ec2.describe_tags(
+            filters: [{ name: 'resource-id', values: [instance_id] }]
+          ).tags.select { |tag| tag[:key] == config[:instance_tag] }
           unless selected_tag.empty?
             state_message = "#{selected_tag[0][:value]}::#{instance_health_states[:state]}"
           end
