@@ -252,4 +252,20 @@
 
 [Installation and Setup](http://sensu-plugins.io/docs/installation_instructions.html)
 
-Note:  In addition to the standard installation requirements the installation of this gem will require compiling the nokogiri gem.  Due to this you'll need certain developmemnt packages on your system.  On Ubuntu systems install build-essential, libxml2-dev and zlib1g-dev.  On CentOS install gcc and zlib-devel.
+Note:  In addition to the standard installation requirements the installation of this gem will require compiling the nokogiri gem.  Due to this you'll need certain development packages on your system.  On Ubuntu systems install build-essential, libxml2-dev and zlib1g-dev.  On CentOS install gcc and zlib-devel.
+
+## Authentication
+
+AWS credentials are required to execute these checks. Starting with AWS-SDK v2 there are several
+methods of passing credentials to the check:
+
+1. Set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables
+2. Use a credential file
+3. Use an EC2 instance profile
+
+See the [AWS-SDK docs](http://docs.aws.amazon.com/sdkforruby/api/#Configuration) for more details on
+credential configuration.
+
+Some of the checks accept credentials with `aws_access_key` and `aws_secret_access_key` options
+however this method is deprecated as it is insecure to pass credentials on the command line. Support
+for these options will be removed in future releases.
