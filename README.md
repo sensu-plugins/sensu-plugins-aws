@@ -256,12 +256,17 @@ Note:  In addition to the standard installation requirements the installation of
 
 ## Authentication
 
-AWS credentials are required to execute these checks. Starting with AWS-SDK v2 there are several
+AWS credentials are required to execute these checks. Starting with AWS-SDK v2 there are a few
 methods of passing credentials to the check:
 
-1. Set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables
-2. Use a credential file
-3. Use an EC2 instance profile
+1. Use a [credential file](http://docs.aws.amazon.com/sdk-for-ruby/v2/developer-guide/setup-config.html#aws-ruby-sdk-credentials-shared). Place the credentials in `~/.aws/credentials`. On Unix-like systems this is going to be `/opt/sensu/.aws/credentials`. Be sure to restrict the file to the `sensu` user.
+```
+[default]
+aws_access_key_id = <access_key>
+aws_secret_access_key = <secret_access_key>
+```
+
+2. Use an [EC2 instance profile](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html). If the checks are executing on an EC2 instance you can give the instance an IAM role and authentication will be handled automatically.
 
 See the [AWS-SDK docs](http://docs.aws.amazon.com/sdkforruby/api/#Configuration) for more details on
 credential configuration.
@@ -269,3 +274,5 @@ credential configuration.
 Some of the checks accept credentials with `aws_access_key` and `aws_secret_access_key` options
 however this method is deprecated as it is insecure to pass credentials on the command line. Support
 for these options will be removed in future releases.
+
+No matter which authentication method is used you should restrict AWS API access to the minimum required to run the checks. In general this is done by limiting the sensu IAM user/role to the necessary `Describe` calls for the services being checked.
