@@ -12,13 +12,14 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
 #   check-elb-health-sdk.rb -r region
 #   check-elb-health-sdk.rb -r region -n my-elb
 #   check-elb-health-sdk.rb -r region -n my-elb -i instance1,instance2
+#   check-alb-health-sdk.rb -r all
 #
 # Copyright (c) 2015, Benjamin Kett <bkett@umn.edu>
 #
@@ -26,20 +27,11 @@
 # for details.
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'sensu-plugins-aws'
+require 'aws-sdk'
 
 class ELBHealth < Sensu::Plugin::Check::CLI
-  option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default: ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short: '-k AWS_SECRET_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default: ENV['AWS_SECRET_KEY']
+  include Common
 
   option :aws_region,
          short: '-r AWS_REGION',
@@ -82,43 +74,50 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   end
 
   def elb
-    @elb = AWS::ELB.new aws_config
+    @elb = Aws::ElasticLoadBalancing::Client.new(aws_config)
   end
 
   def ec2
-    @ec2 = AWS::EC2::Client.new aws_config
+    @ec2 = Aws::EC2::Client.new(aws_config)
   end
 
   def ec2_regions
-    # This is for SDK v2
-    # Aws.partition('aws').regions.map(&:name)
+    Aws.partition('aws').regions.map(&:name)
+  end
 
-    AWS::EC2.regions.map(&:name)
+  def instances_to_check(instances)
+    all_instances = instances.split(',')
+    all_instances.map! { |instance| { instance_id: instance } }
   end
 
   def elbs
-    @elbs = elb.load_balancers.to_a
-    @elbs.select! { |elb| config[:elb_name].include? elb.name } if config[:elb_name]
+    @elbs = elb.describe_load_balancers.load_balancer_descriptions.to_a
+    @elbs.select! { |elb| config[:elb_name].include? elb.load_balancer_name } if config[:elb_name]
     @elbs
   end
 
   def check_health(elb)
     unhealthy_instances = {}
-    instance_health_hash = if config[:instances]
-                             elb.instances.health(config[:instances])
-                           else
-                             elb.instances.health
-                           end
-    instance_health_hash.each do |instance_health|
-      if instance_health[:state] != 'InService'
-        instance_id = instance_health[:instance].id
-        state_message = instance_health[:state]
+    instance_health = if config[:instances]
+                        @elb.describe_instance_health(
+                          load_balancer_name: elb.load_balancer_name,
+                          instances: instances_to_check(config[:instances])
+                        )
+                      else
+                        @elb.describe_instance_health(load_balancer_name: elb.load_balancer_name)
+                      end
+
+    instance_health.instance_states.each do |instance_health_states|
+      if instance_health_states.state != 'InService'
+        instance_id = instance_health_states.instance_id
+        state_message = instance_health_states.state
 
         if config[:instance_tag]
-          instance = ec2.describe_instances(instance_ids: [instance_id])
-          selected_tag = instance[:reservation_index][instance_id][:instances_set][0][:tag_set].select { |tag| tag[:key] == config[:instance_tag] }
+          selected_tag = ec2.describe_tags(
+            filters: [{ name: 'resource-id', values: [instance_id] }]
+          ).tags.select { |tag| tag[:key] == config[:instance_tag] }
           unless selected_tag.empty?
-            state_message = "#{selected_tag[0][:value]}::#{instance_health[:state]}"
+            state_message = "#{selected_tag[0][:value]}::#{instance_health_states[:state]}"
           end
         end
 
@@ -150,13 +149,13 @@ class ELBHealth < Sensu::Plugin::Check::CLI
       region_critical = false
       @message += (elbs.size > 1 ? config[:aws_region] + ': ' : '')
       elbs.each do |elb|
-        result = check_health elb
+        result = check_health(elb)
         if result != 'OK'
-          @message += "#{elb.name} unhealthy => #{result.map { |id, state| '[' + id + '::' + state + ']' }.join(' ')}. "
+          @message += "#{elb.load_balancer_name} unhealthy => #{result.map { |id, state| '[' + id + '::' + state + ']' }.join(' ')}. "
           critical = true
           region_critical = true
         else
-          @message += "#{elb.name} => healthy. " unless config[:verbose] == false
+          @message += "#{elb.load_balancer_name} => healthy. " unless config[:verbose] == false
         end
       end
       if elbs.size > 1 && config[:verbose] != true && region_critical == false
