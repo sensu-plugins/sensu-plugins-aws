@@ -1,4 +1,4 @@
-#! /usr/bin/env ruby
+#!/usr/bin/env ruby
 #
 # check-elb-nodes
 #
@@ -13,7 +13,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -32,20 +32,11 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'sensu-plugins-aws'
+require 'aws-sdk'
 
 class CheckELBNodes < Sensu::Plugin::Check::CLI
-  option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default: ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short: '-k AWS_SECRET_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default: ENV['AWS_SECRET_KEY']
+  include Common
 
   option :aws_region,
          short: '-r AWS_REGION',
@@ -94,23 +85,19 @@ class CheckELBNodes < Sensu::Plugin::Check::CLI
   end
 
   def run
-    AWS.start_memoizing
-    elb = AWS::ELB.new aws_config
+    elb = Aws::ElasticLoadBalancing::Client.new(aws_config)
 
     begin
-      instances = elb.load_balancers[config[:load_balancer]].instances.health
-    rescue AWS::ELB::Errors::LoadBalancerNotFound
+      instance_health = elb.describe_instance_health(load_balancer_name: config[:load_balancer])
+    rescue Aws::ElasticLoadBalancing::Errors::LoadBalancerNotFound
       unknown "A load balancer with the name '#{config[:load_balancer]}' was not found"
     end
 
-    num_instances = instances.count.to_f
+    num_instances = instance_health.instance_states.size
     state = { 'OutOfService' => [], 'InService' => [], 'Unknown' => [] }
-    instances.each do |instance|
-      # Force a requery of state
-      AWS.stop_memoizing if instance[:state] == 'Unknown'
-      state[instance[:state]] << instance[:instance].id
+    instance_health.instance_states.each do |instance|
+      state[instance.state] << instance.instance_id
     end
-    AWS.stop_memoizing
 
     message = "InService: #{state['InService'].count}"
     if state['InService'].count > 0
