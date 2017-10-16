@@ -1,9 +1,9 @@
-#! /usr/bin/env ruby
+#!/usr/bin/env ruby
 #
-# ec2-count-metrics
+# metrics-ec2-count
 #
 # DESCRIPTION:
-#   This plugin retrieves number of EC2 instances
+#   This plugin retrieves number of EC2 instances.
 #
 # OUTPUT:
 #   plain-text
@@ -12,11 +12,15 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
-#   #YELLOW
+#   # get metrics on the status of all instances in the region
+#   metrics-ec2-count.rb -t status
+#
+#   # get metrics on all instance types in the region
+#   metrics-ec2-count.rb -t instance
 #
 # NOTES:
 #
@@ -27,26 +31,17 @@
 #
 
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk-v1'
+require 'sensu-plugins-aws'
+require 'aws-sdk'
 
 class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
+  include Common
+
   option :scheme,
          description: 'Metric naming scheme, text to prepend to metric',
          short: '-s SCHEME',
          long: '--scheme SCHEME',
          default: 'sensu.aws.ec2'
-
-  option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default: ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short: '-k AWS_SECRET_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default: ENV['AWS_SECRET_KEY']
 
   option :aws_region,
          short: '-r AWS_REGION',
@@ -72,14 +67,14 @@ class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
     end
 
     options = { include_all_instances: true }
-    data = client.describe_instance_status(options)
+    status_data = client.describe_instance_status(options)
 
-    total = data[:instance_status_set].count
+    total = status_data.instance_statuses.count
     status = {}
 
     unless total.nil?
-      data[:instance_status_set].each do |value|
-        stat = value[:instance_state][:name]
+      status_data.instance_statuses.each do |value|
+        stat = value.instance_state.name
         status[stat] = if status[stat].nil?
                          1
                        else
@@ -88,7 +83,7 @@ class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
       end
     end
 
-    unless data.nil? # rubocop: disable Style/GuardClause
+    unless status_data.nil? # rubocop: disable Style/GuardClause
       # We only return data when we have some to return
       output config[:scheme] + '.total', total
       status.each do |name, count|
@@ -105,9 +100,9 @@ class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
     data = {}
 
     instances = client.describe_instances
-    instances[:reservation_set].each do |i|
-      i[:instances_set].each do |instance|
-        type = instance[:instance_type]
+    instances.reservations.each do |i|
+      i.instances.each do |instance|
+        type = instance.instance_type
         data[type] = if data[type].nil?
                        1
                      else
@@ -126,8 +121,7 @@ class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
 
   def run
     begin
-
-      client = AWS::EC2::Client.new aws_config
+      client = Aws::EC2::Client.new(aws_config)
 
       if config[:type] == 'instance'
         by_instances_type(client)
