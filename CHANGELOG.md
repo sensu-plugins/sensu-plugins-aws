@@ -4,11 +4,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [9.0.0] - 2017-10-16
 ### Breaking Changes
 - metrics-sqs.rb, check-elb-certs.rb, check-elb-nodes.rb, check-elb-health-sdk.rb, metrics-ec2-count.rb: Update to AWS-SDK v2.
   With the update to SDK v2 these checks no longer take `aws_access_key` and `aws_secret_access_key` options.
-  Credentials should be set in environment variables, a credential file, or with an IAM instance profile.
-  See http://docs.aws.amazon.com/sdkforruby/api/#Configuration for details on setting credentials (@eheydrick)
+  Credentials should be set in a credential file or with an IAM instance profile.
+  See the [auth section](https://github.com/sensu-plugins/sensu-plugins-aws/blob/master/README.md#authentication) of the README for
+  details on setting credentials. (@eheydrick)
 
 ## [8.3.1] - 2017-10-12
 ### Fixed
@@ -380,10 +383,11 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.3.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/9.0.0...HEAD
+[9.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.3.1...9.0.0
 [8.3.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.3.0...8.3.1
 [8.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.2.0...8.3.0
-[8.2.0]:https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.1.0...8.2.0
+[8.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.1.0...8.2.0
 [8.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.1.0...8.0.0
 [7.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/7.0.1...7.1.0
