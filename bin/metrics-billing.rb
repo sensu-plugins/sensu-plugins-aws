@@ -35,7 +35,7 @@ class BillingMetrics < Sensu::Plugin::Metric::CLI::Graphite
   include Common
 
   option :services_name,
-         short: '-s SERVICES_NAME',
+         short: '-S SERVICES_NAME',
          long: '--services-name SERVICES_NAME',
          description: 'The name of the AWS service (http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/billing-metricscollected.html)',
          default: 'AmazonEC2,AWSDataTransfer'
