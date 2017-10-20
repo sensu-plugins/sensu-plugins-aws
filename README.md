@@ -219,14 +219,25 @@
 ## Usage
 
 **handler-ses**
+
+1. Configure [authentication](#authentication)
+2. Enable the handler in `/etc/sensu/conf.d/handlers/ses.json`:
+```
+{
+  "handlers": {
+    "ses": {
+      "type": "pipe",
+      "command": "handler-ses.rb"
+    }
+  }
+}
+```
+3. Configure the handler in `/etc/sensu/conf.d/ses.json`:
 ```
 {
   "ses": {
     "mail_from": "sensu@example.com",
     "mail_to": "monitor@example.com",
-    "use_ami_role": true,
-    "access_key": "myaccesskey",
-    "secret_key": "mysecretkey",
     "region": "us-east-1",
     "subscriptions": {
       "subscription_name": {

@@ -11,7 +11,7 @@
 # for details.
 
 require 'sensu-handler'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 
 class SESNotifier < Sensu::Handler
   def event_name
@@ -52,19 +52,6 @@ class SESNotifier < Sensu::Handler
     mail_to
   end
 
-  def use_ami_role
-    use_ami_role = settings['ses']['use_ami_role']
-    use_ami_role.nil? ? true : use_ami_role
-  end
-
-  def aws_access_key
-    settings['ses']['access_key'] || ''
-  end
-
-  def aws_access_secret
-    settings['ses']['secret_key'] || ''
-  end
-
   def region
     settings['ses']['region'] || 'us-east-1'
   end
@@ -88,23 +75,27 @@ class SESNotifier < Sensu::Handler
                 "#{action_to_string} - #{event_name}: #{@event['check']['notification']}"
               end
 
-    if use_ami_role
-      AWS.config(region: region)
-    else
-      AWS.config(access_key_id: aws_access_key,
-                 secret_access_key: aws_access_secret,
-                 region: region)
-    end
+    message = {
+      subject: {
+        data: subject
+      },
+      body: {
+        text: {
+          data: body
+        }
+      }
+    }
 
-    ses = AWS::SimpleEmailService.new
+    ses = Aws::SES::Client.new(region: region)
 
     begin
-      timeout 10 do
+      Timeout.timeout(10) do
         ses.send_email(
-          subject: subject,
-          from: mail_from,
-          to: [mail_to.split(',')],
-          body_text: body
+          source: mail_from,
+          destination: {
+            to_addresses: mail_to.split(',')
+          },
+          message: message
         )
 
         puts 'mail -- sent alert for ' + event_name + ' to ' + mail_to.to_s
