@@ -75,35 +75,29 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
       region: config[:aws_region] }
   end
 
-  def has_website_configuration(s3, bucket_name)
-    has_website_configuration = false
-    begin
-      s3.get_bucket_website(bucket: bucket_name)
-      has_website_configuration = true
-    rescue Aws::S3::Errors::NoSuchWebsiteConfiguration
-    end
-    return has_website_configuration
+  def website_configuration?(s3, bucket_name)
+    s3.get_bucket_website(bucket: bucket_name)
+    true
+  rescue Aws::S3::Errors::NoSuchWebsiteConfiguration
+    false
   end
 
   def get_bucket_policy(s3, bucket_name)
-    bucket_policy = { "Statement" => [] }
-    begin
-      bucket_policy = JSON.parse(s3.get_bucket_policy(bucket: config[:bucket_name]).policy.string)
-    rescue Aws::S3::Errors::NoSuchBucketPolicy
-    end
-    return bucket_policy
+    JSON.parse(s3.get_bucket_policy(bucket: bucket_name).policy.string)
+  rescue Aws::S3::Errors::NoSuchBucketPolicy
+    { 'Statement' => [] }
   end
 
   def policy_too_permissive(policy)
-    policy["Statement"].any? { |s| statement_too_permissive s }
+    policy['Statement'].any? { |s| statement_too_permissive s }
   end
 
   def statement_too_permissive(s)
-    actions_contain_get_or_list Array(s["Action"])
+    actions_contain_get_or_list Array(s['Action'])
   end
 
   def actions_contain_get_or_list(actions)
-    actions.any? { |a| Array(a).grep(/^s3:Get|s3:List/).length > 0 }
+    actions.any? { |a| !Array(a).grep(/^s3:Get|s3:List/).empty? }
   end
 
   def run
@@ -118,22 +112,20 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
     s3 = Aws::S3::Client.new(aws_config.merge!(region: config[:aws_region]))
     begin
       errors = []
-      if has_website_configuration(s3, config[:bucket_name])
-        errors.push "Website configuration found"
+      if website_configuration?(s3, config[:bucket_name])
+        errors.push 'Website configuration found'
       end
       if policy_too_permissive(get_bucket_policy(s3, config[:bucket_name]))
-        errors.push "Bucket policy too permissive"
+        errors.push 'Bucket policy too permissive'
       end
 
-      if errors.length > 0
-        critical errors.join "; "
+      if !errors.empty?
+        critical errors.join '; '
       else
         ok "Bucket #{config[:bucket_name]} not exposed via website or bucket policy"
       end
     rescue Aws::S3::Errors::NotFound => _
       critical "Bucket #{config[:bucket_name]} not found"
-    rescue => e
-      critical "Bucket #{config[:bucket_name]} - #{e.message} - #{e.backtrace}"
     end
   end
 end
