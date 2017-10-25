@@ -1,20 +1,16 @@
 #!/usr/bin/env ruby
 #
-# This handler assumes it runs on an ec2 instance with an iam role
-# that has permission to send to the sns topic specified in the config.
-# This removes the requirement to specify an access key and secret access key.
-# See http://docs.aws.amazon.com/IAM/latest/UserGuide/WorkingWithRoles.html
+# Send notifications to an SNS topic
 #
 # Requires the aws-sdk gem.
 #
-# Setting required in sns.json
-#   topic_are  :  The arn for the destination sns topic
+# See README for usage information
 #
 # Released under the same terms as Sensu (the MIT license); see LICENSE
 # for details
 
 require 'sensu-handler'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 require 'erubis'
 
 class SnsNotifier < Sensu::Handler
@@ -28,19 +24,6 @@ class SnsNotifier < Sensu::Handler
 
   def event_name
     "#{@event['client']['name']}/#{@event['check']['name']}"
-  end
-
-  def use_ami_role
-    use_ami_role = settings['sns']['use_ami_role']
-    use_ami_role.nil? ? true : use_ami_role
-  end
-
-  def aws_access_key
-    settings['sns']['access_key'] || ''
-  end
-
-  def aws_access_secret
-    settings['sns']['secret_key'] || ''
   end
 
   def message
@@ -60,25 +43,21 @@ class SnsNotifier < Sensu::Handler
   end
 
   def handle
-    if use_ami_role
-      AWS.config(region: region)
-    else
-      AWS.config(access_key_id: aws_access_key,
-                 secret_access_key: aws_access_secret,
-                 region: region)
-    end
-
-    sns = AWS::SNS.new
-
-    t = sns.topics[topic_arn]
+    sns = Aws::SNS::Client.new(region: region)
 
     subject = if @event['action'].eql?('resolve')
                 "RESOLVED - [#{event_name}]"
               else
                 "ALERT - [#{event_name}]"
               end
-    options = { subject: subject }
-    t.publish("#{subject} - #{message}", options)
+
+    options = {
+      subject: subject,
+      message: "#{subject} - #{message}",
+      topic_arn: topic_arn
+    }
+
+    sns.publish(options)
   rescue => e
     puts "Exception occured in SnsNotifier: #{e.message}", e.backtrace
   end

@@ -249,13 +249,28 @@
 ```
 
 **handler-sns**
+
+`handler-sns` can be used to send alerts to Email, HTTP endpoints, SMS, or any other [subscription type](http://docs.aws.amazon.com/sns/latest/dg/welcome.html) supported by SNS.
+
+1. Create an SNS topic and subscription [[Docs]](http://docs.aws.amazon.com/sns/latest/dg/GettingStarted.html)
+1. Configure [authentication](#authentication)
+2. Enable the handler in `/etc/sensu/conf.d/handlers/sns.json`:
+```
+{
+  "handlers": {
+    "sns": {
+      "type": "pipe",
+      "command": "handler-sns.rb"
+    }
+  }
+}
+```
+3. Configure the handler in `/etc/sensu/conf.d/sns.json`:
 ```
 {
   "sns": {
     "topic_arn": "arn:aws:sns:us-east-1:111111111111:topic",
-    "use_ami_role": true,
-    "access_key": "MY_KEY",
-    "secret_key": "MY_secret"
+    "region": "us-east-1"
   }
 }
 ```
