@@ -94,6 +94,8 @@
 
 **check-s3-bucket.rb**
 
+**check-s3-bucket-visibility.rb**
+
 **check-s3-object.rb**
 
 **check-s3-tag.rb**
