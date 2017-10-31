@@ -18,7 +18,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
-#   ./check-s3-bucket.rb --bucket-name mybucket --aws-region eu-west-1
+#   ./check-s3-bucket-visibility.rb --bucket-name mybucket --aws-region eu-west-1
 #
 # NOTES:
 #
