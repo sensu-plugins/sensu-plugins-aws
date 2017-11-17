@@ -9,6 +9,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Breaking Changes
 - handler-ses.rb, handler-sns.rb: Update to AWS-SDK v2. With the update to AWS-SDK v2 these handlers no longer take `access_key`, `secret_key`, or `use_ami_role` settings. Authentication should be configured per [here](https://github.com/sensu-plugins/sensu-plugins-aws/blob/master/README.md#authentication). (@eheydrick)
 
+### Added
+- check-rds.rb: Add R4 instances (@enokawa)
+
 ### Changed
 - Update to `aws-sdk` 2.10 (@eheydrick)
 
