@@ -52,7 +52,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
       pending_record[:pending_maintenance_actions].each do |response|
         maint_clusters.push(response[:pending_maintenance_action_details])
       end
-    rescue => e
+    rescue StandardError => e
       unknown "An error occurred processing AWS RDS API: #{e.message}"
     end
 

@@ -118,12 +118,12 @@ class CheckRDS < Sensu::Plugin::Check::CLI
          description: 'Continue if CloudWatch provides no metrics for the time period',
          default: false
 
-  %w(warning critical).each do |severity|
+  %w[warning critical].each do |severity|
     option :"availability_zone_#{severity}",
            long:        "--availability-zone-#{severity} AZ",
            description: "Trigger a #{severity} if availability zone is different than given argument"
 
-    %w(cpu memory disk connections iops).each do |item|
+    %w[cpu memory disk connections iops].each do |item|
       option :"#{item}_#{severity}_over",
              long:        "--#{item}-#{severity}-over N",
              proc:        proc(&:to_f),
@@ -335,16 +335,16 @@ class CheckRDS < Sensu::Plugin::Check::CLI
       warning:  false
     }
 
-    @severities.keys.each do |severity|
+    @severities.each_key do |severity|
       message += check_az severity, config[:"availability_zone_#{severity}"], instance if config[:"availability_zone_#{severity}"]
 
-      %w(cpu memory disk connections iops).each do |item|
+      %w[cpu memory disk connections iops].each do |item|
         result = send "check_#{item}", severity, config[:"#{item}_#{severity}_over"] if config[:"#{item}_#{severity}_over"]
         message += result unless result.nil?
       end
     end
 
-    if %w(cpu memory disk connections iops).any? { |item| %w(warning critical).any? { |severity| config[:"#{item}_#{severity}_over"] } }
+    if %w[cpu memory disk connections iops].any? { |item| %w[warning critical].any? { |severity| config[:"#{item}_#{severity}_over"] } }
       message += "(#{config[:statistics].to_s.capitalize} within #{config[:period]}s "
       message += "between #{config[:end_time] - config[:period]} to #{config[:end_time]})"
     end

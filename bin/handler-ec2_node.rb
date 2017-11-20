@@ -184,7 +184,7 @@ class Ec2Node < Sensu::Handler
     ec2 = Aws::EC2::Client.new(region: region)
     settings['ec2_node'] = {} unless settings['ec2_node']
     instance_states = @event['client']['ec2_states'] || settings['ec2_node']['ec2_states'] || ['shutting-down', 'terminated', 'stopping', 'stopped']
-    instance_reasons = @event['client']['ec2_state_reasons'] || settings['ec2_node']['ec2_state_reasons'] || %w(Client.UserInitiatedShutdown Server.SpotInstanceTermination Client.InstanceInitiatedShutdown)
+    instance_reasons = @event['client']['ec2_state_reasons'] || settings['ec2_node']['ec2_state_reasons'] || %w[Client.UserInitiatedShutdown Server.SpotInstanceTermination Client.InstanceInitiatedShutdown]
 
     begin
       # Finding the instance

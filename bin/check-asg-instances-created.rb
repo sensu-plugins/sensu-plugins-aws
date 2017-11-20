@@ -116,7 +116,7 @@ class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI
         end
       end
     end
-    if instance_terminating == 0 && instance_launching == 0
+    if instance_terminating.zero? && instance_launching.zero?
       ok 'No instances Launched & Terminated last hour'
     elsif instance_terminating >= critical && instance_launching >= critical
       critical "#{result_launched} \n #{result_terminated}"

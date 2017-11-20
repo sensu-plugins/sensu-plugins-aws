@@ -132,7 +132,7 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
         config[:scheme] + '.' + rdsname
       end
 
-    statistic_type.each do |key, _value|
+    statistic_type.each_key do |key, _value|
       r = cloud_watch_metric key, rdsname
       result[full_scheme + '.' + key] = r[:datapoints][0] unless r[:datapoints][0].nil?
     end

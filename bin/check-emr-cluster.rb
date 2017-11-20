@@ -137,7 +137,7 @@ class CheckEMRCluster < Sensu::Plugin::Check::CLI
           ok "EMR cluster #{config[:cluster_name]} - #{humanize(age)}"
         end
       end
-    rescue => e
+    rescue StandardError => e
       critical "EMR cluster #{config[:cluster_name]} - #{e.message}"
     end
   end

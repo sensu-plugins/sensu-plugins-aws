@@ -80,7 +80,7 @@ class CheckELBLatency < Sensu::Plugin::Check::CLI
          proc:        proc { |a| a.downcase.intern },
          description: 'CloudWatch statistics method'
 
-  %w(warning critical).each do |severity|
+  %w[warning critical].each do |severity|
     option :"#{severity}_over",
            long:        "--#{severity}-over SECONDS",
            proc:        proc(&:to_f),
@@ -134,11 +134,11 @@ class CheckELBLatency < Sensu::Plugin::Check::CLI
     metric        = latency_metric elb.name
     metric_value  = begin
                       latest_value metric
-                    rescue
+                    rescue StandardError
                       0
                     end
 
-    @severities.keys.each do |severity|
+    @severities.each_key do |severity|
       threshold = config[:"#{severity}_over"]
       next unless threshold
       next if metric_value < threshold

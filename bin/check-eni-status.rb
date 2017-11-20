@@ -92,9 +92,9 @@ class ENIStatus < Sensu::Plugin::Check::CLI
 
       if status.nil?
         warnings << "No Information found for #{e}"
-      elsif config[:crit_status].casecmp(status[:status]) == 0
+      elsif config[:crit_status].casecmp(status[:status]).zero?
         crits << "#{e} is #{status[:status]}"
-      elsif config[:warn_status].casecmp(status[:status]) == 0
+      elsif config[:warn_status].casecmp(status[:status]).zero?
         warnings << "#{e} is #{status[:status]}"
       end
     end

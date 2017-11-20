@@ -128,8 +128,7 @@ class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
       elsif config[:type] == 'status'
         by_instances_status(client)
       end
-
-    rescue => e
+    rescue StandardError => e
       puts "Error: exception: #{e}"
       critical
     end

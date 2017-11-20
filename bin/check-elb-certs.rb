@@ -94,7 +94,7 @@ class CheckELBCerts < Sensu::Plugin::Check::CLI
 
             begin
               http.start { cert = http.peer_cert }
-            rescue => e
+            rescue StandardError => e
               critical "An issue occurred attempting to get cert: #{e.message}"
             end
 
@@ -111,7 +111,7 @@ class CheckELBCerts < Sensu::Plugin::Check::CLI
           end
         end
       end
-    rescue => e
+    rescue StandardError => e
       unknown "An error occurred processing AWS ELB API: #{e.message}"
     end
 

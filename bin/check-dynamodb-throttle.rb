@@ -80,11 +80,11 @@ class CheckDynamoDB < Sensu::Plugin::Check::CLI
   option :throttle_for,
          short:       '-c N',
          long:        '--throttle-for NAME',
-         default:     [:read, :write],
+         default:     %i[read write],
          proc:        proc { |a| a.split(/[,;]\s*/).map { |n| n.downcase.intern } },
          description: 'Read/Write (or both) throttle to check.'
 
-  %w(warning critical).each do |severity|
+  %w[warning critical].each do |severity|
     option :"#{severity}_over",
            long:        "--#{severity}-over N",
            proc:        proc(&:to_f),
@@ -151,11 +151,11 @@ class CheckDynamoDB < Sensu::Plugin::Check::CLI
       metric        = cloud_watch_metric metric_name, table.table_name
       metric_value  = begin
                         latest_value(metric)
-                      rescue
+                      rescue StandardError
                         0
                       end
 
-      @severities.keys.each do |severity|
+      @severities.each_key do |severity|
         threshold = config[:"#{severity}_over"]
         next unless threshold
         next if metric_value < threshold

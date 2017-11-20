@@ -70,7 +70,7 @@ class CheckConfigServiceRules < Sensu::Plugin::Check::CLI
     else
       ok
     end
-  rescue => e
+  rescue StandardError => e
     unknown "An error occurred processing AWS ConfigService API: #{e.message}"
   end
 end

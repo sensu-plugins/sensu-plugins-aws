@@ -92,7 +92,7 @@ class AutoScalingInstanceCountMetrics < Sensu::Plugin::Metric::CLI::Graphite
           end
         output graphitepath, count
       end
-    rescue => e
+    rescue StandardError => e
       puts "Error: exception: #{e}"
       critical
     end

@@ -25,7 +25,10 @@ module Common
   def aws_config
     Aws.config[:credentials] = Aws::Credentials.new(config[:aws_access_key], config[:aws_secret_access_key]) if config[:aws_access_key] && config[:aws_secret_access_key]
 
-    Aws.config.update(
+    # the cop can't figure out whether it should be a single guard or
+    # a multiple line if. Due to poor detection in this case we left as
+    # is an opted to disable and keep existing.
+    Aws.config.update( # rubocop:disable Style/MultilineIfModifier
       region: config[:aws_region]
     ) if config.key?(:aws_region)
   end

@@ -95,7 +95,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
           end
         end
       end
-    rescue => e
+    rescue StandardError => e
       unknown "An error occurred processing AWS EC2 API: #{e.message}"
     end
 

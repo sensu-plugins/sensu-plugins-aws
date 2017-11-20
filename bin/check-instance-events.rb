@@ -83,7 +83,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
 
     aws_regions = ec2_regions
 
-    unless config[:aws_region].casecmp('all') == 0
+    unless config[:aws_region].casecmp('all').zero?
       if aws_regions.include? config[:aws_region]
         aws_regions.clear.push(config[:aws_region])
       else
@@ -96,7 +96,8 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
       aws_config[:secret_access_key] = config[:aws_secret_access_key]
     end
 
-    aws_regions.each do |r| # Iterate each possible region
+    # TODO: come back and refactor this
+    aws_regions.each do |r| # Iterate each possible region # rubocop:disable Metrics/BlockLength)
       ec2 = Aws::EC2::Client.new(aws_config.merge!(region: r))
       begin
         describe_instance_options = {}
@@ -127,7 +128,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
                 instance_desc = ec2.describe_instances(instance_ids: [i[:instance_id]])
                 name_tag = instance_desc.reservations[0].instances[0].tags.find { |tag| tag[:key] == 'Name' }
                 name = name_tag.nil? ? '' : name_tag.value
-              rescue => e
+              rescue StandardError => e
                 puts "Issue getting instance details for #{i[:instance_id]} (#{r}).  Exception = #{e}"
               end
             end
@@ -139,7 +140,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
                                end
           end
         end
-      rescue => e
+      rescue StandardError => e
         unknown "An error occurred processing AWS EC2 API (#{r}): #{e.message}"
       end
     end

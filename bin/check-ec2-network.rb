@@ -73,7 +73,7 @@ class CheckEc2Network < Sensu::Plugin::Check::CLI
          default:     'NetworkIn',
          description: 'Select NetworkIn or NetworkOut'
 
-  %w(warning critical).each do |severity|
+  %w[warning critical].each do |severity|
     option :"#{severity}_over",
            long:        "--#{severity}-over COUNT",
            description: "Trigger a #{severity} if network traffice is over specified Bytes"

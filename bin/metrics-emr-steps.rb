@@ -54,7 +54,7 @@ class EMRStepMetrics < Sensu::Plugin::Metric::CLI::Graphite
     steps.count { |step| step.status.state == status }
   end
 
-  STATUS = %w(PENDING RUNNING COMPLETED CANCELLED FAILED INTERRUPTED).freeze
+  STATUS = %w[PENDING RUNNING COMPLETED CANCELLED FAILED INTERRUPTED].freeze
 
   def cluster_steps(emr, cluster_id, data)
     steps = emr.list_steps(

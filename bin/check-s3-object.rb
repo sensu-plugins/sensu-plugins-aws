@@ -168,14 +168,14 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
         size = output.contents[0].size
       end
 
-      [:critical, :warning].each do |level|
+      %i[critical warning].each do |level|
         run_check('age', level, age, key_fullname, 'S3 object %s is %s seconds old (bucket %s)')
       end
 
       if size.zero?
         critical "S3 object #{key_fullname} is empty (bucket #{config[:bucket_name]})" unless config[:ok_zero_size]
       else
-        [:critical, :warning].each do |level|
+        %i[critical warning].each do |level|
           run_check('size', level, size, key_fullname, 'S3 %s object\'size : %s octets (bucket %s)')
         end
       end
@@ -183,7 +183,7 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
       ok("S3 object #{key_fullname} exists in bucket #{config[:bucket_name]}")
     rescue Aws::S3::Errors::NotFound => _
       critical "S3 object #{key_fullname} not found in bucket #{config[:bucket_name]}"
-    rescue => e
+    rescue StandardError => e
       critical "S3 object #{key_fullname} in bucket #{config[:bucket_name]} - #{e.message} - #{e.backtrace}"
     end
   end

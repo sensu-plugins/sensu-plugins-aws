@@ -65,13 +65,13 @@ class CheckAwsVpcVpnConnections < Sensu::Plugin::Check::CLI
     begin
       ec2 = Aws::EC2::Client.new
       vpn_info = ec2.describe_vpn_connections(vpn_connection_ids: [config[:vpn_id]]).vpn_connections
-      down_connections = vpn_info.first.vgw_telemetry.select { |x| x.status != 'UP' }
+      down_connections = vpn_info.first.vgw_telemetry.reject { |x| x.status == 'UP' }
       results = { down_count: down_connections.count }
       results[:down_connection_status] = down_connections.map { |x| "#{x.outside_ip_address} => #{x.status_message.empty? ? 'none' : x.status_message}" }
       results[:connection_name] = vpn_info[0].tags.find { |x| x.key == 'Name' }.value
     rescue Aws::EC2::Errors::ServiceError
       warning "The vpnConnection ID '#{config[:vpn_id]}' does not exist"
-    rescue => e
+    rescue StandardError => e
       warning e.backtrace.join(' ')
     end
     results

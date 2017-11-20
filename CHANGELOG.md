@@ -5,6 +5,12 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Security
+- updated rubocop dependency to `~> 0.51.0` per: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-8418. (@majormoses)
+
+### Changed
+- appease the new cops where it required light refactoring, called out TODO's for later refactoring (@majormoses)
+
 ## [10.1.1.] - 2018-01-13
 ### Fixed
 - check-instance-health.rb: fixed incorrect test operator from `&&` to `||` in `gather_events`, should reject if either case is true. (@randeffects)
@@ -12,6 +18,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ## [10.1.0] - 2018-01-06
 - check-cloudwatch-composite-metric.rb: add flags `zero_denominator_data_ok`, `no_denominator_data_ok`, and `numerator_default` to add ability to allow numerator in composite to be 0. While leaving the functionality of `no_data_ok` the same, this change allows us to check to alert if the numerator has no data since 0/X is a valid alert case. (@zbintliff)
 - lib/cloudwatch-common.rb: added tests for majority of functions (@zbintliff)
+
 
 ## [10.0.3] - 2017-12-03
 ### Fixed

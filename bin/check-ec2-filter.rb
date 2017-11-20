@@ -183,7 +183,7 @@ class EC2Filter < Sensu::Plugin::Check::CLI
     end
 
     ok message
-  rescue => e
+  rescue StandardError => e
     puts "Error: exception: #{e}"
     critical
   end

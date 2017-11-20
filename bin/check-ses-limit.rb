@@ -69,7 +69,7 @@ class CheckSESLimit < Sensu::Plugin::Check::CLI
     begin
       ses = Aws::SES::Client.new
       response = ses.get_send_quota
-    rescue => e
+    rescue StandardError => e
       unknown "An issue occured while communicating with the AWS SES API: #{e.message}"
     end
 

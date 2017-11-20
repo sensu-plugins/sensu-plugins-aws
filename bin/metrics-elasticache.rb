@@ -107,7 +107,8 @@ class ElasticMetrics < Sensu::Plugin::Metric::CLI::Graphite
   end
 
   def run
-    elasticaches.describe_cache_clusters.cache_clusters.each do |elasticache|
+    # TODO: come back and refactor
+    elasticaches.describe_cache_clusters.cache_clusters.each do |elasticache| # rubocop:disable Metrics/BlockLength)
       if elasticache.engine.include? 'redis'
         if config[:statistic] == ''
           default_statistic_per_metric = {

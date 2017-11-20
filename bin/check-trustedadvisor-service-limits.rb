@@ -69,7 +69,7 @@ class CheckTrustedAdvisorServiceLimits < Sensu::Plugin::Check::CLI
         sl_msg = "#{sl_service} (#{sl_region}) #{sl_description} #{sl_usage} out of #{sl_limit}"
         service_limit_msg.push(sl_msg)
       end
-    rescue => e
+    rescue StandardError => e
       unknown "An error occurred processing AWS TrustedAdvisor API: #{e.message}"
     end
 

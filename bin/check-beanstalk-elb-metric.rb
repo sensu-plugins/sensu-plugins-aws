@@ -106,7 +106,7 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
                                                .describe_environment_resources(environment_name: config[:environment])
                                                .environment_resources
                                                .load_balancers[config[:elb_idx]]
-                  .name
+                                               .name
   end
 
   def run

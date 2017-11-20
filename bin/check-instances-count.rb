@@ -76,7 +76,7 @@ class CheckInstanceCount < Sensu::Plugin::Check::CLI
       end
     end
     instances.length
-  rescue => e
+  rescue StandardError => e
     critical "There was an error reaching AWS - #{e.message}"
   end
 

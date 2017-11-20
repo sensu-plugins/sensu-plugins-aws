@@ -73,13 +73,13 @@ class ELBHealth < Sensu::Plugin::Check::CLI
       instance_az = Net::HTTP.get(URI('http://169.254.169.254/latest/meta-data/placement/availability-zone/'))
     end
     instance_az[0...-1]
-  rescue
+  rescue StandardError
     raise "Cannot obtain this instance's Availability Zone. Maybe not running on AWS?"
   end
 
   def run
     begin
-      aws_region = (config[:aws_region].nil? || config[:aws_region].empty?) ? query_instance_region : config[:aws_region]
+      aws_region = config[:aws_region].nil? || config[:aws_region].empty? ? query_instance_region : config[:aws_region]
       elb = RightAws::ElbInterface.new(config[:aws_access_key], config[:aws_secret_access_key],
                                        logger: Logger.new('/dev/null'),
                                        cache: false,
@@ -90,7 +90,7 @@ class ELBHealth < Sensu::Plugin::Check::CLI
       else
         health = elb.describe_instance_health(config[:elb_name])
       end
-    rescue => e
+    rescue StandardError => e
       critical "An issue occured while communicating with the AWS EC2 API: #{e.message}"
     end
     # #YELLOW

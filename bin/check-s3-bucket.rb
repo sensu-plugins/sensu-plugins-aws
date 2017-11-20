@@ -79,7 +79,7 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
       ok "Bucket #{config[:bucket_name]} found"
     rescue Aws::S3::Errors::NotFound => _
       critical "Bucket #{config[:bucket_name]} not found"
-    rescue => e
+    rescue StandardError => e
       critical "Bucket #{config[:bucket_name]} - #{e.message}"
     end
   end
