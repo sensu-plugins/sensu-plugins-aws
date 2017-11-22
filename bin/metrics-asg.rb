@@ -22,7 +22,7 @@
 #
 # NOTES:
 #   Returns latency statistics by default.  You can specify any valid ASG metric type, see
-#   http://http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/as-metricscollected.html
+#   https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/as-metricscollected.html
 #
 # LICENSE:
 #   Peter Hoppe <peter.hoppe.extern@bertelsmann.de>
@@ -101,7 +101,7 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
       metric_name: metric_name,
       dimensions: [
         {
-          name: 'AutoScaling',
+          name: 'AutoScalingGroupName',
           value: asg_name
         }
       ],
