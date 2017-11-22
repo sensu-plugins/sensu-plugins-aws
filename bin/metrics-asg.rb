@@ -61,12 +61,6 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
          long: '--metric',
          default: 'GroupInServiceInstances'
 
-  option :statistic,
-         description: 'Statistics type',
-         short: '-t STATISTIC',
-         long: '--statistic',
-         default: ''
-
   option :aws_region,
          short: '-r AWS_REGION',
          long: '--aws-region REGION',
@@ -126,21 +120,16 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
   end
 
   def run
-    if config[:statistic] == ''
-      default_statistic_per_metric = {
-        'GroupMinSize' => 'Sum',
-        'GroupMaxSize' => 'Sum',
-        'GroupDesiredCapacity' => 'Sum',
-        'GroupInServiceInstances' => 'Sum',
-        'GroupPendingInstances' => 'Sum',
-        'GroupStandbyInstances' => 'Sum',
-        'GroupTerminatingInstances' => 'Sum',
-        'GroupTotalInstances' => 'Sum'
-      }
-      statistic = default_statistic_per_metric
-    else
-      statistic = config[:statistic]
-    end
+    statistic = {
+      'GroupMinSize' => 'Sum',
+      'GroupMaxSize' => 'Sum',
+      'GroupDesiredCapacity' => 'Sum',
+      'GroupInServiceInstances' => 'Sum',
+      'GroupPendingInstances' => 'Sum',
+      'GroupStandbyInstances' => 'Sum',
+      'GroupTerminatingInstances' => 'Sum',
+      'GroupTotalInstances' => 'Sum'
+    }
 
     begin
       if config[:asgname].nil?
