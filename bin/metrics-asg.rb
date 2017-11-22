@@ -45,8 +45,7 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
   option :scheme,
          description: 'Metric naming scheme, text to prepend to metric',
          short: '-s SCHEME',
-         long: '--scheme SCHEME',
-         default: ''
+         long: '--scheme SCHEME'
 
   option :fetch_age,
          description: 'How long ago to fetch metrics for',
@@ -108,14 +107,20 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
 
   def print_statistics(asg_name, statistics)
     result = {}
-    static_value = {}
     statistics.each do |key, static|
       r = cloud_watch_metric(key, static, asg_name)
-      static_value['AutoScalingGroup.' + asg_name + '.' + key + '.' + static] = static
-      result['AutoScalingGroup.' + asg_name + '.' + key + '.' + static] = r[:datapoints][0] unless r[:datapoints][0].nil?
+      keys =
+        if config[:scheme].nil?
+          []
+        else
+          [config[:scheme]]
+        end
+      keys.concat ['AutoScalingGroup', asg_name, key, static]
+
+      result[keys.join('.')] = r[:datapoints][0] unless r[:datapoints][0].nil?
     end
     result.each do |key, value|
-      output key.downcase.to_s, value[static_value[key].downcase], value[:timestamp].to_i
+      output key.downcase.to_s, value.sum, value[:timestamp].to_i
     end
   end
 
