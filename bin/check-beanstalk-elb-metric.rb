@@ -77,7 +77,7 @@ class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
          required: true
 
   option :warning,
-         description: 'Trigger a critical when value is over VALUE',
+         description: 'Trigger a warning when value is over VALUE',
          short: '-w VALUE',
          long: '--warning VALUE',
          proc: proc(&:to_f)
