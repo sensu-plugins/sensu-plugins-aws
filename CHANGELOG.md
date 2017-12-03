@@ -5,7 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 ### Fixed
-- metrics-asg.rb: fix dimension name, handle the --scheme flag, remove the --statistic flag which wasn't working
+- metrics-asg.rb: fix dimension name, handle the --scheme flag, remove the --statistic flag which wasn't working, support autoscaling groups containing spaces in their name
 
 ## [10.0.2] - 2017-12-02
 ### Fixed
