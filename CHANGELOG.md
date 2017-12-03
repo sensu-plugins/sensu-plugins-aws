@@ -4,8 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [10.0.3] - 2017-12-03
 ### Fixed
-- metrics-asg.rb: fix dimension name, handle the --scheme flag, remove the --statistic flag which wasn't working, support autoscaling groups containing spaces in their name
+- metrics-asg.rb: fix dimension name, handle the --scheme flag, make the --statistic flag work, support autoscaling groups containing spaces in their name (@multani)
 
 ## [10.0.2] - 2017-12-02
 ### Fixed
@@ -404,7 +406,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.2...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.3...HEAD
+[10.0.3]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.2...10.0.3
 [10.0.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.1...10.0.2
 [10.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.0...10.0.1
 [10.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/9.0.1...10.0.0
