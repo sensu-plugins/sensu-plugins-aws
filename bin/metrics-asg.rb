@@ -121,7 +121,7 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
         else
           [config[:scheme]]
         end
-      keys.concat ['AutoScalingGroup', asg_name, key, static]
+      keys.concat ['AutoScalingGroup', asg_name.tr(' ', '_'), key, static]
 
       result[keys.join('.')] = r[:datapoints].first unless r[:datapoints].first.nil?
     end
