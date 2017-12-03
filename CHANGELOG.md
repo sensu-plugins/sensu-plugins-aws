@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Fixed
+- check-beanstalk-elb-metric.rb, check-cloudwatch-metric.rb, check-cloudwatch-composite-metric.rb: fixed incorrect help message (@arthurlogilab)
+
 ## [10.0.1] - 2017-11-18
 ### Added
 - check-rds.rb: Add R4 instances (@enokawa)
