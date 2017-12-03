@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [10.0.2] - 2017-12-02
 ### Fixed
 - check-beanstalk-elb-metric.rb, check-cloudwatch-metric.rb, check-cloudwatch-composite-metric.rb: fixed incorrect help message (@arthurlogilab)
 
@@ -401,7 +402,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.2...HEAD
+[10.0.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.1...10.0.2
 [10.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.0...10.0.1
 [10.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/9.0.1...10.0.0
 [9.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/9.0.0...9.0.1
