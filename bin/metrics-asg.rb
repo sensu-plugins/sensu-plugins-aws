@@ -117,7 +117,7 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
         end
       keys.concat ['AutoScalingGroup', asg_name, key, static]
 
-      result[keys.join('.')] = r[:datapoints][0] unless r[:datapoints][0].nil?
+      result[keys.join('.')] = r[:datapoints].first unless r[:datapoints].first.nil?
     end
     result.each do |key, value|
       output key.downcase.to_s, value.sum, value[:timestamp].to_i
