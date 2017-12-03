@@ -60,6 +60,12 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
          long: '--metric',
          default: 'GroupInServiceInstances'
 
+  option :statistic,
+         description: 'Statistic type',
+         short: '-t STATISTIC',
+         long: '--statistic',
+         default: 'Sum'
+
   option :aws_region,
          short: '-r AWS_REGION',
          long: '--aws-region REGION',
@@ -120,20 +126,20 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
       result[keys.join('.')] = r[:datapoints].first unless r[:datapoints].first.nil?
     end
     result.each do |key, value|
-      output key.downcase.to_s, value.sum, value[:timestamp].to_i
+      output key.downcase.to_s, value[config[:statistic].downcase], value[:timestamp].to_i
     end
   end
 
   def run
     statistic = {
-      'GroupMinSize' => 'Sum',
-      'GroupMaxSize' => 'Sum',
-      'GroupDesiredCapacity' => 'Sum',
-      'GroupInServiceInstances' => 'Sum',
-      'GroupPendingInstances' => 'Sum',
-      'GroupStandbyInstances' => 'Sum',
-      'GroupTerminatingInstances' => 'Sum',
-      'GroupTotalInstances' => 'Sum'
+      'GroupMinSize' => config[:statistic],
+      'GroupMaxSize' => config[:statistic],
+      'GroupDesiredCapacity' => config[:statistic],
+      'GroupInServiceInstances' => config[:statistic],
+      'GroupPendingInstances' => config[:statistic],
+      'GroupStandbyInstances' => config[:statistic],
+      'GroupTerminatingInstances' => config[:statistic],
+      'GroupTotalInstances' => config[:statistic]
     }
 
     begin
