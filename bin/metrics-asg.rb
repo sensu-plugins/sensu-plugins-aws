@@ -144,8 +144,8 @@ class ASGMetrics < Sensu::Plugin::Metric::CLI::Graphite
 
     begin
       if config[:asgname].nil?
-        asg.describe_auto_scaling_groups.auto_scaling_groups.each do |autoascalinggroup|
-          print_statistics(autoascalinggroup.auto_scaling_group_name, statistic)
+        asg.describe_auto_scaling_groups.auto_scaling_groups.each do |autoscalinggroup|
+          print_statistics(autoscalinggroup.auto_scaling_group_name, statistic)
         end
       else
         print_statistics(config[:asgname], statistic)
