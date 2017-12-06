@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Added
+- check-cloudwatch-alarm-multi.rb: Add check that will raise a critical if one of cloud watch alarms are in given state, and a critical for each alarm in given state. (@stevenayers)
 
 
 ### Added
