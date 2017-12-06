@@ -22,6 +22,8 @@
 
 **check-cloudwatch-alarm**
 
+**check-cloudwatch-alarm-multi**
+
 **check-cloudwatch-alarms**
 
 **check-cloudwatch-composite-metric**
@@ -164,6 +166,8 @@
 * /bin/check-configservice-rules.rb
 * /bin/check-cloudfront-tag.rb
 * /bin/check-cloudwatch-alarm.rb
+* /bin/check-cloudwatch-alarm-multi.rb
+* /bin/check-cloudwatch-alarms.rb
 * /bin/check-cloudwatch-metric.rb
 * /bin/check-cloudwatch-composite-metric.rb
 * /bin/check-dynamodb-capacity.rb
