@@ -52,7 +52,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
          description: 'Metric naming scheme, text to prepend to metric',
          short: '-s SCHEME',
          long: '--scheme SCHEME',
-         default: ''
+         default: 'loadbalancer'
 
   option :fetch_age,
          description: 'How long ago to fetch metrics for',
@@ -106,8 +106,8 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
         }
       ],
       statistics: [value],
-      start_time: config[:end_time] - config[:period],
-      end_time: config[:end_time],
+      start_time: config[:end_time] - config[:fetch_age] - config[:period],
+      end_time: config[:end_time] - config[:fetch_age],
       period: config[:period]
     )
   end
@@ -117,8 +117,17 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
     static_value = {}
     statistics.each do |key, static|
       r = cloud_watch_metric(key, static, load_balancer_name)
-      static_value['loadbalancer.' + load_balancer_name + '.' + key + '.' + static] = static
-      result['loadbalancer.' + load_balancer_name + '.' + key + '.' + static] = r[:datapoints][0] unless r[:datapoints][0].nil?
+      keys =
+        if config[:scheme].nil?
+          []
+        else
+          [config[:scheme]]
+        end
+      keys.concat [load_balancer_name, key, static]
+      metric_key = keys.join('.')
+
+      static_value[metric_key] = static
+      result[metric_key] = r[:datapoints][0] unless r[:datapoints][0].nil?
     end
     result.each do |key, value|
       output key.downcase.to_s, value[static_value[key].downcase], value[:timestamp].to_i
