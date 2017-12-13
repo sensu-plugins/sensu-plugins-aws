@@ -85,14 +85,14 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
          description: 'CloudWatch metric unit'
 
   option :critical,
-         description: 'Trigger a critical when value is over VALUE',
+         description: 'Trigger a critical when value is over VALUE as a Percent',
          short: '-c VALUE',
          long: '--critical VALUE',
          proc: proc(&:to_f),
          required: true
 
   option :warning,
-         description: 'Trigger a warning when value is over VALUE',
+         description: 'Trigger a warning when value is over VALUE as a Percent',
          short: '-w VALUE',
          long: '--warning VALUE',
          proc: proc(&:to_f)
@@ -103,10 +103,16 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
          long: '--operator OPERATION',
          default: 'greater'
 
-  option :no_data_ok,
+  option :numerator_default,
+         long: '--numerator-default DEFAULT',
+         description: 'Default for numerator if no data is returned for metric',
+         default: 0,
+         proc: proc(&:to_f)
+
+  option :no_denominator_data_ok,
          short: '-O',
-         long: '--allow-no-data',
-         description: 'Returns ok if no data is returned from the metric',
+         long: '--allow-no-denominator-data',
+         description: 'Returns ok if no data is returned from denominator metric',
          boolean: true,
          default: false
 
@@ -117,6 +123,6 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
   end
 
   def run
-    composite_check config
+    composite_check
   end
 end
