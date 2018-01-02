@@ -2,17 +2,8 @@
 module CloudwatchCommon
   include Common
 
-  def aws_config
-    {
-      access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region]
-    }
-  end
-
-  def client(opts = {})
-    config = aws_config.merge(opts)
-    @client ||= Aws::CloudWatch::Client.new config
+  def client
+    @client ||= Aws::CloudWatch::Client.new
   end
 
   def read_value(resp, stats)
@@ -62,29 +53,43 @@ module CloudwatchCommon
     numerator_metric_resp = get_metric(config[:numerator_metric_name])
     denominator_metric_resp = get_metric(config[:denominator_metric_name])
 
-    no_data = resp_has_no_data(denominator_metric_resp, config[:statistics])
-    if no_data && config[:no_denominator_data_ok]
+    ## If the numerator is empty, then we see if there is a default. If there is a default
+    ## then we will pretend the numerator _isnt_ empty. That is
+    ## if empty but there is no default this will be true. If it is empty and there is a default
+    ## this will be false (i.e. there is data, following standard of dealing in the negative here)
+    no_num_data = resp_has_no_data(numerator_metric_resp, config[:statistics]) ? config[:numerator_default].nil? : resp_has_no_data(numerator_metric_resp, config[:statistics])
+    no_den_data = resp_has_no_data(denominator_metric_resp, config[:statistics])
+    no_data = no_num_data || no_den_data
+
+    # no data in numerator or denominator this is to keep backwards compatibility
+    if no_data && config[:no_data_ok]
+      ok "#{metric_desc} returned no data but that's ok"
+    elsif no_den_data && config[:no_denominator_data_ok]
       ok "#{config[:denominator_metric_name]} returned no data but that's ok"
-    elsif no_data && !config[:no_denominator_data_ok]
-      unknown "#{config[:denominator_metric_name]} could not be retrieved"
-    end
-
-    denominator_value = read_value(denominator_metric_resp, config[:statistics]).to_f
-    if denominator_value.zero?
-      ok "#{metric_desc} denominator value is zero but that's ok"
-    end
-
-    ## Only use found metric if there is one else go to the default.
-    numerator_value = resp_has_no_data(numerator_metric_resp, config[:statistics]) ? config[:numerator_default] : read_value(numerator_metric_resp, config[:statistics]).to_f
-    value = (numerator_value / denominator_value * 100).to_i
-    base_msg = "#{metric_desc} is #{value}: comparison=#{config[:compare]}"
-
-    if compare(value, config[:critical], config[:compare])
-      critical "#{base_msg} threshold=#{config[:critical]}"
-    elsif config[:warning] && compare(value, config[:warning], config[:compare])
-      warning "#{base_msg} threshold=#{config[:warning]}"
+    elsif no_data ## This is legacy case
+      unknown "#{metric_desc} could not be retrieved"
     else
-      ok "#{base_msg}, will alarm at #{!config[:warning].nil? ? config[:warning] : config[:critical]}"
+      ## Now both the denominator and numerator have data (or a valid default)
+      denominator_value = read_value(denominator_metric_resp, config[:statistics]).to_f
+      if denominator_value.zero? && config[:zero_denominator_data_ok]
+        ok "#{metric_desc}: denominator value is zero but that's ok"
+      elsif denominator_value.zero?
+        unknown "#{metric_desc}: denominator value is zero"
+      else
+        ## Only use found metric if there is one else go to the default.
+        numerator_value = resp_has_no_data(numerator_metric_resp, config[:statistics]) ? config[:numerator_default] : read_value(numerator_metric_resp, config[:statistics]).to_f
+        value = (numerator_value / denominator_value * 100).to_i
+        base_msg = "#{metric_desc} is #{value}: comparison=#{config[:compare]}"
+
+        if compare(value, config[:critical], config[:compare])
+          critical "#{base_msg} threshold=#{config[:critical]}"
+        elsif config[:warning] && compare(value, config[:warning], config[:compare])
+          warning "#{base_msg} threshold=#{config[:warning]}"
+        else
+          threshold = config[:warning] || config[:critical]
+          ok "#{base_msg}, will alarm at #{threshold}"
+        end
+      end
     end
   end
 

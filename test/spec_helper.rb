@@ -27,7 +27,7 @@ end
 #
 module Common
   at_exit do
-    exit! 0
+    @@autorun = false
   end
 
   def critical(msg = nil)

@@ -106,16 +106,26 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
   option :numerator_default,
          long: '--numerator-default DEFAULT',
          description: 'Default for numerator if no data is returned for metric',
-         default: 0,
          proc: proc(&:to_f)
 
   option :no_denominator_data_ok,
-         short: '-O',
          long: '--allow-no-denominator-data',
          description: 'Returns ok if no data is returned from denominator metric',
          boolean: true,
          default: false
 
+  option :zero_denominator_data_ok,
+         long: '--allow-zero-denominator-data',
+         description: 'Returns ok if denominator metric is zero',
+         boolean: true,
+         default: false
+
+  option :no_data_ok,
+         short: '-O',
+         long: '--allow-no-data',
+         description: 'Returns ok if no data is returned from either metric',
+         boolean: true,
+         default: false
   include CloudwatchCommon
 
   def metric_desc
