@@ -132,7 +132,56 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
     "#{config[:namespace]}-#{config[:numerator_metric_name]}/#{config[:denominator_metric_name]}(#{dimension_string})"
   end
 
+  def composite_check
+    numerator_metric_resp = get_metric(config[:numerator_metric_name])
+    denominator_metric_resp = get_metric(config[:denominator_metric_name])
+
+    ## If the numerator is empty, then we see if there is a default. If there is a default
+    ## then we will pretend the numerator _isnt_ empty. That is
+    ## if empty but there is no default this will be true. If it is empty and there is a default
+    ## this will be false (i.e. there is data, following standard of dealing in the negative here)
+    no_num_data = resp_has_no_data(numerator_metric_resp, config[:statistics]) ? config[:numerator_default].nil? : resp_has_no_data(numerator_metric_resp, config[:statistics])
+    no_den_data = resp_has_no_data(denominator_metric_resp, config[:statistics])
+    no_data = no_num_data || no_den_data
+
+    # no data in numerator or denominator this is to keep backwards compatibility
+    if no_data && config[:no_data_ok]
+      return :ok, "#{metric_desc} returned no data but that's ok"
+    elsif no_den_data && config[:no_denominator_data_ok]
+      return :ok, "#{config[:denominator_metric_name]} returned no data but that's ok"
+    elsif no_data ## This is legacy case
+      return :unknown, "#{metric_desc} could not be retrieved"
+    end
+
+    ## Now both the denominator and numerator have data (or a valid default)
+    denominator_value = read_value(denominator_metric_resp, config[:statistics]).to_f
+    if denominator_value.zero? && config[:zero_denominator_data_ok]
+      return :ok, "#{metric_desc}: denominator value is zero but that's ok"
+    elsif denominator_value.zero?
+      return :unknown, "#{metric_desc}: denominator value is zero"
+    end
+
+    ## Only use found metric if there is one else go to the default.
+    numerator_value = resp_has_no_data(numerator_metric_resp, config[:statistics]) ? config[:numerator_default] : read_value(numerator_metric_resp, config[:statistics]).to_f
+    value = (numerator_value / denominator_value * 100).to_i
+    base_msg = "#{metric_desc} is #{value}: comparison=#{config[:compare]}"
+
+    if compare(value, config[:critical], config[:compare])
+      return :critical, "#{base_msg} threshold=#{config[:critical]}"
+    elsif config[:warning] && compare(value, config[:warning], config[:compare])
+      return :warning,  "#{base_msg} threshold=#{config[:warning]}"
+    else
+      threshold = config[:warning] || config[:critical]
+      return :ok, "#{base_msg}, will alarm at #{threshold}"
+    end
+  end
+
   def run
-    composite_check
+    status, msg = composite_check
+    if self.respond_to?(status)
+      self.send(status, msg)
+    else
+      unknown 'unknown exit status called'
+    end
   end
 end
