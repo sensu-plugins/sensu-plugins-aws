@@ -84,6 +84,7 @@ describe 'CloudwatchCommon' do
         result = @check.compare(1, 10, compare_method)
         expect(result).to be(true)
       end
+
       it 'should return false' do
         compare_method = 'less'
         result = @check.compare(10, 1, compare_method)
@@ -97,6 +98,7 @@ describe 'CloudwatchCommon' do
         result = @check.compare(1, 10, compare_method)
         expect(result).to be(false)
       end
+
       it 'should return true' do
         compare_method = 'greater'
         result = @check.compare(10, 1, compare_method)
@@ -110,6 +112,7 @@ describe 'CloudwatchCommon' do
         result = @check.compare(10, 10, compare_method)
         expect(result).to be(false)
       end
+
       it 'should return true' do
         compare_method = 'not'
         result = @check.compare(1, 10, compare_method)
@@ -123,6 +126,7 @@ describe 'CloudwatchCommon' do
         result = @check.compare(1, 10, compare_method)
         expect(result).to be(false)
       end
+
       it 'should return true' do
         compare_method = 'equal'
         result = @check.compare(10, 10, compare_method)
@@ -136,6 +140,7 @@ describe 'CloudwatchCommon' do
         result = @check.compare(1, 10, compare_method)
         expect(result).to be(false)
       end
+
       it 'should return true' do
         compare_method = 'foo'
         result = @check.compare(10, 10, compare_method)

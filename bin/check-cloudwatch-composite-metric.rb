@@ -132,6 +132,16 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
     "#{config[:namespace]}-#{config[:numerator_metric_name]}/#{config[:denominator_metric_name]}(#{dimension_string})"
   end
 
+  def numerator_data(metric_payload)
+    if resp_has_no_data(metric_payload, config[:statistics])
+      # If the numerator response has no data in it, see if there was a predefined default.
+      # If there is no predefined default it will return nil
+      config[:numerator_default]
+    else
+      read_value(metric_payload, config[:statistics]).to_f
+    end
+  end
+
   def composite_check
     numerator_metric_resp = get_metric(config[:numerator_metric_name])
     denominator_metric_resp = get_metric(config[:denominator_metric_name])
@@ -140,7 +150,7 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
     ## then we will pretend the numerator _isnt_ empty. That is
     ## if empty but there is no default this will be true. If it is empty and there is a default
     ## this will be false (i.e. there is data, following standard of dealing in the negative here)
-    no_num_data = resp_has_no_data(numerator_metric_resp, config[:statistics]) ? config[:numerator_default].nil? : resp_has_no_data(numerator_metric_resp, config[:statistics])
+    no_num_data = numerator_data(numerator_metric_resp).nil?
     no_den_data = resp_has_no_data(denominator_metric_resp, config[:statistics])
     no_data = no_num_data || no_den_data
 
@@ -161,8 +171,8 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
       return :unknown, "#{metric_desc}: denominator value is zero"
     end
 
-    ## Only use found metric if there is one else go to the default.
-    numerator_value = resp_has_no_data(numerator_metric_resp, config[:statistics]) ? config[:numerator_default] : read_value(numerator_metric_resp, config[:statistics]).to_f
+    ## We already checked if this value is nil so we know its not
+    numerator_value = numerator_data(numerator_metric_resp)
     value = (numerator_value / denominator_value * 100).to_i
     base_msg = "#{metric_desc} is #{value}: comparison=#{config[:compare]}"
 
@@ -178,8 +188,8 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
 
   def run
     status, msg = composite_check
-    if self.respond_to?(status)
-      self.send(status, msg)
+    if respond_to?(status)
+      send(status, msg)
     else
       unknown 'unknown exit status called'
     end
