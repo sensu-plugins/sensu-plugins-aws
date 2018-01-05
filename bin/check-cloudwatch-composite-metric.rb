@@ -142,6 +142,7 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
     end
   end
 
+  # rubocop:disable Style/GuardClause
   def composite_check
     numerator_metric_resp = get_metric(config[:numerator_metric_name])
     denominator_metric_resp = get_metric(config[:denominator_metric_name])
@@ -185,6 +186,7 @@ class CloudWatchCompositeMetricCheck < Sensu::Plugin::Check::CLI
       return :ok, "#{base_msg}, will alarm at #{threshold}"
     end
   end
+  # rubocop:enable Style/GuardClause
 
   def run
     status, msg = composite_check
