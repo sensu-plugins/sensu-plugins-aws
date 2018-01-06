@@ -17,8 +17,8 @@
 #
 
 module Common
-  def initialize
-    super()
+  def initialize(argv = ARGV)
+    super(argv)
     aws_config
   end
 

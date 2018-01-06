@@ -3,6 +3,9 @@ require_relative '../../bin/check-ecs-service-health.rb'
 require_relative '../ecs_stubs.rb'
 
 describe 'CheckEcsServiceHealth' do
+  after :all do
+    Aws.config = {}
+  end
   describe 'with full stub' do
     before :all do
       # Default stub contains a service in every possible state
