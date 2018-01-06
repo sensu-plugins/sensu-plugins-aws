@@ -4,8 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
-- check-cloudwatch-composite-metric.rb: add flags `zero_denominator_data_ok`, `no_denominator_data_ok`, and `numerator_default` to add ability to allow numerator in composite to be 0. While leaving the functionality of `no_data_ok` the same, this change allows us to check to alert if the numerator has no data since 0/X is a valid alert case.
-- lib/cloudwatch-common.rb: added tests for majority of functions
+
+## [10.1.0] - 2018-01-06
+- check-cloudwatch-composite-metric.rb: add flags `zero_denominator_data_ok`, `no_denominator_data_ok`, and `numerator_default` to add ability to allow numerator in composite to be 0. While leaving the functionality of `no_data_ok` the same, this change allows us to check to alert if the numerator has no data since 0/X is a valid alert case. (@zbintliff)
+- lib/cloudwatch-common.rb: added tests for majority of functions (@zbintliff)
 
 ## [10.0.3] - 2017-12-03
 ### Fixed
@@ -408,7 +410,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.3...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.0...HEAD
+[10.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.0...10.0.3
 [10.0.3]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.2...10.0.3
 [10.0.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.1...10.0.2
 [10.0.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.0...10.0.1
