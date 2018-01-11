@@ -3,7 +3,8 @@
 # check-emr-cluster
 #
 # DESCRIPTION:
-#   This plugin checks if a cluster exists.
+#   This plugin checks if a cluster exists and monitors
+#   all running clusters in the specified region.
 #
 # OUTPUT:
 #   plain-text
@@ -17,6 +18,7 @@
 #
 # USAGE:
 #   ./check-emr-cluster.rb --cluster-name MyCluster --aws-region eu-west-1 --use-iam --warning-over 14400 --critical-over 21600
+#   ./check-emr-cluster.rb --aws-region eu-west-1 --use-iam --warning-over 14400 --critical-over 21600
 #
 # NOTES:
 #
@@ -56,8 +58,7 @@ class CheckEMRCluster < Sensu::Plugin::Check::CLI
   option :cluster_name,
          short: '-b CLUSTER_NAME',
          long: '--cluster-name',
-         description: 'The name of the EMR cluster',
-         required: true
+         description: 'The name of the EMR cluster'
 
   option :warning_over,
          description: 'Warn if cluster\'s age is greater than provided age in seconds',
@@ -70,20 +71,6 @@ class CheckEMRCluster < Sensu::Plugin::Check::CLI
          description: 'Critical if cluster\'s age is greater than provided age in seconds',
          short: '-c SECONDS',
          long: '--critical-over SECONDS',
-         default: -1,
-         proc: proc(&:to_i)
-
-  option :warning_under,
-         description: 'Warn if cluster\'s age is lower than provided age in seconds',
-         short: '-w SECONDS',
-         long: '--warning-under SECONDS',
-         default: -1,
-         proc: proc(&:to_i)
-
-  option :critical_under,
-         description: 'Critical if cluster\'s age is lower than provided age in seconds',
-         short: '-C SECONDS',
-         long: '--critical-under SECONDS',
          default: -1,
          proc: proc(&:to_i)
 
@@ -110,35 +97,28 @@ class CheckEMRCluster < Sensu::Plugin::Check::CLI
     end
 
     emr = Aws::EMR::Client.new(aws_config.merge!(region: config[:aws_region]))
-    begin
-      emr_clusters = emr.list_clusters(created_after: Time.now - 24 * 60 * 60, created_before: Time.now).clusters
-      clusters = emr_clusters.select { |c| c.name == config[:cluster_name] }
-
-      critical "EMR cluster #{config[:cluster_name]} appears #{clusters.size} times" if clusters.size > 1
-      critical "EMR cluster #{config[:cluster_name]} not found" if clusters.empty?
-
-      cluster = clusters.first
-      state = cluster.status.state
-      if state == 'TERMINATED_WITH_ERRORS'
-        critical "EMR cluster #{config[:cluster_name]} state is '#{state}'"
-      else
-        creation_date_time = cluster.status.timeline.creation_date_time
-        end_date_time = cluster.status.timeline.end_date_time || Time.now
-        age = end_date_time.to_i - creation_date_time.to_i
-        if age >= config[:critical_over]
-          critical "EMR cluster #{config[:cluster_name]} - #{humanize(age)} vs. #{humanize(config[:critical_over])}"
-        elsif age >= config[:warning_over]
-          warning "EMR cluster #{config[:cluster_name]} - #{humanize(age)} vs. #{humanize(config[:warning_over])}"
-        elsif age <= config[:critical_under] && state == 'TERMINATED'
-          critical "EMR cluster #{config[:cluster_name]} - #{humanize(age)} vs. #{humanize(config[:critical_under])}"
-        elsif age <= config[:warning_under] && state == 'TERMINATED'
-          warning "EMR cluster #{config[:cluster_name]} - #{humanize(age)} vs. #{humanize(config[:warning_under])}"
-        else
-          ok "EMR cluster #{config[:cluster_name]} - #{humanize(age)}"
-        end
-      end
-    rescue => e
-      critical "EMR cluster #{config[:cluster_name]} - #{e.message}"
+    emr_clusters = emr.list_clusters(cluster_states: %w(STARTING BOOTSTRAPPING RUNNING WAITING TERMINATING)).clusters
+    messages = "Running #{emr_clusters.length} cluster(s) in #{config[:aws_region]}\n"
+    level = 0
+    if config[:cluster_name]
+      emr_clusters = emr_clusters.select { |c| c.name == config[:cluster_name] }
+      critical "EMR cluster #{config[:cluster_name]} not found" if emr_clusters.empty?
     end
+
+    time_now = Time.now.to_i
+    emr_clusters.each do |cluster|
+      creation_date_time = cluster.status.timeline.creation_date_time
+      age = time_now - creation_date_time.to_i
+      if age >= config[:critical_over]
+        level = 2
+        messages << "#{cluster.name} (#{cluster.id}) is running for #{humanize(age)}. Critical threshold reached! [#{humanize(config[:critical_over])}]\n"
+      elsif age >= config[:warning_over]
+        level = 1 if level == 0
+        messages << "#{cluster.name} (#{cluster.id}) is running for #{humanize(age)}. Warning threshold reached! [#{humanize(config[:warning_over])}]\n"
+      end
+    end
+    ok messages if level == 0
+    warning messages if level == 1
+    critical messages if level == 2
   end
 end
