@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [10.1.2] - 2018-01-13
 ### Security
 - updated rubocop dependency to `~> 0.51.0` per: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-8418. (@majormoses)
 
@@ -422,6 +423,7 @@ WARNING:  This release contains major breaking changes that will impact all user
 - initial release
 
 [Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.1...HEAD
+[10.1.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.1...10.1.2
 [10.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.0...10.1.1
 [10.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.0...10.0.3
 [10.0.3]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.2...10.0.3
