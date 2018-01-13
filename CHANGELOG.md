@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Fixed
+- check-instance-health.rb: fixed incorrect test operator from `&&` to `||` in `gather_events`, should reject if either case is true. (@randeffects)
 
 ## [10.1.0] - 2018-01-06
 - check-cloudwatch-composite-metric.rb: add flags `zero_denominator_data_ok`, `no_denominator_data_ok`, and `numerator_default` to add ability to allow numerator in composite to be 0. While leaving the functionality of `no_data_ok` the same, this change allows us to check to alert if the numerator has no data since 0/X is a valid alert case. (@zbintliff)
