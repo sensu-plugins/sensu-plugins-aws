@@ -175,10 +175,12 @@ class CheckSubnetIpConsumption < Sensu::Plugin::Check::CLI
     else
       # Compose alert messages at the configured verbosity
       alert_msg = []
-
-      verbosity0 = '%<subnet> at %<percent>%% [%<vpc>]'
-      verbosity1 = '%<subnet> at %<percent>%% (%<consumed>/%<total>) [%<vpc>]'
-      verbosity2 = '%<subnet> (%<cidr> in %<az>) at %<percent>%% (%<consumed>/%<total>) [%<vpc>]'
+      # TODO: Come back and re-asses Rubocop rule, following it's suggestion actually breaks the code
+      # rubocop:disable Style/FormatStringToken
+      verbosity0 = '%{subnet} at %{percent}%% [%{vpc}]'
+      verbosity1 = '%{subnet} at %{percent}%% (%{consumed}/%{total}) [%{vpc}]'
+      verbosity2 = '%{subnet} (%{cidr} in %{az}) at %{percent}%% (%{consumed}/%{total}) [%{vpc}]'
+      # rubocop:enable Style/FormatStringToken
 
       case config[:verbosity]
       when 0
@@ -208,8 +210,11 @@ class CheckSubnetIpConsumption < Sensu::Plugin::Check::CLI
       end
 
       # Throw critical alert with optional account alias display
-      alert_prefix = '%<count> subnets in %<region> exceeding %<threshold>%% IP consumption threshold: %<alerts>'
-      alert_prefix_with_alias = '%<count> subnets in %<alias> (%<region>) exceeding %<threshold>%% IP consumption threshold: %<alerts>'
+      # TODO: Come back and re-asses Rubocop rule, following it's suggestion actually breaks the code
+      # rubocop:disable Style/FormatStringToken
+      alert_prefix = '%{count} subnets in %{region} exceeding %{threshold}%% IP consumption threshold: %{alerts}'
+      alert_prefix_with_alias = '%{count} subnets in %{alias} (%{region}) exceeding %{threshold}%% IP consumption threshold: %{alerts}'
+      # rubocop:enable Style/FormatStringToken
 
       case config[:show_account_alias]
       when true
