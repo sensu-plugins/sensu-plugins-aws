@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [10.1.1.] - 2018-01-13
 ### Fixed
 - check-instance-health.rb: fixed incorrect test operator from `&&` to `||` in `gather_events`, should reject if either case is true. (@randeffects)
 
@@ -412,7 +414,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.1...HEAD
+[10.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.0...10.1.1
 [10.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.0...10.0.3
 [10.0.3]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.2...10.0.3
 [10.0.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.0.1...10.0.2
