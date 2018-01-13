@@ -137,7 +137,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
           output graphitepath + ".#{key}", value[:sum] || value[:average], value[:timestamp].to_i
         end
       end
-    rescue => e
+    rescue StandardError => e
       critical "Error: exception: #{e}"
     end
     ok

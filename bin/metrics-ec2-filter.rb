@@ -88,7 +88,7 @@ class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite
         end
       end
       output scheme + ".count.#{instance_ids.count}"
-    rescue => e
+    rescue StandardError => e
       puts "Error: exception: #{e}"
       critical
     end

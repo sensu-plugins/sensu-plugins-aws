@@ -136,7 +136,7 @@ class ELBHealth < Sensu::Plugin::Check::CLI
     @message = ''
     critical = false
 
-    unless config[:aws_region].casecmp('all') == 0
+    unless config[:aws_region].casecmp('all').zero?
       if aws_regions.include? config[:aws_region]
         aws_regions.clear.push(config[:aws_region])
       else

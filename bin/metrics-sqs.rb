@@ -90,7 +90,7 @@ class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
           record_queue_metrics(q.attributes['QueueArn'].split(':').last, q)
         end
       end
-    rescue => e
+    rescue StandardError => e
       critical "Error fetching SQS queue metrics: #{e.message}"
     end
     ok

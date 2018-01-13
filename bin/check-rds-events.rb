@@ -90,7 +90,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
     maint_clusters = []
     aws_regions = rds_regions
 
-    unless config[:aws_region].casecmp('all') == 0
+    unless config[:aws_region].casecmp('all').zero?
       if aws_regions.include? config[:aws_region]
         aws_regions.clear.push(config[:aws_region])
       else
@@ -131,8 +131,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
           cluster_name_long = "#{cluster_name} (#{r}) #{events_record[:events][-1][:message]}"
           maint_clusters.push(cluster_name_long)
         end
-
-      rescue => e
+      rescue StandardError => e
         unknown "An error occurred processing AWS RDS API (#{r}): #{e.message}"
       end
     end

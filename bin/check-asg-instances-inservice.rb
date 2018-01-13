@@ -70,7 +70,7 @@ class CheckAsgInstancesInService < Sensu::Plugin::Check::CLI
             instance_in_service += 1
           end
         end
-        if instance_in_service == 0
+        if instance_in_service.zero?
           critical = 1
           result += "#{grp_name}: no Instances inService  #{instance_in_service} \n"
         elsif instance_in_service < group.min_size
@@ -88,7 +88,7 @@ class CheckAsgInstancesInService < Sensu::Plugin::Check::CLI
           instance_in_service += 1
         end
       end
-      if instance_in_service == 0
+      if instance_in_service.zero?
         critical = 1
         result += "#{config[:group]}: no Instances inService  #{instance_in_service} \n"
       elsif instance_in_service < min_size

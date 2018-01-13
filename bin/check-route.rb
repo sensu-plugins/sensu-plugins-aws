@@ -114,7 +114,7 @@ class CheckRoute < Sensu::Plugin::Check::CLI
           end
         end
       end
-    rescue => e
+    rescue StandardError => e
       critical "Error: exception: #{e}"
     end
     critical

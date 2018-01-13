@@ -72,7 +72,7 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
          proc:        proc(&:to_i),
          description: 'CloudWatch metric statistics period'
 
-  %w(warning critical).each do |severity|
+  %w[warning critical].each do |severity|
     option :"#{severity}_over",
            long:        "--#{severity}-over COUNT",
            proc:        proc(&:to_f),
@@ -126,11 +126,11 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
     metric        = latency_metric elb.name
     metric_value  = begin
                       latest_value metric
-                    rescue
+                    rescue StandardError
                       0
                     end
 
-    @severities.keys.each do |severity|
+    @severities.each_key do |severity|
       threshold = config[:"#{severity}_over"]
       puts metric_value
       next unless threshold

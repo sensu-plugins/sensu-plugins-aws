@@ -58,7 +58,7 @@ class SnsNotifier < Sensu::Handler
     }
 
     sns.publish(options)
-  rescue => e
+  rescue StandardError => e
     puts "Exception occured in SnsNotifier: #{e.message}", e.backtrace
   end
 end

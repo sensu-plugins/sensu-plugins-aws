@@ -76,7 +76,7 @@ class ELBHealth < Sensu::Plugin::Check::CLI
       instance_az = Net::HTTP.get(URI('http://169.254.169.254/latest/meta-data/placement/availability-zone/'))
     end
     instance_az[0...-1]
-  rescue
+  rescue StandardError
     raise "Cannot obtain this instance's Availability Zone. Maybe not running on AWS?"
   end
 
@@ -87,7 +87,7 @@ class ELBHealth < Sensu::Plugin::Check::CLI
   end
 
   def run
-    aws_region = (config[:aws_region].nil? || config[:aws_region].empty?) ? query_instance_region : config[:aws_region]
+    aws_region = config[:aws_region].nil? || config[:aws_region].empty? ? query_instance_region : config[:aws_region]
     begin
       elb = Fog::AWS::ELB.new aws_config
       if config[:instances]
@@ -107,7 +107,7 @@ class ELBHealth < Sensu::Plugin::Check::CLI
       else
         critical "Detected [#{unhealthy_instances.size}] unhealthy instances"
       end
-    rescue => e
+    rescue StandardError => e
       warning "An issue occured while communicating with the AWS EC2 API: #{e.message}"
     end
   end

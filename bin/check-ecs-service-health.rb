@@ -95,7 +95,7 @@ class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
   end
 
   def bucket_service(running_count, desired_count)
-    if running_count == 0 && desired_count > 0
+    if running_count.zero? && desired_count > 0
       :critical
     elsif running_count < desired_count
       :warn
@@ -149,7 +149,7 @@ class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
     else
       ok
     end
-  rescue => e
+  rescue StandardError => e
     unknown "An error occurred processing AWS ECS API: #{e.message}"
   end
 end

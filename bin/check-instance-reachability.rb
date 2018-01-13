@@ -89,7 +89,7 @@ class CheckInstanceReachability < Sensu::Plugin::Check::CLI
           end
         end
       end
-    rescue => e
+    rescue StandardError => e
       puts "Error: exception: #{e}"
       critical
     end

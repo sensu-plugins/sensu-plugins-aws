@@ -46,6 +46,8 @@ class S3Metrics < Sensu::Plugin::Metric::CLI::Graphite
          long: '--scheme SCHEME',
          default: 'sensu.aws.s3.buckets'
 
+  def bucket_size(size_size = 'bytes'); end
+
   def run
     begin
       s3 = Aws::S3::Client.new(aws_config)
@@ -54,7 +56,8 @@ class S3Metrics < Sensu::Plugin::Metric::CLI::Graphite
       cw = Aws::CloudWatch::Client.new(aws_config)
 
       now = Time.now
-      list_buckets.buckets.each do |bucket|
+      # TODO: come back and refactor this
+      list_buckets.buckets.each do |bucket| # rubocop:disable Metrics/BlockLength)
         bucket_name = bucket.name.tr('.', '_')
         bucket_size_bytes = cw.get_metric_statistics(
           namespace: 'AWS/S3',
@@ -96,8 +99,7 @@ class S3Metrics < Sensu::Plugin::Metric::CLI::Graphite
         )
         output "#{config[:scheme]}.#{bucket_name}.number_of_objects", number_of_objects[:datapoints][0].average, now.to_i unless number_of_objects[:datapoints][0].nil?
       end
-
-    rescue => e
+    rescue StandardError => e
       critical "Error: exception: #{e}"
     end
     ok

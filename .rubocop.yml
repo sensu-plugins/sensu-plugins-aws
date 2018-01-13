@@ -38,3 +38,6 @@ Style/FormatString:
 Style/ClassVars:
   Exclude:
     - test/**/*.rb
+Metrics/BlockLength:
+  Exclude:
+    - test/**/*.rb

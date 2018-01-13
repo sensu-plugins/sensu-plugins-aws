@@ -54,7 +54,7 @@ class BeanstalkHealth < Sensu::Plugin::Check::CLI
     @env_health ||= beanstalk_client
                     .describe_environment_health(
                       environment_name: config[:environment],
-                      attribute_names: %w(Color Status HealthStatus Causes)
+                      attribute_names: %w[Color Status HealthStatus Causes]
                     )
   end
 
@@ -72,13 +72,13 @@ class BeanstalkHealth < Sensu::Plugin::Check::CLI
     @instances_health ||= begin
       curr_instances = beanstalk_client.describe_instances_health(
         environment_name: config[:environment],
-        attribute_names: %w(Color HealthStatus Causes)
+        attribute_names: %w[Color HealthStatus Causes]
       )
       instances = curr_instances.instance_health_list
       until curr_instances.next_token.nil?
         curr_instances = beanstalk_client.describe_instances_health(
           environment_name: config[:environment],
-          attribute_names: %w(Color HealthStatus Causes)
+          attribute_names: %w[Color HealthStatus Causes]
         )
         instances.concat(curr_instances.instance_health_list)
       end
@@ -87,7 +87,7 @@ class BeanstalkHealth < Sensu::Plugin::Check::CLI
   end
 
   def unhealthy_instances
-    @unhealthy_instances ||= instances_health.select { |i| i.color != 'Green' }
+    @unhealthy_instances ||= instances_health.reject { |i| i.color == 'Green' }
   end
 
   def status_rollup

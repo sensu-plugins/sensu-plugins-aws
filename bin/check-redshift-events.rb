@@ -81,7 +81,7 @@ class CheckRedshiftEvents < Sensu::Plugin::Check::CLI
 
   # throw unknown message if the user passed us a missing instance
   def check_missing_instances(instances)
-    missing_instances = instances.select { |i| !all_clusters.include?(i) }
+    missing_instances = instances.reject { |i| all_clusters.include?(i) }
     unknown("Passed instance(s): #{missing_instances.join(',')} not found") unless missing_instances.empty?
   end
 
@@ -110,7 +110,7 @@ class CheckRedshiftEvents < Sensu::Plugin::Check::CLI
       end
 
       maint_clusters = clusters_in_maint(all_clusters)
-    rescue => e
+    rescue StandardError => e
       unknown "An error occurred processing AWS Redshift API: #{e.message}"
     end
 

@@ -89,8 +89,7 @@ class BillingMetrics < Sensu::Plugin::Metric::CLI::Graphite
         )
         output "#{config[:scheme]}.total.#{service_name}", r[:datapoints][0].maximum, r[:datapoints][0][:timestamp].to_i unless r[:datapoints][0].nil?
       end
-
-    rescue => e
+    rescue StandardError => e
       critical "Error: exception: #{e}"
     end
     ok

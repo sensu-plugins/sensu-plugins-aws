@@ -84,11 +84,11 @@ class CheckDynamoDB < Sensu::Plugin::Check::CLI
   option :capacity_for,
          short:       '-c N',
          long:        '--capacity-for NAME',
-         default:     [:read, :write],
+         default:     %i[read write],
          proc:        proc { |a| a.split(/[,;]\s*/).map { |n| n.downcase.intern } },
          description: 'Read/Write (or both) capacity to check.'
 
-  %w(warning critical).each do |severity|
+  %w[warning critical].each do |severity|
     option :"#{severity}_over",
            long:        "--#{severity}-over N",
            # #YELLOW
@@ -156,12 +156,12 @@ class CheckDynamoDB < Sensu::Plugin::Check::CLI
       metric        = cloud_watch_metric metric_name, table.table_name
       metric_value  = begin
                         latest_value(metric)
-                      rescue
+                      rescue StandardError
                         0
                       end
       percentage    = metric_value / table.provisioned_throughput.send("#{r_or_w}_capacity_units").to_f * 100
 
-      @severities.keys.each do |severity|
+      @severities.each_key do |severity|
         threshold = config[:"#{severity}_over"]
         next unless threshold
         next if percentage < threshold

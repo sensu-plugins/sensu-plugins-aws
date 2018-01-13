@@ -54,7 +54,7 @@ class CheckS3Tag < Sensu::Plugin::Check::CLI
         if keys.sort & tags.sort != tags.sort
           missing_tags.push bucket.name
         end
-      rescue => _
+      rescue StandardError
         missing_tags.push bucket.name
       end
     end
@@ -64,7 +64,7 @@ class CheckS3Tag < Sensu::Plugin::Check::CLI
     else
       critical("Missing tags in #{missing_tags}")
     end
-  rescue => e
+  rescue StandardError => e
     critical "Error: #{e.message} - #{e.backtrace}"
   end
 end

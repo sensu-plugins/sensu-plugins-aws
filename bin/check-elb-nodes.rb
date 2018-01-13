@@ -116,7 +116,7 @@ class CheckELBNodes < Sensu::Plugin::Check::CLI
       critical 'ELB has no nodes'
     elsif state['Unknown'].count == num_instances
       unknown 'All nodes in unknown state'
-    elsif state['InService'].count == 0
+    elsif state['InService'].count.zero?
       critical message
     elsif config[:crit_under] > 0 && config[:crit_under] >= state['InService'].count
       critical message

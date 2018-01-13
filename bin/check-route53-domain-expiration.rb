@@ -55,8 +55,8 @@ class CheckRoute53DomainExpiration < Sensu::Plugin::Check::CLI
     begin
       domains = r53.list_domains.domains
       domains.each do |domain|
-        expiration = DateTime.parse(domain.expiry.to_s)
-        days_until_expiration = (expiration - DateTime.now).to_i
+        expiration = DateTime.parse(domain.expiry.to_s) # rubocop: disable Style/DateTime
+        days_until_expiration = (expiration - DateTime.now).to_i # rubocop: disable Style/DateTime
         if days_until_expiration <= config[:crit]
           crit_domains[domain] = days_until_expiration
         elsif days_until_expiration <= config[:warn]
@@ -71,8 +71,7 @@ class CheckRoute53DomainExpiration < Sensu::Plugin::Check::CLI
       else
         ok 'No domains are expiring soon'
       end
-
-    rescue => e
+    rescue StandardError => e
       unknown "An error occurred communicating with the Route53 API: #{e.message}"
     end
   end
