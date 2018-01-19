@@ -5,8 +5,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 ### Added
-- `check-s3-bucket-visiblity.rb` - checks an S3 bucket for existence of a website configuration or bucket policy containing `Get*`
-or `List*` statements. (@rhussmann)
+- `check-s3-bucket-visiblity.rb` - checks an S3 bucket for existence of a website configuration or bucket policy containing `Get*`,
+`List*` or `*` statements. (@rhussmann)
 
 ## [10.1.2] - 2018-01-13
 ### Security
