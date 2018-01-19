@@ -60,15 +60,15 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
   def get_bucket_policy(bucket_name)
     JSON.parse(s3_client.get_bucket_policy(bucket: bucket_name).policy.string)
   rescue Aws::S3::Errors::NoSuchBucketPolicy
-    { "Statement" => [] }
+    { 'Statement' => [] }
   end
 
   def policy_too_permissive?(policy)
-    policy["Statement"].any? { |s| statement_too_permissive? s }
+    policy['Statement'].any? { |s| statement_too_permissive? s }
   end
 
   def statement_too_permissive?(s)
-    actions_contain_get_or_list? Array(s["Action"])
+    actions_contain_get_or_list? Array(s['Action'])
   end
 
   def actions_contain_get_or_list?(actions)
@@ -76,27 +76,24 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
   end
 
   def run
-    begin
-      errors = []
-      affected_buckets = []
-      buckets = config[:bucket_name].split ","
+    errors = []
+    buckets = config[:bucket_name].split ','
 
-      buckets.each do |bucket_name|
-        if website_configuration?(bucket_name)
-          errors.push "#{bucket_name}: website configuration found"
-        end
-        if policy_too_permissive?(get_bucket_policy(bucket_name))
-          errors.push "#{bucket_name}: bucket policy too permissive"
-        end
+    buckets.each do |bucket_name|
+      if website_configuration?(bucket_name)
+        errors.push "#{bucket_name}: website configuration found"
       end
-
-      if !errors.empty?
-        critical errors.join "; "
-      else
-        ok "#{buckets.join ","} not exposed via website or bucket policy"
+      if policy_too_permissive?(get_bucket_policy(bucket_name))
+        errors.push "#{bucket_name}: bucket policy too permissive"
       end
-    rescue Aws::S3::Errors::NotFound => _
-      critical "Bucket #{config[:bucket_name]} not found"
     end
+
+    if !errors.empty?
+      critical errors.join '; '
+    else
+      ok "#{buckets.join ','} not exposed via website or bucket policy"
+    end
+  rescue Aws::S3::Errors::NotFound => _
+    critical "Bucket #{config[:bucket_name]} not found"
   end
 end
