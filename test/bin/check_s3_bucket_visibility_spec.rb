@@ -46,14 +46,14 @@ describe 'CheckS3Bucket' do
   end
 
   describe '#website_configuration?' do
-    it 'should return true when a website config is found' do
+    it 'returns true when a website config is found' do
       check = CheckS3Bucket.new
       @aws_stub.stub_responses(:get_bucket_website, @website_policy)
       allow(check).to receive(:s3_client).and_return(@aws_stub)
       expect(true).to eq(check.website_configuration? 'bucket_with_config')
     end
 
-    it 'should return false when no website config exists' do
+    it 'returns false when no website config exists' do
       check = CheckS3Bucket.new
       @aws_stub.stub_responses(:get_bucket_website, 'NoSuchWebsiteConfiguration')
       allow(check).to receive(:s3_client).and_return(@aws_stub)
@@ -61,15 +61,15 @@ describe 'CheckS3Bucket' do
     end
   end
 
-  describe 'policy_too_permissive' do
+  describe 'policy_too_permissive?' do
     it 'returns true when a policy statement includes s3:Get' do
       check = CheckS3Bucket.new
-      expect(true).to eq(check.policy_too_permissive get_policy)
+      expect(true).to eq(check.policy_too_permissive? get_policy)
     end
   end
 
   describe '#run' do
-    it 'should exit ok when restricted and no website policy' do
+    it 'exits ok when restricted and no website policy' do
       check = CheckS3Bucket.new
       check.config[:bucket_name] = 'my_bucket'
       @aws_stub.stub_responses(:get_bucket_website, 'NoSuchWebsiteConfiguration')
@@ -79,7 +79,7 @@ describe 'CheckS3Bucket' do
       expect(response).to eq('triggered ok')
     end
 
-    it 'should exit with critical when a website policy is detected' do
+    it 'exits with critical when a website policy is detected' do
       check = CheckS3Bucket.new
       check.config[:bucket_name] = 'my_bucket'
       @aws_stub.stub_responses(:get_bucket_website, @website_policy)
@@ -89,12 +89,21 @@ describe 'CheckS3Bucket' do
       expect(response).to eq('triggered critical')
     end
 
-    it 'should exit with critical when an overly permissive policy is detected' do
+    it 'exits with critical when an overly permissive policy is detected' do
       skip "Can't mock StringIO in :get_bucket_policy"
       check = CheckS3Bucket.new
       check.config[:bucket_name] = 'my_bucket'
       @aws_stub.stub_responses(:get_bucket_website, 'NoSuchWebsiteConfiguration')
       @aws_stub.stub_responses(:get_bucket_policy, {:policy => "{}"})
+      allow(check).to receive(:s3_client).and_return(@aws_stub)
+      response = check.run
+      expect(response).to eq('triggered critical')
+    end
+
+    it 'exists with critical when one of two buckets fail' do
+      check = CheckS3Bucket.new
+      check.config[:bucket_name] = 'safe_bucket,fail_bucket'
+      @aws_stub.stub_responses(:get_bucket_website, ['NoSuchWebsiteConfiguration', @website_policy])
       allow(check).to receive(:s3_client).and_return(@aws_stub)
       response = check.run
       expect(response).to eq('triggered critical')

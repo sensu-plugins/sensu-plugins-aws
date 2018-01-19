@@ -44,7 +44,7 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
   option :bucket_name,
          short: '-b BUCKET_NAME',
          long: '--bucket-name',
-         description: 'The name of the S3 bucket to check'
+         description: 'A comma seperated list of S3 buckets to check'
 
   def s3_client
     @s3_client ||= Aws::S3::Client.new
@@ -63,32 +63,37 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
     { "Statement" => [] }
   end
 
-  def policy_too_permissive(policy)
-    policy["Statement"].any? { |s| statement_too_permissive s }
+  def policy_too_permissive?(policy)
+    policy["Statement"].any? { |s| statement_too_permissive? s }
   end
 
-  def statement_too_permissive(s)
-    actions_contain_get_or_list Array(s["Action"])
+  def statement_too_permissive?(s)
+    actions_contain_get_or_list? Array(s["Action"])
   end
 
-  def actions_contain_get_or_list(actions)
+  def actions_contain_get_or_list?(actions)
     actions.any? { |a| !Array(a).grep(/^s3:Get|s3:List|s3:\*/).empty? }
   end
 
   def run
     begin
       errors = []
-      if website_configuration?(config[:bucket_name])
-        errors.push "Website configuration found"
-      end
-      if policy_too_permissive(get_bucket_policy(config[:bucket_name]))
-        errors.push "Bucket policy too permissive"
+      affected_buckets = []
+      buckets = config[:bucket_name].split ","
+
+      buckets.each do |bucket_name|
+        if website_configuration?(bucket_name)
+          errors.push "#{bucket_name}: website configuration found"
+        end
+        if policy_too_permissive?(get_bucket_policy(bucket_name))
+          errors.push "#{bucket_name}: bucket policy too permissive"
+        end
       end
 
       if !errors.empty?
         critical errors.join "; "
       else
-        ok "Bucket #{config[:bucket_name]} not exposed via website or bucket policy"
+        ok "#{buckets.join ","} not exposed via website or bucket policy"
       end
     rescue Aws::S3::Errors::NotFound => _
       critical "Bucket #{config[:bucket_name]} not found"
