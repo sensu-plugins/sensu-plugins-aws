@@ -100,10 +100,42 @@ describe 'CheckS3Bucket' do
       expect(response).to eq('triggered critical')
     end
 
-    it 'exists with critical when one of two buckets fail' do
+    it 'exits with critical when one of two buckets fail' do
       check = CheckS3Bucket.new
       check.config[:bucket_name] = 'safe_bucket,fail_bucket'
       @aws_stub.stub_responses(:get_bucket_website, ['NoSuchWebsiteConfiguration', @website_policy])
+      allow(check).to receive(:s3_client).and_return(@aws_stub)
+      response = check.run
+      expect(response).to eq('triggered critical')
+    end
+
+    it 'exits with warning on a missing bucket' do
+      check = CheckS3Bucket.new
+      check.config[:bucket_name] = 'missing_bucket'
+      check.config[:critical_on_missing] = 'false'
+      @aws_stub.stub_responses(:get_bucket_website, 'NoSuchBucket')
+      @aws_stub.stub_responses(:get_bucket_policy, 'NoSuchBucketPolicy')
+      allow(check).to receive(:s3_client).and_return(@aws_stub)
+      response = check.run
+      expect(response).to eq('triggered warning')
+    end
+
+    it 'exits with critical on a missing bucket when -m is specified' do
+      check = CheckS3Bucket.new
+      check.config[:bucket_name] = 'missing_bucket'
+      check.config[:critical_on_missing] = 'true'
+      @aws_stub.stub_responses(:get_bucket_website, 'NoSuchBucket')
+      allow(check).to receive(:s3_client).and_return(@aws_stub)
+      response = check.run
+      expect(response).to eq('triggered critical')
+    end
+
+    it 'exists with critical when one of several buckets is missing when -m is specified' do
+      check = CheckS3Bucket.new
+      check.config[:bucket_name] = 'actual_bucket, missing_bucket'
+      check.config[:critical_on_missing] = 'true'
+      @aws_stub.stub_responses(:get_bucket_website, %w[NoSuchWebsiteConfiguration NoSuchBucket])
+      @aws_stub.stub_responses(:get_bucket_policy, %w[NoSuchBucketPolicy NoSuchBucket])
       allow(check).to receive(:s3_client).and_return(@aws_stub)
       response = check.run
       expect(response).to eq('triggered critical')

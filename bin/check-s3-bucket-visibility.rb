@@ -46,6 +46,16 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
          long: '--bucket-name',
          description: 'A comma seperated list of S3 buckets to check'
 
+  option :critical_on_missing,
+         short: '-m ',
+         long: '--critical-on-missing',
+         description: 'The check will fail with CRITICAL rather than WARN when a bucket is not found',
+         default: 'false'
+
+  def true?(obj)
+    !obj.nil? && obj.to_s.casecmp('true') != -1
+  end
+
   def s3_client
     @s3_client ||= Aws::S3::Client.new
   end
@@ -77,23 +87,29 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
 
   def run
     errors = []
+    warnings = []
     buckets = config[:bucket_name].split ','
 
     buckets.each do |bucket_name|
-      if website_configuration?(bucket_name)
-        errors.push "#{bucket_name}: website configuration found"
-      end
-      if policy_too_permissive?(get_bucket_policy(bucket_name))
-        errors.push "#{bucket_name}: bucket policy too permissive"
+      begin
+        if website_configuration?(bucket_name)
+          errors.push "#{bucket_name}: website configuration found"
+        end
+        if policy_too_permissive?(get_bucket_policy(bucket_name))
+          errors.push "#{bucket_name}: bucket policy too permissive"
+        end
+      rescue Aws::S3::Errors::NoSuchBucket => _
+        mesg = "Bucket #{bucket_name} not found"
+        true?(config[:critical_on_missing]) ? errors.push(mesg) : warnings.push(mesg)
       end
     end
 
     if !errors.empty?
       critical errors.join '; '
+    elsif !warnings.empty?
+      warning warnings.join '; '
     else
       ok "#{buckets.join ','} not exposed via website or bucket policy"
     end
-  rescue Aws::S3::Errors::NotFound => _
-    critical "Bucket #{config[:bucket_name]} not found"
   end
 end
