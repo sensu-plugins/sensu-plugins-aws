@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Added
+- `check-s3-bucket-visiblity.rb` - checks an S3 bucket for existence of a website configuration or bucket policy containing `Get*`,
+`List*` or `*` statements. (@rhussmann)
 
 ## [10.1.2] - 2018-01-13
 ### Security
