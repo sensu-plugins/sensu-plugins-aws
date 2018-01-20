@@ -41,9 +41,9 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
          description: 'AWS Region (defaults to us-east-1).',
          default: 'us-east-1'
 
-  option :bucket_name,
-         short: '-b BUCKET_NAME',
-         long: '--bucket-name',
+  option :bucket_names,
+         short: '-b BUCKET_NAMES',
+         long: '--bucket-names',
          description: 'A comma seperated list of S3 buckets to check'
 
   option :critical_on_missing,
@@ -88,7 +88,7 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
   def run
     errors = []
     warnings = []
-    buckets = config[:bucket_name].split ','
+    buckets = config[:bucket_names].split ','
 
     buckets.each do |bucket_name|
       begin

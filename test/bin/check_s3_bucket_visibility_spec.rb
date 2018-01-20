@@ -71,7 +71,7 @@ describe 'CheckS3Bucket' do
   describe '#run' do
     it 'exits ok when restricted and no website policy' do
       check = CheckS3Bucket.new
-      check.config[:bucket_name] = 'my_bucket'
+      check.config[:bucket_names] = 'my_bucket'
       @aws_stub.stub_responses(:get_bucket_website, 'NoSuchWebsiteConfiguration')
       @aws_stub.stub_responses(:get_bucket_policy, 'NoSuchBucketPolicy')
       allow(check).to receive(:s3_client).and_return(@aws_stub)
@@ -81,7 +81,7 @@ describe 'CheckS3Bucket' do
 
     it 'exits with critical when a website policy is detected' do
       check = CheckS3Bucket.new
-      check.config[:bucket_name] = 'my_bucket'
+      check.config[:bucket_names] = 'my_bucket'
       @aws_stub.stub_responses(:get_bucket_website, @website_policy)
       @aws_stub.stub_responses(:get_bucket_policy, 'NoSuchBucketPolicy')
       allow(check).to receive(:s3_client).and_return(@aws_stub)
@@ -92,7 +92,7 @@ describe 'CheckS3Bucket' do
     it 'exits with critical when an overly permissive policy is detected' do
       skip "Can't mock StringIO in :get_bucket_policy"
       check = CheckS3Bucket.new
-      check.config[:bucket_name] = 'my_bucket'
+      check.config[:bucket_names] = 'my_bucket'
       @aws_stub.stub_responses(:get_bucket_website, 'NoSuchWebsiteConfiguration')
       @aws_stub.stub_responses(:get_bucket_policy, policy: '{}')
       allow(check).to receive(:s3_client).and_return(@aws_stub)
@@ -102,7 +102,7 @@ describe 'CheckS3Bucket' do
 
     it 'exits with critical when one of two buckets fail' do
       check = CheckS3Bucket.new
-      check.config[:bucket_name] = 'safe_bucket,fail_bucket'
+      check.config[:bucket_names] = 'safe_bucket,fail_bucket'
       @aws_stub.stub_responses(:get_bucket_website, ['NoSuchWebsiteConfiguration', @website_policy])
       allow(check).to receive(:s3_client).and_return(@aws_stub)
       response = check.run
@@ -111,7 +111,7 @@ describe 'CheckS3Bucket' do
 
     it 'exits with warning on a missing bucket' do
       check = CheckS3Bucket.new
-      check.config[:bucket_name] = 'missing_bucket'
+      check.config[:bucket_names] = 'missing_bucket'
       check.config[:critical_on_missing] = 'false'
       @aws_stub.stub_responses(:get_bucket_website, 'NoSuchBucket')
       @aws_stub.stub_responses(:get_bucket_policy, 'NoSuchBucketPolicy')
@@ -122,7 +122,7 @@ describe 'CheckS3Bucket' do
 
     it 'exits with critical on a missing bucket when -m is specified' do
       check = CheckS3Bucket.new
-      check.config[:bucket_name] = 'missing_bucket'
+      check.config[:bucket_names] = 'missing_bucket'
       check.config[:critical_on_missing] = 'true'
       @aws_stub.stub_responses(:get_bucket_website, 'NoSuchBucket')
       allow(check).to receive(:s3_client).and_return(@aws_stub)
@@ -132,7 +132,7 @@ describe 'CheckS3Bucket' do
 
     it 'exists with critical when one of several buckets is missing when -m is specified' do
       check = CheckS3Bucket.new
-      check.config[:bucket_name] = 'actual_bucket, missing_bucket'
+      check.config[:bucket_names] = 'actual_bucket, missing_bucket'
       check.config[:critical_on_missing] = 'true'
       @aws_stub.stub_responses(:get_bucket_website, %w[NoSuchWebsiteConfiguration NoSuchBucket])
       @aws_stub.stub_responses(:get_bucket_policy, %w[NoSuchBucketPolicy NoSuchBucket])
