@@ -117,12 +117,11 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
     static_value = {}
     statistics.each do |key, static|
       r = cloud_watch_metric(key, static, load_balancer_name)
-      keys =
-        if config[:scheme].nil?
-          []
-        else
-          [config[:scheme]]
-        end
+      keys = if config[:scheme] == ''
+               []
+             else
+               [config[:scheme]]
+             end
       keys.concat [load_balancer_name, key, static]
       metric_key = keys.join('.')
 
