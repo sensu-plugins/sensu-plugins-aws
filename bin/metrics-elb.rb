@@ -52,7 +52,7 @@ class ELBMetrics < Sensu::Plugin::Metric::CLI::Graphite
          description: 'Metric naming scheme, text to prepend to metric',
          short: '-s SCHEME',
          long: '--scheme SCHEME',
-         default: 'loadbalancer'
+         default: 'elb'
 
   option :fetch_age,
          description: 'How long ago to fetch metrics for',

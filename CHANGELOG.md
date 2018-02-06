@@ -5,8 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 ### Breaking Changes
-- metrics-elb-full.rb: removed in favor of metrics-elb.rb, which is slightly more configurable and uses the AWS-SDK v2 already. Compared to metrics-elb-full.rb, metrics-elb.rb no longer takes --aws-access-key, --aws-secret-access-key flags, Authentication should be configured per [here](https://github.com/sensu-plugins/sensu-plugins-aws/blob/master/README.md#authentication) (@multani)
+- metrics-elb-full.rb: removed in favor of metrics-elb.rb, which is slightly more configurable and uses the AWS-SDK v2 already. Compared to metrics-elb-full.rb, metrics-elb.rb no longer takes --aws-access-key, --aws-secret-access-key flags, Authentication should be configured per [here](https://github.com/sensu-plugins/sensu-plugins-aws/blob/master/README.md#authentication). --scheme has a default value of `elb` now (@multani)
 - metrics-elb.rb: honors the --fetch_age flag which now looks up values 60 seconds in the past by default. This was the intended behavior, as documented in the NOTES section (@multani)
+- metrics-elb.rb: --scheme default value is `elb` now, to be more consistent with the other metrics checks (@multani)
 
 ### Fixed
 - metrics-elb.rb: properly handle the --scheme and --fetch_age flags (@multani)
