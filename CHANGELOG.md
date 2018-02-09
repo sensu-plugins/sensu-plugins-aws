@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [11.0.0] - 2018-02-09
 ### Breaking Changes
 - metrics-elb-full.rb: removed in favor of metrics-elb.rb, which is slightly more configurable and uses the AWS-SDK v2 already. Compared to metrics-elb-full.rb, metrics-elb.rb no longer takes --aws-access-key, --aws-secret-access-key flags, Authentication should be configured per [here](https://github.com/sensu-plugins/sensu-plugins-aws/blob/master/README.md#authentication). --scheme has a default value of `elb` now (@multani)
 - metrics-elb.rb: honors the --fetch_age flag which now looks up values 60 seconds in the past by default. This was the intended behavior, as documented in the NOTES section (@multani)
@@ -434,7 +436,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.2.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.0.0...HEAD
+[11.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.2.0...11.0.0
 [10.2.0]:https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.2...10.2.0
 [10.1.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.1...10.1.2
 [10.1.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.0...10.1.1
