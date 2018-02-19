@@ -74,8 +74,7 @@ class CloudWatchCheck < Sensu::Plugin::Check::CLI
     end
 
     critical "#{alarms.size} in '#{config[:state]}' state: #{alarm_names.join(',')}" unless alarms.empty?
-
-  rescue => e
+  rescue StandardError => e
     puts "Error: exception: #{e}"
     critical
   end
