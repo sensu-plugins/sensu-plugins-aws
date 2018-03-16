@@ -1,4 +1,3 @@
-
 module CloudwatchCommon
   include Common
 

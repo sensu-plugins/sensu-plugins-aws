@@ -17,3 +17,9 @@ mkmf.log
 .idea/*
 *.gem
 *~
+.ruby-version
+
+
+# test-kitchen
+.kitchen/
+.kitchen.list.yml
