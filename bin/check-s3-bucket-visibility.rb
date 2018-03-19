@@ -29,7 +29,7 @@
 #   for details.
 #
 
-require 'aws-sdk'
+require 'aws-sdk-s3'
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
 
@@ -44,7 +44,21 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
   option :bucket_names,
          short: '-b BUCKET_NAMES',
          long: '--bucket-names',
-         description: 'A comma seperated list of S3 buckets to check'
+         description: 'A comma seperated list of S3 buckets to check',
+         proc: proc { |b| b.split(',') }
+
+  option :all_buckets,
+         short: '-a BOOL',
+         long: '--all-buckets BOOL',
+         description: 'If all buckets are true it will look at any buckets that we have access to in the region',
+         boolean: true,
+         default: false
+
+  option :exclude_buckets,
+         short: '-e EXCLUDED_BUCKETS_COMMA_SEPERATED',
+         long: '--excluded-buckets EXCLUDED_BUCKETS_COMMA_SEPERATED',
+         description: 'A comma seperated list of buckets to ignore that are expected to have loose permissions',
+         proc: proc { |b| b.split(',') }
 
   option :critical_on_missing,
          short: '-m ',
@@ -58,6 +72,26 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
 
   def s3_client
     @s3_client ||= Aws::S3::Client.new
+  end
+
+  def s3_resource
+    @s3_resource || Aws::S3::Resource.new
+  end
+
+  def list_buckets
+    buckets = []
+    s3_resource.buckets.each do |bucket|
+      if s3_resource.client.get_bucket_location(bucket: bucket.name).location_constraint == config[:aws_region]
+        buckets << bucket.name
+      else
+        p "skipping bucket: #{bucket.name} as is not in the region specified: #{config[:aws_region]}"
+      end
+    end
+    buckets
+  end
+
+  def excluded_bucket?(bucket_name)
+    config[:exclude_buckets].include?(bucket_name)
   end
 
   def website_configuration?(bucket_name)
@@ -88,9 +122,19 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
   def run
     errors = []
     warnings = []
-    buckets = config[:bucket_names].split ','
+    buckets = if config[:all_buckets]
+                list_buckets
+              elsif config[:bucket_names] && !config[:bucket_names].empty?
+                config[:bucket_names]
+              else
+                unknown 'you must specify either all buckets or provide list of buckets'
+              end
 
     buckets.each do |bucket_name|
+      if excluded_bucket?(bucket_name)
+        p "bucket_name: #{bucket_name} was ignored as it matched excluded_buckets"
+        next
+      end
       begin
         if website_configuration?(bucket_name)
           errors.push "#{bucket_name}: website configuration found"
@@ -98,7 +142,7 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
         if policy_too_permissive?(get_bucket_policy(bucket_name))
           errors.push "#{bucket_name}: bucket policy too permissive"
         end
-      rescue Aws::S3::Errors::NoSuchBucket => _
+      rescue Aws::S3::Errors::NoSuchBucket
         mesg = "Bucket #{bucket_name} not found"
         true?(config[:critical_on_missing]) ? errors.push(mesg) : warnings.push(mesg)
       end
