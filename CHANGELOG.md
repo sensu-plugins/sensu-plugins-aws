@@ -5,6 +5,13 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Added
+- check-s3-bucket-visibility.rb: added option `--all-buckets` to check for all buckets in the region specified for insecure buckets (@majormoses)
+- check-s3-bucket-visibility.rb: added option `--excluded-buckets` to ignore specific buckets that are expected to be loose such as s3 buckets for static website hosting (@majormoses)
+
+### Changed
+- check-s3-bucket-visibility.rb: now uses `aws-sdk-s3` while keeping other plugins locked at their respective versions (@majormoses)
+
 ## [11.0.0] - 2018-02-09
 ### Breaking Changes
 - metrics-elb-full.rb: removed in favor of metrics-elb.rb, which is slightly more configurable and uses the AWS-SDK v2 already. Compared to metrics-elb-full.rb, metrics-elb.rb no longer takes --aws-access-key, --aws-secret-access-key flags, Authentication should be configured per [here](https://github.com/sensu-plugins/sensu-plugins-aws/blob/master/README.md#authentication). --scheme has a default value of `elb` now (@multani)
