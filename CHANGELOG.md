@@ -5,6 +5,12 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Added
+- check-s3-bucket-visibility.rb: option `--exclude-regex-filter` to allow using regex to filter out undesired buckets from the results (@majormoses)
+
+### Fixed
+- check-s3-bucket-visibility.rb: fixed `nilClass` error when `--exlcuded-buckets` was not provided by returning false if its nil (@majormoses)
+
 ## [11.0.0] - 2018-11-21
 ### Added
 - check-s3-bucket-visibility.rb: added option `--all-buckets` to check for all buckets in the region specified for insecure buckets (@majormoses)

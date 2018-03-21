@@ -60,6 +60,10 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
          description: 'A comma seperated list of buckets to ignore that are expected to have loose permissions',
          proc: proc { |b| b.split(',') }
 
+  option :exclude_regex_filter,
+         long: '--exclude-regex-filter MY_REGEX',
+         description: 'A regex to filter out bucket names'
+
   option :critical_on_missing,
          short: '-m ',
          long: '--critical-on-missing',
@@ -91,7 +95,17 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
   end
 
   def excluded_bucket?(bucket_name)
+    return false if config[:exclude_buckets].nil?
     config[:exclude_buckets].include?(bucket_name)
+  end
+
+  def excluded_bucket_regex?(bucket_name)
+    return false if config[:exclude_regex_filter].nil?
+    if bucket_name.match(Regexp.new(Regexp.escape(config[:exclude_regex_filter])))
+      true
+    else
+      false
+    end
   end
 
   def website_configuration?(bucket_name)
@@ -133,6 +147,9 @@ class CheckS3Bucket < Sensu::Plugin::Check::CLI
     buckets.each do |bucket_name|
       if excluded_bucket?(bucket_name)
         p "bucket_name: #{bucket_name} was ignored as it matched excluded_buckets"
+        next
+      elsif excluded_bucket_regex?(bucket_name)
+        p "bucket_name: #{bucket_name} was ignored as it matched exclude_regex_filter: #{Regexp.new(Regexp.escape(config[:exclude_regex_filter]))}"
         next
       end
       begin
