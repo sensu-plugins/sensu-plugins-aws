@@ -5,13 +5,14 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [11.1.0] - 2018-11-22
 ### Added
 - check-s3-bucket-visibility.rb: option `--exclude-regex-filter` to allow using regex to filter out undesired buckets from the results (@majormoses)
 
 ### Fixed
 - check-s3-bucket-visibility.rb: fixed `nilClass` error when `--exlcuded-buckets` was not provided by returning false if its nil (@majormoses)
 
-## [11.0.0] - 2018-11-21
+## [11.1.0] - 2018-11-21
 ### Added
 - check-s3-bucket-visibility.rb: added option `--all-buckets` to check for all buckets in the region specified for insecure buckets (@majormoses)
 - check-s3-bucket-visibility.rb: added option `--excluded-buckets` to ignore specific buckets that are expected to be loose such as s3 buckets for static website hosting (@majormoses)
@@ -450,7 +451,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.1.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.2.0...HEAD
+[11.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.1.0...11.2.0
 [11.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.0.0...11.1.0
 [11.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.2.0...11.0.0
 [10.2.0]:https://github.com/sensu-plugins/sensu-plugins-aws/compare/10.1.2...10.2.0
