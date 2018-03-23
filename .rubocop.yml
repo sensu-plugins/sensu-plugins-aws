@@ -35,9 +35,13 @@ Style/Next:
 Style/FormatString:
   Enabled: false
 
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
 Style/ClassVars:
   Exclude:
     - test/**/*.rb
+
 Metrics/BlockLength:
   Exclude:
     - test/**/*.rb
