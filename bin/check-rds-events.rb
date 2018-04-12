@@ -117,7 +117,7 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
         # fetch the last 15 minutes of events for each cluster
         # that way, we're only spammed with persistent notifications that we'd care about.
         clusters.each do |cluster_name|
-          events_record = rds.describe_events(start_time: (Time.now - 900).iso8601, source_type: 'db-instance', source_identifier: cluster_name)
+          events_record = rds.describe_events(start_time: (Time.now - 900).getgm.iso8601, source_type: 'db-instance', source_identifier: cluster_name)
           next if events_record[:events].empty?
 
           # we will need to filter out non-disruptive/basic operation events.
