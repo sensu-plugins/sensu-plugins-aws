@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [11.3.1] - 2018-04-17
 ### Fixed
 - check-rds-events.rb: fixed issues with queries because the assume local time, now we force UTC timezone (@nadarashwin) (@majormoses)
 
@@ -457,7 +459,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.3.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.3.1...HEAD
+[11.3.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.3.0...11.3.1
 [11.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.2.0...11.3.0
 [11.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.1.0...11.2.0
 [11.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.0.0...11.1.0
