@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Fixed
+- check-rds-events.rb: fixed issues with queries because the assume local time, now we force UTC timezone (@nadarashwin) (@majormoses)
 
 ## [11.3.0] - 2018-03-22
 ### Added
