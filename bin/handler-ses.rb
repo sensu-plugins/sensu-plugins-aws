@@ -58,7 +58,7 @@ class SESNotifier < Sensu::Handler
 
   def handle
     mail_to = build_mail_to_list
-    body = <<-BODY.gsub(/^ {14}/, '')
+    body = <<-BODY.gsub(/^\s+/, '')
             #{@event['check']['output']}
             Host: #{@event['client']['name']}
             Timestamp: #{Time.at(@event['check']['issued'])}

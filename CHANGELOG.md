@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Fixed
+- Trim all leading whitespace from each line in the email bodies when using the SES handler, and not a specific number of spaces, which may change as files are reformatted/refactored. (@mattdoller)
 
 ## [11.4.0] - 2018-04-28
 ### Security
