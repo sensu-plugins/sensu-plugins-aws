@@ -74,6 +74,8 @@
 
 **check-eni-status.rb**
 
+**check-instance-cpucredits.rb**
+
 **check-instance-events.rb**
 
 **check-instance-health.rb**
@@ -186,6 +188,7 @@
 * /bin/check-emr-steps.rb
 * /bin/check-eni-status.rb
 * /bin/check-instance-events.rb
+* /bin/check-instance-cpucredits.rb
 * /bin/check-rds-events.rb
 * /bin/check-rds-pending.rb
 * /bin/check-rds.rb
