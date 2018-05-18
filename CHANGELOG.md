@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [11.5.0] - 2018-05-17
 ### Added
 - handler-ses.rb: can now set `mail_to` in a check and handler will send to the appropriate email (@Juan-Moreno)
 
@@ -477,7 +478,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.4.2...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.0...HEAD
+[11.5.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.4.2...11.5.0
 [11.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.4.1...11.4.2
 [11.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.4.0...11.4.1
 [11.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.3.1...11.4.0
