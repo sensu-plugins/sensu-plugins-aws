@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+### Added
+- handler-ses.rb: can now set `mail_to` in a check and handler will send to the appropriate email (@Juan-Moreno)
+
 ## [11.4.2] - 2018-05-10
 ### Fixed
 - Handle case where a prefix is used and no objects are found. (@akatch)
