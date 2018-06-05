@@ -102,6 +102,12 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
          long: '--operator-size OPERATION',
          default: 'equal'
 
+  option :no_crit_on_multiple_objects,
+         description: 'If this flag is set, sort all matching objects by last_modified date and check against the newest. By default, this check will return a CRITICAL result if multiple matching objects are found.',
+         short: '-m',
+         long: '--no-crit-on-multiple-objects',
+         boolean: true
+
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
@@ -164,7 +170,11 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
         end
 
         if output.contents.size.to_i > 1
-          critical "Your prefix \"#{key_search}\" return too much files, you need to be more specific"
+          if config[:no_crit_on_multiple_objects].nil?
+            critical "Your prefix \"#{key_search}\" return too much files, you need to be more specific"
+          else
+            output.contents.sort_by!(&:last_modified).reverse!
+          end
         end
 
         key_fullname = output.contents[0].key
