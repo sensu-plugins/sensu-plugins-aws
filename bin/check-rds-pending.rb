@@ -47,10 +47,12 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
       # fetch all clusters identifiers
       clusters = rds.describe_db_instances[:db_instances].map { |db| db[:db_instance_identifier] }
       maint_clusters = []
-      # Check if there is any pending maintenance required
-      pending_record = rds.describe_pending_maintenance_actions(filters: [{ name: 'db-instance-id', values: clusters }])
-      pending_record[:pending_maintenance_actions].each do |response|
-        maint_clusters.push(response[:pending_maintenance_action_details])
+      if clusters.any?
+        # Check if there is any pending maintenance required
+        pending_record = rds.describe_pending_maintenance_actions(filters: [{ name: 'db-instance-id', values: clusters }])
+        pending_record[:pending_maintenance_actions].each do |response|
+          maint_clusters.push(response[:pending_maintenance_action_details])
+        end
       end
     rescue StandardError => e
       unknown "An error occurred processing AWS RDS API: #{e.message}"
