@@ -126,6 +126,8 @@
 
 **handler-sns.rb**
 
+**metrics-alb.rb**
+
 **metrics-asg.rb**
 
 **metrics-autoscaling-instance-count.rb**
@@ -205,6 +207,7 @@
 * /bin/handler-sns.rb
 * /bin/metrics-autoscaling-instance-count.rb
 * /bin/check-instances-count.rb
+* /bin/metrics-alb.rb
 * /bin/metrics-asg.rb
 * /bin/metrics-billing.rb
 * /bin/metrics-ec2-count.rb
