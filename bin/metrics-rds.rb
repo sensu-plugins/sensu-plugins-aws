@@ -57,6 +57,13 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
          proc:        proc { |a| Time.parse a },
          description: 'CloudWatch metric statistics end time'
 
+  option :fetch_age,
+         description: 'How long ago to fetch metrics from',
+         short: '-f AGE',
+         long: '--fetch-age',
+         default: 0,
+         proc: proc(&:to_i)
+
   option :period,
          short:       '-p N',
          long:        '--period SECONDS',
@@ -95,8 +102,8 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
           value: value
         }
       ],
-      start_time: config[:end_time] - config[:period],
-      end_time: config[:end_time],
+      start_time: config[:end_time] - config[:fetch_age] - config[:period],
+      end_time: config[:end_time] - config[:fetch_age],
       statistics: [config[:statistics].to_s.capitalize],
       period: config[:period]
     )
