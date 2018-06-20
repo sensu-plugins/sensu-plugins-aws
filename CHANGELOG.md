@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+- `check-ebs-burst-limit.rb`: Fixed period to pass to config from 60 to 120 so as to not have empty values returned sometimes
 
 ## [11.5.0] - 2018-05-17
 ### Added
