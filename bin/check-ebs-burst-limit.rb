@@ -93,7 +93,7 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
     config[:metric_name] = 'BurstBalance'
     config[:namespace] = 'AWS/EBS'
     config[:statistics] = 'Average'
-    config[:period] = 60
+    config[:period] = 120
     crit = false
     should_warn = false
 
