@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [11.6.0] - 2018-06-21
+### Added
 - metrics-rds.rb: adding option `--fetch-age` to allow getting metrics in the past (@multani)
 
 ## [11.5.1] - 2018-06-21
@@ -483,7 +486,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.6.0...HEAD
+[11.6.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.1...11.6.0
 [11.5.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.0...11.5.1
 [11.5.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.4.2...11.5.0
 [11.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.4.1...11.4.2
