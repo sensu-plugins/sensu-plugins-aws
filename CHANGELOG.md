@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [11.5.1] - 2018-06-21
 ### Fixed
 - check-rds-pending: Fix issue if there are no RDS instances in a region. Previously this would raise an API exception (@stevenviola)
 
@@ -480,7 +482,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.1...HEAD
+[11.5.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.0...11.5.1
 [11.5.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.4.2...11.5.0
 [11.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.4.1...11.4.2
 [11.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.4.0...11.4.1
