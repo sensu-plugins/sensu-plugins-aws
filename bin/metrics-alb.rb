@@ -39,7 +39,8 @@ require 'sensu-plugins-aws'
 require 'time'
 
 class ALBMetrics < Sensu::Plugin::Metric::CLI::Graphite
-  include Common
+  include CloudwatchCommon
+
   option :albname,
          description: 'Name of the Application Load Balancer',
          short: '-n ALB_NAME',
@@ -78,17 +79,13 @@ class ALBMetrics < Sensu::Plugin::Metric::CLI::Graphite
          proc:        proc(&:to_i),
          description: 'CloudWatch metric statistics period'
 
-  def cloud_watch
-    @cloud_watch = Aws::CloudWatch::Client.new
-  end
-
   def loadbalancer
     @loadbalancer = Aws::ElasticLoadBalancingV2::Client.new
   end
 
   def cloud_watch_metric(metric_name, value, load_balancer_name, alb_id)
     name = ['app', load_balancer_name, alb_id].join('/')
-    cloud_watch.get_metric_statistics(
+    client.get_metric_statistics(
       namespace: 'AWS/ApplicationELB',
       metric_name: metric_name,
       dimensions: [
