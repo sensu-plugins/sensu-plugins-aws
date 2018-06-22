@@ -58,27 +58,21 @@ class ALBMetrics < Sensu::Plugin::Metric::CLI::Graphite
          default: 60,
          proc: proc(&:to_i)
 
-  option :statistic,
-         description: 'Statistics type',
-         short: '-t STATISTIC',
-         long: '--statistic',
-         default: ''
-
   option :aws_region,
          short: '-r AWS_REGION',
          long: '--aws-region REGION',
-         description: 'AWS Region (defaults to us-east-1).',
+         description: 'AWS Region (defaults to the AWS_REGION variable)',
          default: ENV['AWS_REGION']
 
   option :end_time,
-         short:       '-t T',
+         short:       '-t TIME',
          long:        '--end-time TIME',
          default:     Time.now,
          proc:        proc { |a| Time.parse a },
          description: 'CloudWatch metric statistics end time'
 
   option :period,
-         short:       '-p N',
+         short:       '-p SECONDS',
          long:        '--period SECONDS',
          default:     60,
          proc:        proc(&:to_i),
@@ -162,7 +156,7 @@ class ALBMetrics < Sensu::Plugin::Metric::CLI::Graphite
     begin
       loadbalancer.describe_load_balancers.load_balancers.each do |alb|
         next unless config[:albname].nil? || config[:albname] == alb.load_balancer_name
-        alb_id = alb.load_balancer_arn.split(':')[-1].split(':')[-1].split('/')[-1]
+        alb_id = alb.load_balancer_arn.split(':').last.split('/').last
         print_statistics(alb.load_balancer_name, alb_id, statistics)
       end
     end
