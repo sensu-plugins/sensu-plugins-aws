@@ -4,7 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
-- `check-ebs-burst-limit.rb`: Fixed period to pass to config from 60 to 120 so as to not have empty values returned sometimes
+
+## [12.0.0] - 2018-06-21
+### Breaking Changes
+- `check-ebs-burst-limit.rb`: Fixed period to pass to config from 60 to 120 so as to not have empty values returned sometimes (@wari)
 
 ## [11.6.0] - 2018-06-21
 ### Added
@@ -487,7 +490,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.6.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.0.0...HEAD
+[12.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.6.0...12.0.0
 [11.6.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.1...11.6.0
 [11.5.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.0...11.5.1
 [11.5.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.4.2...11.5.0
