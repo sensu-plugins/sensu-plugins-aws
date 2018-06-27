@@ -23,7 +23,7 @@
 # NOTES:
 #
 # LICENSE:
-#   Copyright (c) 2017, Steven Ayers, steveay99@gmail.com
+#   Copyright (c) 2017, Steven Ayers, sayers@equalexperts.com
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
 #
