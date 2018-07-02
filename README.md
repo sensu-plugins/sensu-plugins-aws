@@ -60,6 +60,8 @@
 
 **check-elb-health.rb**
 
+**check-elb-instances-endpoints.rb**
+
 **check-elb-instances-inservice.rb**
 
 **check-elb-latency.rb**
@@ -178,6 +180,7 @@
 * /bin/check-elb-health-fog.rb
 * /bin/check-elb-health-sdk.rb
 * /bin/check-elb-health.rb
+  /bin/check-elb-instances-endpoints.rb
 * /bin/check-elb-instances-inservice.rb
 * /bin/check-elb-latency.rb
 * /bin/check-elb-nodes.rb
