@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Added
+- `check-instances-running.rb`: check a specific region never has more than a given number of instances running, allowing filter by tag (@jcastillocano)
+
 ## [12.0.0] - 2018-06-21
 ### Breaking Changes
 - `check-ebs-burst-limit.rb`: Fixed period to pass to config from 60 to 120 so as to not have empty values returned sometimes (@wari)
