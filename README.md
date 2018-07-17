@@ -114,6 +114,8 @@
 
 **check-instances-count.rb**
 
+**check-instances-running.rb**
+
 **check-vpc-vpn.rb**
 
 **handler-ec2_node.rb**
@@ -186,6 +188,8 @@
 * /bin/check-emr-steps.rb
 * /bin/check-eni-status.rb
 * /bin/check-instance-events.rb
+* /bin/check-instances-count.rb
+* /bin/check-instances-running.rb
 * /bin/check-rds-events.rb
 * /bin/check-rds-pending.rb
 * /bin/check-rds.rb
@@ -204,7 +208,6 @@
 * /bin/handler-ses.rb
 * /bin/handler-sns.rb
 * /bin/metrics-autoscaling-instance-count.rb
-* /bin/check-instances-count.rb
 * /bin/metrics-asg.rb
 * /bin/metrics-billing.rb
 * /bin/metrics-ec2-count.rb
