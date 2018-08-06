@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+- Add `check-direct-connect-virtual-interfaces.rb` to check the status of Direct Connect virtual interfaces
 
 ## [12.1.0] - 2018-08-28
 ### Added

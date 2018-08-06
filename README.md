@@ -36,6 +36,8 @@
 
 **check-dynamodb-throttle.rb**
 
+**check-direct-connect-virtual-interfaces.rb**
+
 **check-ebs-snapshots.rb**
 
 **check-ebs-burst-limit.rb**
@@ -170,6 +172,7 @@
 * /bin/check-cloudwatch-composite-metric.rb
 * /bin/check-dynamodb-capacity.rb
 * /bin/check-dynamodb-throttle.rb
+* /bin/check-direct-connect-virtual-interfaces.rb
 * /bin/check-ebs-burst-limit.rb
 * /bin/check-ebs-snapshots.rb
 * /bin/check-ec2-filter.rb
