@@ -48,6 +48,8 @@
 
 **check-ecs-service-health.rb**
 
+**check-efs-metric.rb**
+
 **check-eip-allocation.rb**
 
 **check-elasticache-failover.rb**
@@ -173,6 +175,7 @@
 * /bin/check-ec2-filter.rb
 * /bin/check-ec2-network.rb
 * /bin/check-ecs-service-health.rb
+* /bin/check-efs-metric.rb
 * /bin/check-elasticache-failover.rb
 * /bin/check-elb-certs.rb
 * /bin/check-elb-health-fog.rb
