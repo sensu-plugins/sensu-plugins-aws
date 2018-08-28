@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Added
+- new `check-efs.rb: checks cloudwatch metrics with the efs namespace for an arbitrary metric (@ivanfetch)
+
 ## [12.0.0] - 2018-06-21
 ### Breaking Changes
 - `check-ebs-burst-limit.rb`: Fixed period to pass to config from 60 to 120 so as to not have empty values returned sometimes (@wari)
