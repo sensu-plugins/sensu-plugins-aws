@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [12.1.0] - 2018-08-28
 ### Added
 - new `check-efs.rb: checks cloudwatch metrics with the efs namespace for an arbitrary metric (@ivanfetch)
 
@@ -493,7 +494,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.0.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.1.0...HEAD
+[12.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.0.0...12.1.0
 [12.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.6.0...12.0.0
 [11.6.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.1...11.6.0
 [11.5.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.0...11.5.1
