@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [12.2.0] - 2018-09-14
+### Added
 - Add `check-direct-connect-virtual-interfaces.rb` to check the status of Direct Connect virtual interfaces
 
 ## [12.1.0] - 2018-08-28
@@ -495,7 +498,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.1.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.2.0...HEAD
+[12.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.1.0...12.2.0
 [12.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.0.0...12.1.0
 [12.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.6.0...12.0.0
 [11.6.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.5.1...11.6.0
