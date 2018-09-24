@@ -164,6 +164,7 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
       elsif !config[:key_prefix].nil?
         key_search = config[:key_prefix]
         output = s3.list_objects(bucket: config[:bucket_name], prefix: key_search)
+        output = output.next_page while output.next_page?
 
         if output.contents.size.to_i < 1
           critical "Object with prefix \"#{key_search}\" not found in bucket #{config[:bucket_name]}"
