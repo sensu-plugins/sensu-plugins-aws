@@ -105,7 +105,7 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
   option :no_crit_on_multiple_objects,
          description: 'If this flag is set, sort all matching objects by last_modified date and check against the newest. By default, this check will return a CRITICAL result if multiple matching objects are found.',
          short: '-m',
-         long: '--no-crit-on-multiple-objects',
+         long: '--ok-on-multiple-objects',
          boolean: true
 
   def aws_config
