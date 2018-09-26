@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [12.3.0] - 2018-09-25
+### Added
 - check-s3-objects.rb: Allow check to run against the newest of multiple matching objects (@akatch)
 
 ## [12.2.0] - 2018-09-14
@@ -499,7 +502,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.2.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.3.0...HEAD
+[12.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.2.0...12.3.0
 [12.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.1.0...12.2.0
 [12.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.0.0...12.1.0
 [12.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/11.6.0...12.0.0
