@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [12.4.0] - 2018-10-03
 ### Changed
 - check-rds.rb: Updated list of RDS instance types and their respective memory allowance (@swibowo)
 
@@ -504,7 +506,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.3.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.4.0...HEAD
+[12.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.3.0...12.4.0
 [12.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.2.0...12.3.0
 [12.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.1.0...12.2.0
 [12.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.0.0...12.1.0
