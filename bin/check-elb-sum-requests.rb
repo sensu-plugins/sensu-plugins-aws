@@ -71,11 +71,11 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
   end
 
   def elb
-    @elb = Aws::ElasticLoadBalancing::Client.new(aws_config)
+    @elb ||= Aws::ElasticLoadBalancing::Client.new(aws_config)
   end
 
   def cloud_watch
-    @cloud_watch = Aws::CloudWatch::Client.new
+    @cloud_watch ||= Aws::CloudWatch::Client.new
   end
 
   def elbs
