@@ -285,7 +285,21 @@
 
 [Installation and Setup](http://sensu-plugins.io/docs/installation_instructions.html)
 
-Note:  In addition to the standard installation requirements the installation of this gem will require compiling the nokogiri gem.  Due to this you'll need certain development packages on your system.  On Ubuntu systems install build-essential, libxml2-dev and zlib1g-dev.  On CentOS install gcc and zlib-devel.
+Note:  In addition to the standard installation requirements the installation of this gem will require compiling the nokogiri gem.  Due to this you'll need certain development packages on your system.  
+
+On Ubuntu systems run the following to install build dependencies:
+
+```
+sudo apt-get install build-essential libxml2-dev zlib1g-dev
+```
+
+On CentOS systems, run the following to install build dependencies:
+```
+sudo yum groupinstall -y "Development Tools"
+sudo yum install -y libxslt-devel libxml2-devel zlib-devel
+```
+
+If you'd like to avoid compiling nokogiri and other gems on every system where you need to install this plugin collection, please have a look at [the Sensu guide for pre-compiling plugin packages](https://docs.sensu.io/sensu-core/latest/guides/pre-compile-plugins/).
 
 ## Authentication
 
