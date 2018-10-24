@@ -296,7 +296,7 @@ sudo apt-get install build-essential libxml2-dev zlib1g-dev
 On CentOS systems, run the following to install build dependencies:
 ```
 sudo yum groupinstall -y "Development Tools"
-sudo yum install -y libxslt-devel libxml2-devel zlib-devel
+sudo yum install -y libxml2-devel zlib-devel
 ```
 
 If you'd like to avoid compiling nokogiri and other gems on every system where you need to install this plugin collection, please have a look at [the Sensu guide for pre-compiling plugin packages](https://docs.sensu.io/sensu-core/latest/guides/pre-compile-plugins/).
