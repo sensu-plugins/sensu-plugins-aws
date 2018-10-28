@@ -5,7 +5,10 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 ### Breaking Changes
-- `check-elb-sum-requests.rb` was updated to aws-sdk v2 and no longer take `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
+- `check-elb-sum-requests.rb` no longer take `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
+
+### Changed
+- `check-elb-sum-requests.rb` was updated to aws-sdk v2. (@boutetnico)
 
 ## [12.4.0] - 2018-10-03
 ### Changed

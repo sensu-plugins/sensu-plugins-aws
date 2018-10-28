@@ -130,7 +130,11 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
   end
 
   def run
-    @message = "#{elbs.size} load balancers total"
+    @message = if elbs.size == 1
+                 elbs.first.load_balancer_name
+               else
+                 "#{elbs.size} load balancers total"
+               end
 
     @severities = {
       critical: false,
