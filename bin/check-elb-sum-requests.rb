@@ -143,7 +143,7 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
 
     elbs.each { |elb| check_sum_requests elb }
 
-    @message += "; (#{config[:statistics].to_s.capitalize} within #{config[:period]} seconds "
+    @message += "; (Sum within #{config[:period]} seconds "
     @message += "between #{config[:end_time] - config[:period]} to #{config[:end_time]})"
 
     if @severities[:critical]
