@@ -124,7 +124,7 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
       next unless threshold
       next if metric_value < threshold
       flag_alert severity,
-                 "; #{elbs.size == 1 ? nil : "#{elb.inspect}'s"} Sum Requests is #{metric_value}. (expected lower than #{threshold})"
+                 "; #{elbs.size == 1 ? nil : "#{elb.load_balancer_name}'s"} Sum Requests is #{metric_value}. (expected lower than #{threshold})"
       break
     end
   end
