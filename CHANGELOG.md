@@ -5,7 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 ### Breaking Changes
-- `check-elb-latency.rb` no longer take `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
+- `check-elb-latency.rb` no longer takes `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
  ### Changed
 - `check-elb-latency.rb` was updated to aws-sdk v2. (@boutetnico)
 
