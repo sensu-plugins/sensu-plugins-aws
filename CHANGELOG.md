@@ -5,7 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 ### Breaking Changes
-- `check-elb-latency.rb` was updated to aws-sdk v2 and no longer take `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
+- `check-elb-latency.rb` no longer take `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
+ ### Changed
+- `check-elb-latency.rb` was updated to aws-sdk v2. (@boutetnico)
 
 ## [12.4.0] - 2018-10-03
 ### Changed
@@ -21,7 +23,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [12.1.0] - 2018-08-28
 ### Added
-- new `check-efs.rb`: checks cloudwatch metrics with the efs namespace for an arbitrary metric (@ivanfetch)
+- new `check-efs.rb: checks cloudwatch metrics with the efs namespace for an arbitrary metric (@ivanfetch)
 
 ## [12.0.0] - 2018-06-21
 ### Breaking Changes

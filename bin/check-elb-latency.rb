@@ -133,13 +133,17 @@ class CheckELBLatency < Sensu::Plugin::Check::CLI
       next unless threshold
       next if metric_value < threshold
       flag_alert severity,
-                 "; #{elbs.size == 1 ? nil : "#{elb.inspect}'s"} Latency is #{sprintf '%.3f', metric_value} seconds. (expected lower than #{sprintf '%.3f', threshold})"
+                 "; #{elbs.size == 1 ? nil : "#{elb.load_balancer_name}'s"} Latency is #{sprintf '%.3f', metric_value} seconds. (expected lower than #{sprintf '%.3f', threshold})"
       break
     end
   end
 
   def run
-    @message = "#{elbs.size} load balancers total"
+    @message = if elbs.size == 1
+                 elbs.first.load_balancer_name
+               else
+                 "#{elbs.size} load balancers total"
+               end
 
     @severities = {
       critical: false,
