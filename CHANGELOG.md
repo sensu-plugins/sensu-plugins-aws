@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [12.3.0] - 2018-09-25
+### Changed
+- check-instance-events.rb: re-instate assume-role functionality (@pmiles)
+
 ## [12.4.0] - 2018-10-03
 ### Changed
 - check-rds.rb: Updated list of RDS instance types and their respective memory allowance (@swibowo)
