@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Breaking Changes
+- `check-elb-sum-requests.rb` no longer takes `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
+
+### Changed
+- `check-elb-sum-requests.rb` was updated to aws-sdk v2. (@boutetnico)
 
 ## [13.0.0] - 2018-11-01
 ### Breaking Changes
@@ -26,7 +31,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [12.1.0] - 2018-08-28
 ### Added
-- new `check-efs.rb: checks cloudwatch metrics with the efs namespace for an arbitrary metric (@ivanfetch)
+- new `check-efs.rb`: checks cloudwatch metrics with the efs namespace for an arbitrary metric (@ivanfetch)
 
 ## [12.0.0] - 2018-06-21
 ### Breaking Changes
