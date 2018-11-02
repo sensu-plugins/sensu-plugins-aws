@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [14.0.0] - 2018-11-01
 ### Breaking Changes
 - `check-elb-sum-requests.rb` no longer takes `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
 
@@ -518,7 +520,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/13.0.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/14.0.0...HEAD
+[14.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/13.0.0...14.0.0
 [13.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.4.0...13.0.0
 [12.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.3.0...12.4.0
 [12.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.2.0...12.3.0
