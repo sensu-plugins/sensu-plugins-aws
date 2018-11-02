@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Breaking Change
+- removed `asw-sdk-v1` as all assets have been upgraded to `aws-sdk-v2` this is technically not a breaking change but for safety reasons in case we missed anything we are versioning it as a major bump (@majormoses)
+
 ## [15.0.0] - 2018-11-01
 ### Breaking Changes
 - `check-elb-latency.rb` no longer takes `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
