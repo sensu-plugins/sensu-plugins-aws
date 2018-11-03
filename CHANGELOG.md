@@ -5,6 +5,11 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [16.1.0] - 2018-11-02
+### Changed
+- updated dev depenency of `github-markup` to `~> 3.0` (@dependabot) (@majormoses)
+- updated dev depenency of `rake` to `~> 12.3` (@dependabot) (@majormoses)
+- updated dev depenency of `code-climate` to `~> 1.0` (@dependabot) (@majormoses)
 
 ## [16.0.0] - 2018-11-02
 ### Breaking Change
@@ -531,7 +536,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.0.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.1.0...HEAD
+[16.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.0.0...16.1.0
 [16.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/15.0.0...16.0.0
 [15.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/14.0.0...15.0.0
 [14.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/13.0.0...14.0.0
