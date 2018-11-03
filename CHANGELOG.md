@@ -5,6 +5,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+
+## [16.0.0] - 2018-11-02
 ### Breaking Change
 - removed `asw-sdk-v1` as all assets have been upgraded to `aws-sdk-v2` this is technically not a breaking change but for safety reasons in case we missed anything we are versioning it as a major bump (@majormoses)
 
@@ -529,7 +531,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/15.0.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.0.0...HEAD
+[16.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/15.0.0...16.0.0
 [15.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/14.0.0...15.0.0
 [14.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/13.0.0...14.0.0
 [13.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.4.0...13.0.0
