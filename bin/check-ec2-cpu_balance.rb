@@ -63,7 +63,8 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
          description: 'List of burstable instance families to check. Default to t2,t3',
          short: '-f t2,t3',
          long: '--instance-families t2,t3',
-         default: 't2,t3'
+         proc: proc { |x| x.split(',') },
+         default: %w[t2 t3]
 
   def data(instance)
     client = Aws::CloudWatch::Client.new
@@ -107,7 +108,7 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
     level = 0
     instances.reservations.each do |reservation|
       reservation.instances.each do |instance|
-        next unless instance.instance_type.start_with?(*config[:instance_families].split(','))
+        next unless instance.instance_type.start_with?(*config[:instance_families])
         id = instance.instance_id
         result = data id
         tag = config[:tag] ? " (#{instance_tag(instance, config[:tag])})" : ''
