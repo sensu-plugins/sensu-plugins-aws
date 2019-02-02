@@ -36,7 +36,7 @@ require 'time'
 class CloudFrontMetrics < Sensu::Plugin::Metric::CLI::Graphite
   include Common
   option :distribution_id,
-         description: 'Distribution id of Cloudfront',
+         description: 'Distribution id of Cloudfront (defaults to all distributions)',
          short: '-d DISTRIBUTION_ID',
          long: '--distribution_id DISTRIBUTION_ID'
 
@@ -52,11 +52,10 @@ class CloudFrontMetrics < Sensu::Plugin::Metric::CLI::Graphite
          description: 'AWS Region (defaults to us-east-1).',
          default: 'us-east-1'
 
-  option :metric,
-         description: 'Metric to fetch',
-         short: '-m METRIC',
-         long: '--metric',
-         in: %w[Requests BytesDownloaded BytesUploaded TotalErrorRate 4xxErrorRate 5xxErrorRate]
+  option :metrics,
+         description: 'Commas separated list of metric(s) to fetch',
+         short: '-m METRIC1,METRIC2',
+         long: '--metrics METRIC1,METRIC2'
 
   option :end_time,
          short:       '-t T',
@@ -76,7 +75,7 @@ class CloudFrontMetrics < Sensu::Plugin::Metric::CLI::Graphite
     @cloud_watch ||= Aws::CloudWatch::Client.new
   end
 
-  def cloud_watch_metric(metric_name, value, distribution_id)
+  def cloud_watch_metric(metric_name, statistics, distribution_id)
     cloud_watch.get_metric_statistics(
       namespace: 'AWS/CloudFront',
       metric_name: metric_name,
@@ -90,36 +89,37 @@ class CloudFrontMetrics < Sensu::Plugin::Metric::CLI::Graphite
           value: distribution_id
         }
       ],
-      statistics: [value],
+      statistics: [statistics],
       start_time: config[:end_time] - config[:period],
       end_time: config[:end_time],
       period: config[:period]
     )
   end
 
-  def distribution_list
+  def distribution_list(metrics)
     list_metrics = cloud_watch.list_metrics(
       namespace: 'AWS/CloudFront'
     ).metrics
 
-    list_metrics = list_metrics.select { |e| e.metric_name == config[:metric] } unless config[:metric].nil?
+    list_metrics = list_metrics.select { |e| metrics.include? e.metric_name }
 
     list_metrics.reduce(Set.new) do |result, item|
       result << item.dimensions.find { |element| element.name == 'DistributionId' }.value
     end
   end
 
-  def print_statistics(distribution_id, statistics)
-    statistics.each do |key, static|
-      r = cloud_watch_metric(key, static, distribution_id)
+
+  def print_statistics(distribution_id, statistic)
+    statistic.each do |metric, static|
+      r = cloud_watch_metric(metric, static, distribution_id)
       keys = [config[:scheme]]
-      keys.concat [distribution_id, key, static]
+      keys.concat [distribution_id, metric, static]
       output(keys.join('.'), r[:datapoints].first[static.downcase]) unless r[:datapoints].first.nil?
     end
   end
 
-  def run
-    statistic = {
+  def print_metrics(distribution_id, metrics)
+    metrics_statistic = {
       'Requests' => 'Sum',
       'BytesDownloaded' => 'Sum',
       'BytesUploaded' => 'Sum',
@@ -128,18 +128,34 @@ class CloudFrontMetrics < Sensu::Plugin::Metric::CLI::Graphite
       '5xxErrorRate' => 'Average'
     }
 
-    unless config[:metric].nil?
-      statistic.select! { |key, _| key == config[:metric] }
+    metrics.each do |metric|
+      statistic = metrics_statistic.select { |key, _| key == metric }
+      if statistic.empty?
+        unknown "Invalid metric #{metric}. Possible values: #{metrics_statistic.keys.join(',')}"
+      end
+      print_statistics(distribution_id, statistic)
     end
+  end
 
+  def parse_metrics(metrics)
+    if metrics.nil?
+      unknown 'No metrics provided. See usage for details'
+    end
+    ret = metrics.split(',')
+  end
+
+  def run
     begin
+      metrics = parse_metrics(config[:metrics])
+
       if config[:distribution_id].nil?
-        distribution_list.each do |distribution|
-          print_statistics(distribution, statistic)
+        distribution_list(metrics).each do |distribution|
+          print_metrics(distribution, metrics)
         end
       else
-        print_statistics(config[:distribution_id], statistic)
+        print_metrics(config[:distribution_id], metrics)
       end
+
       ok
     end
   end
