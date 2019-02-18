@@ -59,6 +59,12 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
          short: '-t TAG',
          long: '--tag TAG'
 
+  option :instance_families,
+         description: 'List of burstable instance families to check. Default to t2,t3',
+         short: '-f t2,t3',
+         long: '--instance-families t2,t3',
+         default: 't2,t3'
+
   def data(instance)
     client = Aws::CloudWatch::Client.new
     stats = 'Average'
@@ -101,7 +107,7 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
     level = 0
     instances.reservations.each do |reservation|
       reservation.instances.each do |instance|
-        next unless instance.instance_type.start_with? 't2.'
+        next unless instance.instance_type.start_with?(*config[:instance_families].split(','))
         id = instance.instance_id
         result = data id
         tag = config[:tag] ? " (#{instance_tag(instance, config[:tag])})" : ''
