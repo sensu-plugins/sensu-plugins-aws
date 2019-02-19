@@ -8,6 +8,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ## [16.2.0] - 2019-02-19
 ### Fixed
 - removed codeclimate (@tmonk42)
+- properly iterate over IPs in check-vpc-nameservers.rb (@masneyb)
 
 ### Added
 - `check-ec2-cpu_balance.rb`: adding option `--instance-families` to manage which instance families to check. (@cyrilgdn)
