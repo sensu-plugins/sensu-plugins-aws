@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 - removed codeclimate (@tmonk42)
+- properly iterate over IPs in check-vpc-nameservers.rb (@masneyb)
 
 ## [16.1.0] - 2018-11-02
 ### Changed
