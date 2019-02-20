@@ -63,9 +63,9 @@ class CheckVpcNameservers < Sensu::Plugin::Check::CLI
     options = ec2.describe_dhcp_options(dhcp_options_ids: [dhcp_option_id])
 
     options.dhcp_options.each do |option|
-      option.dhcp_configurations.each do |map|
-        next if map.key != 'domain-name-servers'
-        map.each_value do |value|
+      option.dhcp_configurations.each do |configs|
+        next if configs.key != 'domain-name-servers'
+        configs.values.each do |value|
           ip = value.value
           config[:queries].each do |query|
             begin
