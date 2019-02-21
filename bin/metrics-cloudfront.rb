@@ -108,7 +108,6 @@ class CloudFrontMetrics < Sensu::Plugin::Metric::CLI::Graphite
     end
   end
 
-
   def print_statistics(distribution_id, statistic)
     statistic.each do |metric, static|
       r = cloud_watch_metric(metric, static, distribution_id)
@@ -141,22 +140,20 @@ class CloudFrontMetrics < Sensu::Plugin::Metric::CLI::Graphite
     if metrics.nil?
       unknown 'No metrics provided. See usage for details'
     end
-    ret = metrics.split(',')
+    metrics.split(',')
   end
 
   def run
-    begin
-      metrics = parse_metrics(config[:metrics])
+    metrics = parse_metrics(config[:metrics])
 
-      if config[:distribution_id].nil?
-        distribution_list(metrics).each do |distribution|
-          print_metrics(distribution, metrics)
-        end
-      else
-        print_metrics(config[:distribution_id], metrics)
+    if config[:distribution_id].nil?
+      distribution_list(metrics).each do |distribution|
+        print_metrics(distribution, metrics)
       end
-
-      ok
+    else
+      print_metrics(config[:distribution_id], metrics)
     end
+
+    ok
   end
 end
