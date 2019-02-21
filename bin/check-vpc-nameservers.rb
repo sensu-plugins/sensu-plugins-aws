@@ -63,9 +63,9 @@ class CheckVpcNameservers < Sensu::Plugin::Check::CLI
     options = ec2.describe_dhcp_options(dhcp_options_ids: [dhcp_option_id])
 
     options.dhcp_options.each do |option|
-      option.dhcp_configurations.each do |configs|
-        next if configs.key != 'domain-name-servers'
-        configs.values.each do |value|
+      option.dhcp_configurations.each do |map|
+        next if map.key != 'domain-name-servers'
+        map.values.each do |value| # rubocop:disable Performance/HashEachMethods
           ip = value.value
           config[:queries].each do |query|
             begin
