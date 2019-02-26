@@ -49,6 +49,12 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
          description: 'A comma seperated list of the SQS queue(s) you want to check the number of messages for',
          default: ''
 
+  option :exclude_queue,
+         short: '-Q SQS_QUEUE',
+         long: '--exclude-queue SQS_QUEUE',
+         description: 'A comma separated list of the SQS queue(s) to exclude, if using --prefix',
+         default: ''
+
   option :prefix,
          short: '-p PREFIX',
          long: '--prefix PREFIX',
@@ -131,10 +137,13 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
       warn = false
       crit = false
       queues = []
+      exclusions = config[:exclude_queue].split(',')
 
       sqs.queues(queue_name_prefix: config[:prefix]).each do |q|
         messages = sqs.client.get_queue_attributes(queue_url: q.url, attribute_names: ['All']).attributes[config[:metric]].to_i
         queue_name = q.attributes['QueueArn'].split(':').last
+
+        next if exclusions.include? queue_name
 
         if (config[:crit_under] >= 0 && messages < config[:crit_under]) || (config[:crit_over] >= 0 && messages > config[:crit_over])
           crit = true

@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Added
+- `check-sqs-messages.rb`: adding option `--exclude-queue` for use in blacklisting specific queues in conjunction with `--prefix` flag. (@ruke47)
+
 ### Changed
 - `metrics-cloudfront.rb` now accepts multiple metrics. (@boutetnico)
 
