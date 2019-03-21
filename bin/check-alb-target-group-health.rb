@@ -68,9 +68,11 @@ class CheckALBTargetGroupHealth < Sensu::Plugin::Check::CLI
     target_groups.each do |target_group|
       health = alb.describe_target_health(target_group_arn: target_group.target_group_arn)
       unhealthy_targets = health.target_health_descriptions.select { |t| t.target_health.state == 'unhealthy' }.map { |t| t.target.id }
-      unless unhealthy_targets.empty?
+      healthy_targets = health.target_health_descriptions.select { |t| t.target_health.state == 'healthy' }.map { |t| t.target.id }
+      if !unhealthy_targets.empty? || healthy_targets.empty?
         unhealthy_groups[target_group.target_group_name] = {
           unhealthy_targets: unhealthy_targets,
+          healthy_targets: healthy_targets,
           total_targets: health.target_health_descriptions.size
         }
       end
@@ -84,6 +86,8 @@ class CheckALBTargetGroupHealth < Sensu::Plugin::Check::CLI
     if !unhealthy_groups.empty?
       message = 'Unhealthy ALB target groups: '
       message += unhealthy_groups.map { |target_group, value| "#{target_group} - #{value[:unhealthy_targets].size}/#{value[:total_targets]} unhealthy targets: {#{value[:unhealthy_targets].join(', ')}}" }.join(', ')
+      message += ' : Healthy ALB target groups: '
+      message += unhealthy_groups.map { |target_group, value| "#{target_group} - #{value[:healthy_targets].size}/#{value[:total_targets]} healthy targets: {#{value[:healthy_targets].join(', ')}}" }.join(', ')
       if config[:crit]
         critical message
       else
