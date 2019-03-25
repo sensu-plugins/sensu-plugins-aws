@@ -6,7 +6,11 @@ module CloudwatchCommon
   end
 
   def read_value(resp, stats)
-    resp.datapoints.sort_by(&:timestamp).last.send(stats.downcase)
+    if extended_stats? stats
+      resp.datapoints.sort_by(&:timestamp).last.extended_statistics[stats]
+    else
+      resp.datapoints.sort_by(&:timestamp).last.send(stats.downcase)
+    end
   end
 
   def resp_has_no_data(resp, stats)
@@ -26,17 +30,23 @@ module CloudwatchCommon
     end
   end
 
+  def extended_stats?(stats)
+    stats[/p\d+\.\d+|p\d+/] # Check for percentile format
+  end
+
   def metrics_request(config)
-    {
+    request = {
       namespace: config[:namespace],
       metric_name: config[:metric_name],
       dimensions: config[:dimensions],
       start_time: Time.now - config[:period] * 10,
       end_time: Time.now,
       period: config[:period],
-      statistics: [config[:statistics]],
       unit: config[:unit]
     }
+    stats_key = extended_stats?(config[:statistics]) ? :extended_statistics : :statistics
+    request[stats_key] = [config[:statistics]]
+    request
   end
 
   def get_metric(metric)
