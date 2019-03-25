@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ## [Unreleased]
 ### Changed
 - `metrics-cloudfront.rb` now accepts multiple metrics. (@boutetnico)
+- `lib/cloudwatch-common.rb` now accepts percentile stats. (@rajiv)
 
 ### Breaking Changes
 - `metrics-cloudfront.rb` `--metric` option was renamed to `--metrics`. (@boutetnico)
