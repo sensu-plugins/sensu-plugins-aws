@@ -43,17 +43,19 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
          description: 'AWS Region (defaults to us-east-1).',
          default: 'us-east-1'
 
-  option :queue,
+  option :queues,
          short: '-q SQS_QUEUE',
          long: '--queue SQS_QUEUE',
          description: 'A comma seperated list of the SQS queue(s) you want to check the number of messages for',
-         default: ''
+         default: [],
+         proc: proc { |q| q.split(',') }
 
-  option :exclude_queue,
-         short: '-Q SQS_QUEUE',
-         long: '--exclude-queue SQS_QUEUE',
+  option :exclude_queues,
+         short: '-Q SQS_QUEUES',
+         long: '--exclude-queues SQS_QUEUE',
          description: 'A comma separated list of the SQS queue(s) to exclude, if using --prefix',
-         default: ''
+         default: [],
+         proc: proc { |q| q.split(',') }
 
   option :prefix,
          short: '-p PREFIX',
@@ -106,14 +108,14 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
     sqs = Aws::SQS::Resource.new
 
     if config[:prefix].empty?
-      if config[:queue].empty?
+      if config[:queues].empty?
         critical 'Error, either QUEUE or PREFIX must be specified'
       end
 
       warnings = []
       crits = []
       passing = []
-      queues = config[:queue].split(',')
+      queues = config[:queues]
       queues.each do |q|
         url = sqs.get_queue_by_name(queue_name: q).url
         messages = sqs.client.get_queue_attributes(queue_url: url, attribute_names: ['All']).attributes[config[:metric]].to_i
@@ -137,7 +139,7 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
       warn = false
       crit = false
       queues = []
-      exclusions = config[:exclude_queue].split(',')
+      exclusions = config[:exclude_queues]
 
       sqs.queues(queue_name_prefix: config[:prefix]).each do |q|
         messages = sqs.client.get_queue_attributes(queue_url: q.url, attribute_names: ['All']).attributes[config[:metric]].to_i
