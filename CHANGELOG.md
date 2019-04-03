@@ -5,6 +5,12 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [18.0.0] - 2019-04-2
+### Breaking Changes
+- `check-alb-target-group-health.rb` will now alert if a n ALB has no health targets (@kunal-plivo)
+- removed ruby `< 2.3` support (@majormoses)
+- bump `sensu-plugin` dependency from `~> 2.0` to `~> 4.0` you can read the changelog entries for [4.0](https://github.com/sensu-plugins/sensu-plugin/blob/master/CHANGELOG.md#400---2018-02-17) and [3.0](https://github.com/sensu-plugins/sensu-plugin/blob/master/CHANGELOG.md#300---2018-12-04) (@majormoses)
+
 ## [17.2.0] - 2019-04-02
 ### Added
 - `check-rds-pending.rb`: adding option `--db-instance-identifier` to support checking only a single db instance for pending maintenance events, instead of all instances in a region. (@mattdoller)
@@ -564,7 +570,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.1.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.0.0...HEAD
+[18.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.2.0...18.0.0
 [17.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.1.0...17.2.0
 [17.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.0.0...17.1.0
 [17.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.2.0...17.0.0
