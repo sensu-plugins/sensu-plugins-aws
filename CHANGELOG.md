@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Added
+
+- `check-rds-pending.rb`: adding option `--db-instance-identifier` to support checking only a single db instance for pending maintenance events, instead of all instances in a region. (@mattdoller)
+
 ## [17.1.0] - 2019-04-02
 ### Changed
 - `metrics-cloudfront.rb` now accepts multiple metrics. (@boutetnico)
