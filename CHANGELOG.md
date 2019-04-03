@@ -9,11 +9,21 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 - `check-rds-pending.rb`: adding option `--db-instance-identifier` to support checking only a single db instance for pending maintenance events, instead of all instances in a region. (@mattdoller)
 
+## [17.1.0] - 2019-04-02
 ### Changed
 - `metrics-cloudfront.rb` now accepts multiple metrics. (@boutetnico)
+- `lib/cloudwatch-common.rb` now accepts percentile stats. (@rajiv)
 
+
+## [17.0.0] - 2019-03-26
 ### Breaking Changes
 - `metrics-cloudfront.rb` `--metric` option was renamed to `--metrics`. (@boutetnico)
+
+### Added
+- `check-sqs-messages.rb`: adding option `--exclude-queues` for use in blacklisting specific queues in conjunction with `--prefix` flag. (@ruke47)
+
+### Changed
+- `metrics-cloudfront.rb` now accepts multiple metrics. (@boutetnico)
 
 ## [16.2.0] - 2019-02-19
 ### Fixed
@@ -554,7 +564,9 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.2.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.1.0...HEAD
+[17.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.0.0...17.1.0
+[17.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.2.0...17.0.0
 [16.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.1.0...16.2.0
 [16.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.0.0...16.1.0
 [16.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/15.0.0...16.0.0
