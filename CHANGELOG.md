@@ -5,8 +5,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [17.2.0] - 2019-04-02
 ### Added
-
 - `check-rds-pending.rb`: adding option `--db-instance-identifier` to support checking only a single db instance for pending maintenance events, instead of all instances in a region. (@mattdoller)
 
 ## [17.1.0] - 2019-04-02
@@ -565,6 +565,7 @@ WARNING:  This release contains major breaking changes that will impact all user
 - initial release
 
 [Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.1.0...HEAD
+[17.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.1.0...17.2.0
 [17.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.0.0...17.1.0
 [17.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.2.0...17.0.0
 [16.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.1.0...16.2.0
