@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [17.1.0] - 2019-04-02
 ### Changed
 - `metrics-cloudfront.rb` now accepts multiple metrics. (@boutetnico)
 - `lib/cloudwatch-common.rb` now accepts percentile stats. (@rajiv)
@@ -558,7 +560,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.0.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.1.0...HEAD
+[17.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.0.0...17.1.0
 [17.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.2.0...17.0.0
 [16.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.1.0...16.2.0
 [16.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.0.0...16.1.0
