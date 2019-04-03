@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Changed
+- `metrics-cloudfront.rb` now accepts multiple metrics. (@boutetnico)
+- `lib/cloudwatch-common.rb` now accepts percentile stats. (@rajiv)
+
+
 ## [17.0.0] - 2019-03-26
 ### Breaking Changes
 - `metrics-cloudfront.rb` `--metric` option was renamed to `--metrics`. (@boutetnico)
