@@ -26,7 +26,7 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk'
+require 'aws-sdk-ses'
 
 class SesMetrics < Sensu::Plugin::Metric::CLI::Graphite
   include Common

@@ -29,7 +29,7 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
 
 class CheckInstanceEvents < Sensu::Plugin::Check::CLI
   include Common

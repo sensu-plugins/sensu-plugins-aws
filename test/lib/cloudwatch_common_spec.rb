@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-cloudwatch'
 
 class DummyCheck < Sensu::Plugin::Check::CLI
   at_exit do

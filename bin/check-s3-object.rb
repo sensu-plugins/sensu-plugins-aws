@@ -29,7 +29,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-s3'
 
 class CheckS3Object < Sensu::Plugin::Check::CLI
   option :aws_access_key,

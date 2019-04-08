@@ -149,7 +149,7 @@ require 'timeout'
 require 'sensu-handler'
 require 'net/http'
 require 'uri'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
 require 'sensu-plugins-aws'
 
 class Ec2Node < Sensu::Handler

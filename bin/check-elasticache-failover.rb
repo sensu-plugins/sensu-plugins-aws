@@ -29,7 +29,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-elasticache'
 require 'sensu-plugins-aws/common'
 
 class CheckElastiCacheFailover < Sensu::Plugin::Check::CLI

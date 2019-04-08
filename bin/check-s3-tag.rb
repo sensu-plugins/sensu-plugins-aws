@@ -28,7 +28,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws/common'
-require 'aws-sdk'
+require 'aws-sdk-s3'
 
 class CheckS3Tag < Sensu::Plugin::Check::CLI
   include Common

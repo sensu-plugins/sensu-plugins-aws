@@ -31,7 +31,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-elasticloadbalancing'
 require 'sensu-plugins-aws'
 
 class CheckElbInstanceInService < Sensu::Plugin::Check::CLI

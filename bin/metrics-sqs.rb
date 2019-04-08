@@ -29,7 +29,7 @@
 
 require 'sensu-plugin/metric/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-sqs'
 
 class SQSMetrics < Sensu::Plugin::Metric::CLI::Graphite
   include Common

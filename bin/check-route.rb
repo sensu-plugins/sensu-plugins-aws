@@ -27,7 +27,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
 require 'sensu-plugins-aws'
 
 class CheckRoute < Sensu::Plugin::Check::CLI

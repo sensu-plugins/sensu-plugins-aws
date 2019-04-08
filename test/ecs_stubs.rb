@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-core'
 
 DEPLOYING_SERVICE = {
   service_arn: 'arn:aws:ecs:us-east-1:123456789012:service/my-deploying-ecs-service',

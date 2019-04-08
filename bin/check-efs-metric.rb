@@ -30,7 +30,8 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-efs'
+require 'aws-sdk-cloudwatch'
 
 # A Sensu plugin which uses cloudwatch-common to  check EFS CloudWatch metrics
 class EFSMetric < Sensu::Plugin::Check::CLI

@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-cloudwatch'
 require_relative '../../bin/check-cloudwatch-composite-metric.rb'
 require_relative '../spec_helper.rb'
 

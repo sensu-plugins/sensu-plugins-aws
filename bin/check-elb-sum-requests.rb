@@ -32,7 +32,8 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-elasticloadbalancing'
+require 'aws-sdk-cloudwatch'
 
 class CheckELBSumRequests < Sensu::Plugin::Check::CLI
   include Common

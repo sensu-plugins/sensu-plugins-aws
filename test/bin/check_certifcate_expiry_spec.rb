@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-iam'
 require_relative '../../bin/check-certificate-expiry.rb'
 require_relative '../spec_helper.rb'
 

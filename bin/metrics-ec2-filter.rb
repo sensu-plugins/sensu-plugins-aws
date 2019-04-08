@@ -28,7 +28,7 @@
 #
 
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
 require 'sensu-plugins-aws'
 
 class EC2Filter < Sensu::Plugin::Metric::CLI::Graphite

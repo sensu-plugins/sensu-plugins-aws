@@ -37,7 +37,7 @@
 #   for details.
 #
 
-require 'aws-sdk'
+require 'aws-sdk-autoscaling'
 require 'json'
 require 'sensu-handler'
 

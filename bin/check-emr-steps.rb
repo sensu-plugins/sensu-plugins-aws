@@ -26,7 +26,7 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-emr'
 
 class CheckEMRSteps < Sensu::Plugin::Check::CLI
   include Common

@@ -32,7 +32,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-kms'
 
 class CheckKMSKey < Sensu::Plugin::Check::CLI
   include Common

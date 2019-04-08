@@ -28,7 +28,8 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-autoscaling'
+require 'aws-sdk-cloudwatch'
 
 class CheckEc2CpuCredits < Sensu::Plugin::Check::CLI
   option :aws_access_key,

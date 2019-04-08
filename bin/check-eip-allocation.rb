@@ -28,7 +28,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
 
 class CheckEipAllocation < Sensu::Plugin::Check::CLI
   include Common

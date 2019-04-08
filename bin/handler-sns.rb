@@ -10,7 +10,7 @@
 # for details
 
 require 'sensu-handler'
-require 'aws-sdk'
+require 'aws-sdk-sns'
 require 'erubis'
 
 class SnsNotifier < Sensu::Handler

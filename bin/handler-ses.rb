@@ -11,7 +11,7 @@
 # for details.
 
 require 'sensu-handler'
-require 'aws-sdk'
+require 'aws-sdk-ses'
 
 class SESNotifier < Sensu::Handler
   def event_name

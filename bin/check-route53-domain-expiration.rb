@@ -22,7 +22,7 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-route53domains'
 
 class CheckRoute53DomainExpiration < Sensu::Plugin::Check::CLI
   include Common

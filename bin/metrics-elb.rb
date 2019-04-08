@@ -37,7 +37,8 @@
 #   Using aws sdk version 2
 
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk'
+require 'aws-sdk-elasticloadbalancing'
+require 'aws-sdk-cloudwatch'
 require 'sensu-plugins-aws'
 require 'time'
 

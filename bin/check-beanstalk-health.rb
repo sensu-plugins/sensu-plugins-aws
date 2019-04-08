@@ -28,7 +28,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-elasticbeanstalk'
 require 'json'
 
 class BeanstalkHealth < Sensu::Plugin::Check::CLI

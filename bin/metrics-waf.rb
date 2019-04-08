@@ -29,7 +29,7 @@
 #
 
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk'
+require 'aws-sdk-cloudwatch'
 require 'sensu-plugins-aws'
 require 'time'
 
