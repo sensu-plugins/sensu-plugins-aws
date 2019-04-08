@@ -29,7 +29,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws/common'
-require 'aws-sdk'
+require 'aws-sdk-cloudwatch'
 
 class CloudWatchCheck < Sensu::Plugin::Check::CLI
   include Common

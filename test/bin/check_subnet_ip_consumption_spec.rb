@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-core'
 require 'ostruct'
 require_relative '../../bin/check-subnet-ip-consumption.rb'
 require_relative '../spec_helper.rb'

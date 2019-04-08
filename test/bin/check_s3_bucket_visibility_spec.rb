@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-s3'
 require_relative '../../bin/check-s3-bucket-visibility.rb'
 require_relative '../spec_helper.rb'
 

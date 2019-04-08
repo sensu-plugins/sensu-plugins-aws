@@ -29,7 +29,7 @@
 
 require 'sensu-plugins-aws/cloudwatch-common'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-elasticbeanstalk'
 
 class BeanstalkELBCheck < Sensu::Plugin::Check::CLI
   option :environment,

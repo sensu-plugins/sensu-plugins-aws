@@ -31,7 +31,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-configservice'
 
 class CheckConfigServiceRules < Sensu::Plugin::Check::CLI
   include Common

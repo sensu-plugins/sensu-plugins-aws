@@ -33,7 +33,8 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-elasticloadbalancing'
+require 'cloudwatch'
 
 class CheckELBLatency < Sensu::Plugin::Check::CLI
   include Common

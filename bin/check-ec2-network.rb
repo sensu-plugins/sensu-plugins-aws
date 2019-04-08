@@ -29,7 +29,8 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
+require 'aws-sdk-cloudwatch'
 
 class CheckEc2Network < Sensu::Plugin::Check::CLI
   option :aws_access_key,

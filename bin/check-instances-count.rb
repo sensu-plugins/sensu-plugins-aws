@@ -32,7 +32,7 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-autoscaling'
 
 # Class to check the instance count
 class CheckInstanceCount < Sensu::Plugin::Check::CLI

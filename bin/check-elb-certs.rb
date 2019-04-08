@@ -29,7 +29,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-elasticloadbalancing'
 require 'net/http'
 require 'openssl'
 

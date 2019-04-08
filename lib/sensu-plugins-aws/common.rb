@@ -17,6 +17,7 @@
 #
 
 module Common
+  require 'aws-sdk-core'
   def initialize(argv = ARGV)
     super(argv)
     aws_config

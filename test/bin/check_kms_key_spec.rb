@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-kms'
 require_relative '../../bin/check-kms-key.rb'
 require_relative '../spec_helper.rb'
 

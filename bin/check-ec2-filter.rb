@@ -30,7 +30,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
 require 'sensu-plugins-aws/filter'
 
 class EC2Filter < Sensu::Plugin::Check::CLI

@@ -29,7 +29,7 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-ses'
 
 class CheckSesStatistics < Sensu::Plugin::Check::CLI
   include Common

@@ -27,7 +27,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-emr'
 
 class CheckEMRCluster < Sensu::Plugin::Check::CLI
   option :aws_access_key,

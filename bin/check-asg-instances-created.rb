@@ -31,7 +31,7 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-autoscaling'
 require 'sensu-plugins-aws'
 
 class CheckAsgInstanceCreated < Sensu::Plugin::Check::CLI

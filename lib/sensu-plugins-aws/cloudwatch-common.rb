@@ -1,4 +1,5 @@
 module CloudwatchCommon
+  require 'aws-sdk-cloudwatch'
   include Common
 
   def client

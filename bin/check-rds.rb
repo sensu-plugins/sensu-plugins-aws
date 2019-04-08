@@ -54,7 +54,9 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-rds'
+require 'aws-sdk-cloudwatch'
+
 require 'time'
 
 class CheckRDS < Sensu::Plugin::Check::CLI

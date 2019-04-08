@@ -28,7 +28,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws/common'
-require 'aws-sdk'
+require 'aws-sdk-cloudfront'
 
 class CheckCloudFrontTag < Sensu::Plugin::Check::CLI
   include Common

@@ -29,7 +29,8 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk'
+require 'aws-sdk-rds'
+require 'aws-sdk-cloudwatch'
 require 'time'
 
 class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite

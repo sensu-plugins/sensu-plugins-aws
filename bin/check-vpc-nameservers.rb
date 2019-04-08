@@ -30,7 +30,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
 require 'resolv'
 
 class CheckVpcNameservers < Sensu::Plugin::Check::CLI

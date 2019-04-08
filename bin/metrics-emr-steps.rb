@@ -27,7 +27,7 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/metric/cli'
-require 'aws-sdk'
+require 'aws-sdk-emr'
 
 class EMRStepMetrics < Sensu::Plugin::Metric::CLI::Graphite
   include Common

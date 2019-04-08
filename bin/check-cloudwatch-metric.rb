@@ -29,7 +29,6 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
 
 class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
   option :aws_region,

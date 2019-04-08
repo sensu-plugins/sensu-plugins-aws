@@ -38,7 +38,7 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-ecs'
 
 class CheckEcsServiceHealth < Sensu::Plugin::Check::CLI
   include Common

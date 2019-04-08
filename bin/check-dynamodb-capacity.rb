@@ -31,7 +31,8 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-dynamodb'
+require 'aws-sdk-cloudwatch'
 require 'time'
 
 class CheckDynamoDB < Sensu::Plugin::Check::CLI

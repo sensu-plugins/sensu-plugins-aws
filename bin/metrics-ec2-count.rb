@@ -32,7 +32,7 @@
 
 require 'sensu-plugin/metric/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
 
 class EC2Metrics < Sensu::Plugin::Metric::CLI::Graphite
   include Common
