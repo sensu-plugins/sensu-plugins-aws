@@ -104,10 +104,10 @@ class EC2CpuBalance < Sensu::Plugin::Check::CLI
 
   def run
     filters = Filter.parse(config[:filter])
-    filters.push({
+    filters.push(
       name: 'instance-state-name',
       values: ['running']
-    })
+    )
     ec2 = Aws::EC2::Client.new
     instances = ec2.describe_instances(
       filters: filters
