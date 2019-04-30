@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Added
+- Travis build automation to generate Sensu Asset tarballs that can be used in conjunction with Sensu provided ruby runtime assets and the Bonsai Asset Index
+
 ## [18.0.0] - 2019-04-2
 ### Breaking Changes
 - `check-alb-target-group-health.rb` will now alert if a n ALB has no health targets (@kunal-plivo)
