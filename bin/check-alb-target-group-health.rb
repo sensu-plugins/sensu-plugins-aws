@@ -12,7 +12,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-elasticloadbalancingv2
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -30,7 +30,7 @@
 #   Released under the same terms as Sensu (the MIT license); see LICENSE
 #   for details.
 
-require 'aws-sdk'
+require 'aws-sdk-elasticloadbalancingv2'
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
 
