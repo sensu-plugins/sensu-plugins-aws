@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Added
+- `check-ebs-burst-limit.rb`: `--filter` option added to filter which volume to check. (@boutetnico)
 
 ## [18.2.0] - 2019-05-06
 ### Added

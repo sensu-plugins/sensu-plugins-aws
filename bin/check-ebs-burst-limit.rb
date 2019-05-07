@@ -20,6 +20,7 @@
 #   ./check-ebs-burst-limit.rb -r ${you_region}
 #   ./check-ebs-burst-limit.rb -r ${you_region} -c 50
 #   ./check-ebs-burst-limit.rb -r ${you_region} -w 50 -c 10
+#   ./check-ebs-burst-limit.rb -r ${you_region} -w 50 -c 10 -f "{name:tag-value,values:[infrastructure]}"
 #
 # LICENSE:
 #   Barry Martin <nyxcharon@gmail.com>
@@ -29,11 +30,13 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
+require 'sensu-plugins-aws/filter'
 require 'aws-sdk'
 require 'net/http'
 
 class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
   include CloudwatchCommon
+  include Filter
 
   option :aws_region,
          short:       '-r R',
@@ -61,8 +64,16 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
          boolean: true,
          default: false
 
+  option :filter,
+         short: '-f FILTER',
+         long: '--filter FILTER',
+         description: 'String representation of the filter to apply',
+         default: '{}'
+
   def run
     errors = []
+
+    volume_filters = Filter.parse(config[:filter])
 
     # Set the describe-volumes filter depending on whether -s was specified
     if config[:check_self] == true
@@ -70,20 +81,20 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
       my_instance_az = Net::HTTP.get(URI.parse('http://169.254.169.254/latest/meta-data/placement/availability-zone'))
       Aws.config[:region] = my_instance_az.chop
       my_instance_id = Net::HTTP.get(URI.parse('http://169.254.169.254/latest/meta-data/instance-id'))
-      volume_filters = [
+      volume_filters.push(
         {
           name: 'attachment.instance-id',
           values: [my_instance_id]
         }
-      ]
+      )
     else
       # The -s option was not specified, look at all volumes which are attached
-      volume_filters = [
+     volume_filters.push(
         {
           name: 'attachment.status',
           values: ['attached']
         }
-      ]
+      )
     end
 
     ec2 = Aws::EC2::Client.new
