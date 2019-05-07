@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [18.2.0] - 2019-05-06
+### Added
+- check-rds.rb: added support for new `t3` and `r5` family  instances (@mmitucha)
+
 ## [18.1.0] - 2019-05-06
 ### Added
 - `check-ec2-cpu_balance.rb`: `--filter` option added to filter which instance to check. (@boutetnico)
@@ -574,7 +578,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.1.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.2.0...HEAD
+[18.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.1.0...18.2.0
 [18.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.0.0...18.1.0
 [18.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.2.0...18.0.0
 [17.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.1.0...17.2.0
