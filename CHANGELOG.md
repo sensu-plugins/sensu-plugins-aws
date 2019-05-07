@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [18.3.0] - 2019-05-07
 ### Added
 - Travis build automation to generate Sensu Asset tarballs that can be used in conjunction with Sensu provided ruby runtime assets and the Bonsai Asset Index
 
@@ -580,7 +582,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.2.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.3.0...HEAD
+[18.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.2.0...18.3.0
 [18.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.1.0...18.2.0
 [18.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.0.0...18.1.0
 [18.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.2.0...18.0.0
