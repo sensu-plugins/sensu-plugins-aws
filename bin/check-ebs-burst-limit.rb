@@ -82,18 +82,14 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
       Aws.config[:region] = my_instance_az.chop
       my_instance_id = Net::HTTP.get(URI.parse('http://169.254.169.254/latest/meta-data/instance-id'))
       volume_filters.push(
-        {
-          name: 'attachment.instance-id',
-          values: [my_instance_id]
-        }
+        name: 'attachment.instance-id',
+        values: [my_instance_id]
       )
     else
       # The -s option was not specified, look at all volumes which are attached
-     volume_filters.push(
-        {
-          name: 'attachment.status',
-          values: ['attached']
-        }
+      volume_filters.push(
+        name: 'attachment.status',
+        values: ['attached']
       )
     end
 
