@@ -13,7 +13,8 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-ec2
+#   gem: aws-sdk-cloudwatch
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -29,7 +30,8 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
+require 'aws-sdk-cloudwatch'
 require 'net/http'
 
 class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI

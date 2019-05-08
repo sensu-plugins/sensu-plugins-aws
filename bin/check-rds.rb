@@ -12,7 +12,8 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-rds
+#   gem: aws-sdk-cloudwatch
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -54,7 +55,8 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-rds'
+require 'aws-sdk-cloudwatch'
 require 'time'
 
 class CheckRDS < Sensu::Plugin::Check::CLI

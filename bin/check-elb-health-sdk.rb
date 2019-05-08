@@ -12,7 +12,8 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-elasticloadbalancing
+#   gem: aws-sdk-ec2
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -28,7 +29,8 @@
 
 require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
-require 'aws-sdk'
+require 'aws-sdk-elasticloadbalancing'
+require 'aws-sdk-ec2'
 
 class ELBHealth < Sensu::Plugin::Check::CLI
   include Common

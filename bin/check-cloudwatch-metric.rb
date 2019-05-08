@@ -13,7 +13,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-cloudwatch
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -29,7 +29,7 @@
 
 require 'sensu-plugins-aws'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-cloudwatch'
 
 class CloudWatchMetricCheck < Sensu::Plugin::Check::CLI
   option :aws_region,
