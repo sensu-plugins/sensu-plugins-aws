@@ -161,7 +161,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
 
   def find_db_cluster_writer(id)
     wr = rds.describe_db_clusters(db_cluster_identifier: id).db_clusters[0].db_cluster_members.detect(&:is_cluster_writer).db_instance_identifier
-    unknown 'DB cluster not found.' if cl.nil?
+    unknown 'DB cluster not found.' if wr.nil?
     wr
   end
 
@@ -321,7 +321,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   def run
     instances = []
     if config[:db_cluster_id]
-      db_cluster_writer_id = find_db_cluster_writer(db_cluster_id)
+      db_cluster_writer_id = find_db_cluster_writer(config[:db_cluster_id])
       instances << find_db_instance(db_cluster_writer_id)
     end
 
