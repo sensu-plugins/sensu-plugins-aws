@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Added
+- `check-ebs-burst-limit.rb`: add `--tag`/`-t` option to specify a volume tag to output in status message. (@boutetnico)
+
 ## [18.5.0] - 2020-01-28
 ### Changed
 - `check-trustedadvisor-service-limits.rb`: Trusted Advisor combined Service Limits check ID 'eW7HH0l7J9' scheduled to be disabled on Feb 15 2020. Updated the script to go through every Service Limits checks and look for not 'ok' status. Outcome is the same. (@swibowo)
