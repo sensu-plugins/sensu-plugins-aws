@@ -16,6 +16,7 @@
 #   gem: sensu-plugin
 #
 # USAGE:
+#   ./check-cloudwatch-alarms --name-prefix "staging"
 #   ./check-cloudwatch-alarms --exclude-alarms "CPUAlarmLow"
 #   ./check-cloudwatch-alarms --region eu-west-1 --exclude-alarms "CPUAlarmLow"
 #
@@ -46,6 +47,12 @@ class CloudWatchCheck < Sensu::Plugin::Check::CLI
          long: '--state STATE',
          default: 'ALARM'
 
+  option :name_prefix,
+         description: 'Alarm name prefix',
+         short: '-p NAME_PREFIX',
+         long: '--name-prefix NAME_PREFIX',
+         default: ''
+
   option :exclude_alarms,
          description: 'Exclude alarms',
          short: '-e EXCLUDE_ALARMS',
@@ -57,6 +64,11 @@ class CloudWatchCheck < Sensu::Plugin::Check::CLI
     client = Aws::CloudWatch::Client.new
 
     options = { state_value: config[:state] }
+
+    unless config[:name_prefix].empty?
+      options[:alarm_name_prefix] = config[:name_prefix]
+    end
+
     alarms = client.describe_alarms(options).metric_alarms
 
     if alarms.empty?
