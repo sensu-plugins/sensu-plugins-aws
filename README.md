@@ -192,6 +192,7 @@ The Sensu assets packaged from this repository are built against the Sensu Ruby 
 * /bin/check-emr-cluster.rb
 * /bin/check-emr-steps.rb
 * /bin/check-eni-status.rb
+* /bin/check-expiring-reservations.rb
 * /bin/check-instance-events.rb
 * /bin/check-rds-events.rb
 * /bin/check-rds-pending.rb
