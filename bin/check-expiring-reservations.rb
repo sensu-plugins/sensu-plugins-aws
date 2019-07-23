@@ -73,8 +73,8 @@ class CheckExpiringReservations < Sensu::Plugin::Check::CLI
       params = {
         filters: [
           {
-            name: "state",
-            values: ["active"],
+            name: 'state',
+            values: ['active']
           }
         ],
         offering_class: config[:offering_class]
@@ -88,7 +88,7 @@ class CheckExpiringReservations < Sensu::Plugin::Check::CLI
 
       warnflag = false
       critflag = false
-      reportstring = ""
+      reportstring = ''
 
       reservations.reserved_instances.each do |reservation|
         time_left = (reservation.end - Time.now).abs.to_i / (24 * 60 * 60)
@@ -107,7 +107,7 @@ class CheckExpiringReservations < Sensu::Plugin::Check::CLI
       elsif warnflag
         warning reportstring
       else
-        ok "All checked reservations are ok"
+        ok 'All checked reservations are ok'
       end
     rescue StandardError => e
       critical "Error: exception: #{e}"
