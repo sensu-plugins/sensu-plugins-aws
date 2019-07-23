@@ -37,7 +37,7 @@ class ReservationUtilizationMetrics < Sensu::Plugin::Metric::CLI::Graphite
   option :from,
          short:       '-f TIME',
          long:        '--from TIME',
-         default:     Time.now - 2 * 86400, # start date cannot be after 2 days ago
+         default:     Time.now - 2 * 86_400, # start date cannot be after 2 days ago
          proc:        proc { |a| Time.parse a },
          description: 'The beginning of the time period that you want the usage and costs for (inclusive).'
 
@@ -64,19 +64,18 @@ class ReservationUtilizationMetrics < Sensu::Plugin::Metric::CLI::Graphite
     begin
       client = Aws::CostExplorer::Client.new(aws_config)
 
-      reservation_utilization = client.get_reservation_utilization({
+      reservation_utilization = client.get_reservation_utilization(
         time_period: {
-          start: config[:from].strftime("%Y-%m-%d"),
-          end: config[:to].strftime("%Y-%m-%d"),
+          start: config[:from].strftime('%Y-%m-%d'),
+          end: config[:to].strftime('%Y-%m-%d')
         }
-      })
+      )
 
       reservation_utilization.utilizations_by_time.each do |time|
         time.total.to_h.each do |key, value|
           output "#{config[:scheme]}.utilizations_by_time.#{key}", value, Time.parse(time.time_period.end).to_i
         end
       end
-
     rescue StandardError => e
       critical "Error: exception: #{e}"
     end
