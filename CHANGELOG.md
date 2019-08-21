@@ -5,6 +5,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+
+## [18.4.1] - 2019-08-21
 ### Security
 - force newer version of nokogiri to address CVE-2019-5477 (@majormoses)
 
@@ -589,7 +591,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.1...HEAD
+[18.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.0...18.4.1
 [18.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.3.0...18.4.0
 [18.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.2.0...18.3.0
 [18.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.1.0...18.2.0
