@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Security
+- force newer version of nokogiri to address CVE-2019-5477 (@majormoses)
+
 ## [18.4.0] - 2019-05-08
 ### Added
 - `check-ebs-burst-limit.rb`: `--filter` option added to filter which volume to check. (@boutetnico)
