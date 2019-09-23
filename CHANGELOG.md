@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
+## [18.4.2] - 2019-09-23
 ### Fixed
 - Properly parse `--db-cluster-id` option in `check-rds.rb` (@rwha)
 
@@ -593,7 +595,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.1...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.2...HEAD
+[18.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.1...18.4.2
 [18.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.0...18.4.1
 [18.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.3.0...18.4.0
 [18.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.2.0...18.3.0
