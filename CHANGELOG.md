@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+### Fixed
+- Prevent the retrieval of all db instances when the `db_cluster_id` option is specified and the `db_instance_id` option is not specified
 
 ### Fixed
 - `check-sqs-messages.rb`: properly surface false positives when pulling an unsupported metric (@majormoses)
