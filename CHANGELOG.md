@@ -5,6 +5,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+### Added
+- Updated asset build targets to support centos6
+
 ## [18.4.2] - 2019-09-23
 ### Fixed
 - Properly parse `--db-cluster-id` option in `check-rds.rb` (@rwha)
