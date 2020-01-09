@@ -5,7 +5,7 @@ cache:
 before_install:
   gem install bundler -v 1.15
 install:
-- bundle _1.15.0_ install
+- bundle install
 rvm:
 - 2.3.0
 - 2.4.1
