@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+## [18.5.0] - 2020-01-28
 ### Changed
 - `check-trustedadvisor-service-limits.rb`: Trusted Advisor combined Service Limits check ID 'eW7HH0l7J9' scheduled to be disabled on Feb 15 2020. Updated the script to go through every Service Limits checks and look for not 'ok' status. Outcome is the same. (@swibowo)
 - bumped version of `bundler` when installing to match travis, before installing dep ensure we have a required version of bundler for development (@majormoses)
@@ -598,7 +599,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.2...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.5.0...HEAD
+[18.5.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.2...18.5.0
 [18.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.1...18.4.2
 [18.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.0...18.4.1
 [18.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.3.0...18.4.0
