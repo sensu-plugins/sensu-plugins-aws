@@ -17,7 +17,7 @@
 #   gem: sensu-plugins-aws
 #
 # USAGE:
-#   metrics-reservation-utilization.rb
+#   check-expiring-reservations.rb
 #
 # NOTES:
 #
