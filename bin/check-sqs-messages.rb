@@ -123,8 +123,8 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
           messages = messages.attributes([config[:metric]]).to_i
         else
           failure_msg = <<~MESSAGE
-            failed to pull metric # {config[:metric]} on queue: #{q}.
-            available attributes: # {messages.attributes}
+            failed to pull metric #{config[:metric]} on queue: #{q}.
+            available attributes: #{messages.attributes}
           MESSAGE
           unknown failure_msg
         end
