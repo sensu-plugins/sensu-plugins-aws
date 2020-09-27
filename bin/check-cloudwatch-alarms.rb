@@ -17,7 +17,7 @@
 #
 # USAGE:
 #   ./check-cloudwatch-alarms --exclude-alarms "CPUAlarmLow"
-#   ./check-cloudwatch-alarms --region eu-west-1 --exclude-alarms "CPUAlarmLow"
+#   ./check-cloudwatch-alarms --aws-region eu-west-1 --exclude-alarms "CPUAlarmLow"
 #
 # NOTES:
 #
