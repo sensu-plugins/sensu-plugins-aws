@@ -35,7 +35,7 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
 
   s.add_runtime_dependency 'aws-sdk',           '~> 3.0'
   s.add_runtime_dependency 'erubis',            '2.7.0'
-  s.add_runtime_dependency 'fog',               '1.32.0'
+  s.add_runtime_dependency 'fog',               '2.1.0'
   # 1.44 requires xmlrpc which only supports >= ruby 2.3
   # https://github.com/fog/fog-core/issues/206
   s.add_runtime_dependency 'fog-core',          '1.45.0'
