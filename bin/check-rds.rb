@@ -323,9 +323,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
     if config[:db_cluster_id]
       db_cluster_writer_id = find_db_cluster_writer(config[:db_cluster_id])
       instances << find_db_instance(db_cluster_writer_id)
-    end
-
-    if config[:db_instance_id].nil? || config[:db_instance_id].empty?
+    elsif config[:db_instance_id].nil? || config[:db_instance_id].empty?
       rds.describe_db_instances[:db_instances].map { |db| instances << db }
     else
       instances << find_db_instance(config[:db_instance_id])

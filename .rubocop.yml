@@ -1,27 +1,28 @@
-
+AllCops:
+  TargetRubyVersion: 2.3
 MethodLength:
-    Max: 200
+  Max: 200
 
 LineLength:
-    Max: 225
+  Max: 225
 
 AbcSize:
   Max: 125
 
 FileName:
-    Enabled: false
+  Enabled: false
 
 PerceivedComplexity:
-    Enabled: false
+  Enabled: false
 
 CyclomaticComplexity:
-    Enabled: false
+  Enabled: false
 
 ClassLength:
-    Enabled: false
+  Enabled: false
 
 IfUnlessModifier:
-    Enabled: false
+  Enabled: false
 
 RegexpLiteral:
   Enabled: false
@@ -36,6 +37,13 @@ Style/FormatString:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+# I think we probably want to change this at some point
+Style/SafeNavigation:
   Enabled: false
 
 Style/ClassVars:
