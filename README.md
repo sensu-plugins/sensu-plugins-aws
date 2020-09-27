@@ -23,6 +23,8 @@ The Sensu assets packaged from this repository are built against the Sensu Ruby 
 
 **check-cloudwatch-alarm**
 
+**check-cloudwatch-alarm-multi**
+
 **check-cloudwatch-alarms**
 
 **check-cloudwatch-composite-metric**
@@ -169,6 +171,8 @@ The Sensu assets packaged from this repository are built against the Sensu Ruby 
 * /bin/check-configservice-rules.rb
 * /bin/check-cloudfront-tag.rb
 * /bin/check-cloudwatch-alarm.rb
+* /bin/check-cloudwatch-alarm-multi.rb
+* /bin/check-cloudwatch-alarms.rb
 * /bin/check-cloudwatch-metric.rb
 * /bin/check-cloudwatch-composite-metric.rb
 * /bin/check-dynamodb-capacity.rb
@@ -192,6 +196,7 @@ The Sensu assets packaged from this repository are built against the Sensu Ruby 
 * /bin/check-emr-cluster.rb
 * /bin/check-emr-steps.rb
 * /bin/check-eni-status.rb
+* /bin/check-expiring-reservations.rb
 * /bin/check-instance-events.rb
 * /bin/check-rds-events.rb
 * /bin/check-rds-pending.rb
@@ -221,6 +226,7 @@ The Sensu assets packaged from this repository are built against the Sensu Ruby 
 * /bin/metrics-elb.rb
 * /bin/metrics-emr-steps.rb
 * /bin/metrics-rds.rb
+* /bin/metrics-reservation-utilization.rb
 * /bin/metrics-s3.rb
 * /bin/metrics-ses.rb
 * /bin/metrics-sqs.rb
