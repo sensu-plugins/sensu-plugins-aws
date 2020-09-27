@@ -221,6 +221,7 @@ The Sensu assets packaged from this repository are built against the Sensu Ruby 
 * /bin/metrics-elb.rb
 * /bin/metrics-emr-steps.rb
 * /bin/metrics-rds.rb
+* /bin/metrics-reservation-utilization.rb
 * /bin/metrics-s3.rb
 * /bin/metrics-ses.rb
 * /bin/metrics-sqs.rb

@@ -7,6 +7,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ### Added
 - `check-subnet-ip-consumption.rb` - Added `--warn-only` option (@ChrisCalavera)
+- new `metrics-reservation-utilization.rb`: retrieve metrics about reserved instances usage. (@boutetnico)
 
 ### Fixed
 - `check-sqs-messages.rb`: properly surface false positives when pulling an unsupported metric (@majormoses)
