@@ -67,6 +67,11 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
          description: "Includes any offending instance's 'Name' tag in the check output",
          default: false
 
+  option :role,
+         short:       '-R ASSUME_ROLE',
+         long:        '--assume-role-arn ARN',
+         description: 'IAM Role to assume'
+
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
@@ -75,6 +80,23 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
 
   def ec2_regions
     Aws.partition('aws').regions.map(&:name)
+  end
+
+  def assume_role
+    role_config = aws_config
+
+    # Delete keys so we can use an IAM role
+    role_config.delete(:access_key_id)
+    role_config.delete(:secret_access_key)
+
+    Aws.config[:region]=role_config[:region]
+
+    role_credentials = Aws::AssumeRoleCredentials.new(
+      role_arn: config[:role],
+      role_session_name: "sensu-monitoring"
+    )
+
+    role_config.merge!(credentials: role_credentials)
   end
 
   def run

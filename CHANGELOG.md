@@ -5,10 +5,12 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+
 ### Added
 - `check-subnet-ip-consumption.rb` - Added `--warn-only` option (@ChrisCalavera)
 - new `metrics-reservation-utilization.rb`: retrieve metrics about reserved instances usage. (@boutetnico)
 - `check-ebs-burst-limit.rb`: add `--tag`/`-t` option to specify a volume tag to output in status message. (@boutetnico)
+- check-instance-events.rb: re-instate assume-role functionality (@pmiles)
 
 ### Fixed
 - `check-sqs-messages.rb`: properly surface false positives when pulling an unsupported metric (@majormoses)
