@@ -161,7 +161,7 @@ class CheckRDS < Sensu::Plugin::Check::CLI
 
   def find_db_cluster_writer(id)
     wr = rds.describe_db_clusters(db_cluster_identifier: id).db_clusters[0].db_cluster_members.detect(&:is_cluster_writer).db_instance_identifier
-    unknown 'DB cluster not found.' if cl.nil?
+    unknown 'DB cluster not found.' if wr.nil?
     wr
   end
 
@@ -231,6 +231,12 @@ class CheckRDS < Sensu::Plugin::Check::CLI
       'db.r4.4xlarge'   => 122.0,
       'db.r4.8xlarge'   => 244.0,
       'db.r4.16xlarge'  => 488.0,
+      'db.r5.large'     => 16.0,
+      'db.r5.xlarge'    => 32.0,
+      'db.r5.2xlarge'   => 64.0,
+      'db.r5.4xlarge'   => 128.0,
+      'db.r5.12xlarge'  => 384.0,
+      'db.r5.24xlarge'  => 768.0,
       'db.t1.micro'     => 0.615,
       'db.t2.micro'     => 1.0,
       'db.t2.small'     => 2.0,
@@ -238,6 +244,12 @@ class CheckRDS < Sensu::Plugin::Check::CLI
       'db.t2.large'     => 8.0,
       'db.t2.xlarge'    => 16.0,
       'db.t2.2xlarge'   => 32.0,
+      'db.t3.micro'     => 1.0,
+      'db.t3.small'     => 2.0,
+      'db.t3.medium'    => 4.0,
+      'db.t3.large'     => 8.0,
+      'db.t3.xlarge'    => 16.0,
+      'db.t3.2xlarge'   => 32.0,
       'db.x1.16xlarge'  => 976.0,
       'db.x1.32xlarge'  => 1952.0,
       'db.x1e.xlarge'   => 122.0,
@@ -309,11 +321,9 @@ class CheckRDS < Sensu::Plugin::Check::CLI
   def run
     instances = []
     if config[:db_cluster_id]
-      db_cluster_writer_id = find_db_cluster_writer(db_cluster_id)
+      db_cluster_writer_id = find_db_cluster_writer(config[:db_cluster_id])
       instances << find_db_instance(db_cluster_writer_id)
-    end
-
-    if config[:db_instance_id].nil? || config[:db_instance_id].empty?
+    elsif config[:db_instance_id].nil? || config[:db_instance_id].empty?
       rds.describe_db_instances[:db_instances].map { |db| instances << db }
     else
       instances << find_db_instance(config[:db_instance_id])

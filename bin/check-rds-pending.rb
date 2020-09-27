@@ -31,7 +31,7 @@ require 'sensu-plugin/check/cli'
 require 'sensu-plugins-aws'
 require 'aws-sdk'
 
-class CheckRDSEvents < Sensu::Plugin::Check::CLI
+class CheckRDSPending < Sensu::Plugin::Check::CLI
   include Common
 
   option :aws_region,
@@ -40,13 +40,17 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
          description: 'AWS Region (such as eu-west-1).',
          default: 'us-east-1'
 
-  def run
-    rds = Aws::RDS::Client.new
+  option :db_instance_identifier,
+         short: '-d DB_INSTANCE_IDENTIFIER',
+         long: '--db-instance-identifier DB_INSTANCE_IDENTIFIER',
+         description: 'The DB Identifier of the instance to check',
+         default: nil
 
+  def run
     begin
       # fetch all clusters identifiers
-      clusters = rds.describe_db_instances[:db_instances].map { |db| db[:db_instance_identifier] }
       maint_clusters = []
+
       if clusters.any?
         # Check if there is any pending maintenance required
         pending_record = rds.describe_pending_maintenance_actions(filters: [{ name: 'db-instance-id', values: clusters }])
@@ -62,6 +66,26 @@ class CheckRDSEvents < Sensu::Plugin::Check::CLI
       ok
     else
       critical("Clusters w/ pending maintenance required: #{maint_clusters.join(',')}")
+    end
+  end
+
+  private
+
+  def rds
+    @rds ||= Aws::RDS::Client.new
+  end
+
+  def clusters
+    @clusters ||= begin
+      params = if config[:db_instance_identifier]
+                 { db_instance_identifier: config[:db_instance_identifier] }
+               else
+                 {}
+               end
+
+      rds.describe_db_instances(params)[:db_instances].map do |db|
+        db[:db_instance_identifier]
+      end
     end
   end
 end

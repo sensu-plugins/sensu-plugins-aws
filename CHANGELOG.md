@@ -5,9 +5,110 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
-## [12.3.0] - 2018-09-25
-### Changed
+
+### Added
+- `check-subnet-ip-consumption.rb` - Added `--warn-only` option (@ChrisCalavera)
+- new `metrics-reservation-utilization.rb`: retrieve metrics about reserved instances usage. (@boutetnico)
+- `check-ebs-burst-limit.rb`: add `--tag`/`-t` option to specify a volume tag to output in status message. (@boutetnico)
 - check-instance-events.rb: re-instate assume-role functionality (@pmiles)
+
+### Fixed
+- `check-sqs-messages.rb`: properly surface false positives when pulling an unsupported metric (@majormoses)
+- - Prevent the retrieval of all db instances when the `db_cluster_id` option is specified and the `db_instance_id` option is not specified
+
+## [18.5.0] - 2020-01-28
+### Changed
+- `check-trustedadvisor-service-limits.rb`: Trusted Advisor combined Service Limits check ID 'eW7HH0l7J9' scheduled to be disabled on Feb 15 2020. Updated the script to go through every Service Limits checks and look for not 'ok' status. Outcome is the same. (@swibowo)
+- bumped version of `bundler` when installing to match travis, before installing dep ensure we have a required version of bundler for development (@majormoses)
+
+## [18.4.2] - 2019-09-23
+### Fixed
+- Properly parse `--db-cluster-id` option in `check-rds.rb` (@rwha)
+
+
+## [18.4.1] - 2019-08-21
+### Security
+- force newer version of nokogiri to address CVE-2019-5477 (@majormoses)
+
+## [18.4.0] - 2019-05-08
+### Added
+- `check-ebs-burst-limit.rb`: `--filter` option added to filter which volume to check. (@boutetnico)
+
+## [18.3.0] - 2019-05-07
+### Added
+- Travis build automation to generate Sensu Asset tarballs that can be used in conjunction with Sensu provided ruby runtime assets and the Bonsai Asset Index
+
+## [18.2.0] - 2019-05-06
+### Added
+- check-rds.rb: added support for new `t3` and `r5` family  instances (@mmitucha)
+
+## [18.1.0] - 2019-05-06
+### Added
+- `check-ec2-cpu_balance.rb`: `--filter` option added to filter which instance to check. (@boutetnico)
+
+## [18.0.0] - 2019-04-2
+### Breaking Changes
+- `check-alb-target-group-health.rb` will now alert if a n ALB has no health targets (@kunal-plivo)
+- removed ruby `< 2.3` support (@majormoses)
+- bump `sensu-plugin` dependency from `~> 2.0` to `~> 4.0` you can read the changelog entries for [4.0](https://github.com/sensu-plugins/sensu-plugin/blob/master/CHANGELOG.md#400---2018-02-17) and [3.0](https://github.com/sensu-plugins/sensu-plugin/blob/master/CHANGELOG.md#300---2018-12-04) (@majormoses)
+
+## [17.2.0] - 2019-04-02
+### Added
+- `check-rds-pending.rb`: adding option `--db-instance-identifier` to support checking only a single db instance for pending maintenance events, instead of all instances in a region. (@mattdoller)
+
+## [17.1.0] - 2019-04-02
+### Changed
+- `metrics-cloudfront.rb` now accepts multiple metrics. (@boutetnico)
+- `lib/cloudwatch-common.rb` now accepts percentile stats. (@rajiv)
+
+
+## [17.0.0] - 2019-03-26
+### Breaking Changes
+- `metrics-cloudfront.rb` `--metric` option was renamed to `--metrics`. (@boutetnico)
+
+### Added
+- `check-sqs-messages.rb`: adding option `--exclude-queues` for use in blacklisting specific queues in conjunction with `--prefix` flag. (@ruke47)
+
+### Changed
+- `metrics-cloudfront.rb` now accepts multiple metrics. (@boutetnico)
+
+## [16.2.0] - 2019-02-19
+### Fixed
+- removed codeclimate (@tmonk42)
+- properly iterate over IPs in check-vpc-nameservers.rb (@masneyb)
+
+### Added
+- `check-ec2-cpu_balance.rb`: adding option `--instance-families` to manage which instance families to check. (@cyrilgdn)
+
+## [16.1.0] - 2018-11-02
+### Changed
+- updated dev depenency of `github-markup` to `~> 3.0` (@dependabot) (@majormoses)
+- updated dev depenency of `rake` to `~> 12.3` (@dependabot) (@majormoses)
+- updated dev depenency of `code-climate` to `~> 1.0` (@dependabot) (@majormoses)
+
+## [16.0.0] - 2018-11-02
+### Breaking Change
+- removed `asw-sdk-v1` as all assets have been upgraded to `aws-sdk-v2` this is technically not a breaking change but for safety reasons in case we missed anything we are versioning it as a major bump (@majormoses)
+
+## [15.0.0] - 2018-11-01
+### Breaking Changes
+- `check-elb-latency.rb` no longer takes `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
+ ### Changed
+- `check-elb-latency.rb` was updated to aws-sdk v2. (@boutetnico)
+
+## [14.0.0] - 2018-11-01
+### Breaking Changes
+- `check-elb-sum-requests.rb` no longer takes `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
+
+### Changed
+- `check-elb-sum-requests.rb` was updated to aws-sdk v2. (@boutetnico)
+
+## [13.0.0] - 2018-11-01
+### Breaking Changes
+- `check-redshift-events.rb` no longer takes `aws_access_key` and `aws_secret_access_key` options. (@boutetnico)
+
+### Changed
+- `check-redshift-events.rb` was updated to aws-sdk v2. (@boutetnico)
 
 ## [12.4.0] - 2018-10-03
 ### Changed
@@ -23,7 +124,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [12.1.0] - 2018-08-28
 ### Added
-- new `check-efs.rb: checks cloudwatch metrics with the efs namespace for an arbitrary metric (@ivanfetch)
+- new `check-efs.rb`: checks cloudwatch metrics with the efs namespace for an arbitrary metric (@ivanfetch)
 
 ## [12.0.0] - 2018-06-21
 ### Breaking Changes
@@ -510,7 +611,24 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.4.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.5.0...HEAD
+[18.5.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.2...18.5.0
+[18.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.1...18.4.2
+[18.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.0...18.4.1
+[18.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.3.0...18.4.0
+[18.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.2.0...18.3.0
+[18.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.1.0...18.2.0
+[18.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.0.0...18.1.0
+[18.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.2.0...18.0.0
+[17.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.1.0...17.2.0
+[17.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/17.0.0...17.1.0
+[17.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.2.0...17.0.0
+[16.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.1.0...16.2.0
+[16.1.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/16.0.0...16.1.0
+[16.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/15.0.0...16.0.0
+[15.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/14.0.0...15.0.0
+[14.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/13.0.0...14.0.0
+[13.0.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.4.0...13.0.0
 [12.4.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.3.0...12.4.0
 [12.3.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.2.0...12.3.0
 [12.2.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/12.1.0...12.2.0

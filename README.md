@@ -2,8 +2,10 @@
 
 [![Build Status](https://travis-ci.org/sensu-plugins/sensu-plugins-aws.svg?branch=master)](https://travis-ci.org/sensu-plugins/sensu-plugins-aws)
 [![Gem Version](https://badge.fury.io/rb/sensu-plugins-aws.svg)](https://badge.fury.io/rb/sensu-plugins-aws.svg)
-[![Code Climate](https://codeclimate.com/github/sensu-plugins/sensu-plugins-aws/badges/gpa.svg)](https://codeclimate.com/github/sensu-plugins/sensu-plugins-aws)
-[![Test Coverage](https://codeclimate.com/github/sensu-plugins/sensu-plugins-aws/badges/coverage.svg)](https://codeclimate.com/github/sensu-plugins/sensu-plugins-aws)
+[![Sensu Bonsai Asset](https://img.shields.io/badge/Bonsai-Download%20Me-brightgreen.svg?colorB=89C967&logo=sensu)](https://bonsai.sensu.io/assets/sensu-plugins/sensu-plugins-aws)
+
+## Sensu Asset
+The Sensu assets packaged from this repository are built against the Sensu Ruby runtime environment. When using these assets as part of a Sensu Go resource (check, mutator or handler), make sure you include the corresponding Sensu Ruby runtime asset in the list of assets needed by the resource. The current ruby-runtime assets can be found [here](https://bonsai.sensu.io/assets/sensu/sensu-ruby-runtime) in the [Bonsai Asset Index](bonsai.sensu.io).
 
 ## Functionality
 
@@ -219,6 +221,7 @@
 * /bin/metrics-elb.rb
 * /bin/metrics-emr-steps.rb
 * /bin/metrics-rds.rb
+* /bin/metrics-reservation-utilization.rb
 * /bin/metrics-s3.rb
 * /bin/metrics-ses.rb
 * /bin/metrics-sqs.rb
@@ -285,7 +288,7 @@
 
 [Installation and Setup](http://sensu-plugins.io/docs/installation_instructions.html)
 
-Note:  In addition to the standard installation requirements the installation of this gem will require compiling the nokogiri gem.  Due to this you'll need certain development packages on your system.  
+Note:  In addition to the standard installation requirements the installation of this gem will require compiling the nokogiri gem.  Due to this you'll need certain development packages on your system.
 
 On Ubuntu systems run the following to install build dependencies:
 

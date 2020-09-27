@@ -12,19 +12,19 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
 #
 #   check for instances in maint in us-east-1:
-#   ./check-redshift-events.rb -a ${your access key} -s ${your secret access key} -r us-east-1
+#   ./check-redshift-events.rb -r us-east-1
 #
 #   check for maint events on a single instance in us-east-1 (skip others):
-#   ./check-redshift-events.rb -a ${your access key} -s ${your secret access key} -r us-east-1 -i ${your cluster name}
+#   ./check-redshift-events.rb -r us-east-1 -i ${your cluster name}
 #
 #   check for maint events on multiple instance in us-east-1 (skip others):
-#   ./check-redshift-events.rb -a ${your access key} -s ${your secret access key} -r us-east-1 -i ${cluster1,cluster2,cluster3}
+#   ./check-redshift-events.rb -r us-east-1 -i ${cluster1,cluster2,cluster3}
 #
 # NOTES:
 #
@@ -35,20 +35,11 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'sensu-plugins-aws'
+require 'aws-sdk'
 
 class CheckRedshiftEvents < Sensu::Plugin::Check::CLI
-  option :aws_access_key,
-         short: '-a AWS_ACCESS_KEY',
-         long: '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default: ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short: '-k AWS_SECRET_KEY',
-         long: '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default: ENV['AWS_SECRET_KEY']
+  include Common
 
   option :aws_region,
          short: '-r AWS_REGION',
@@ -63,15 +54,9 @@ class CheckRedshiftEvents < Sensu::Plugin::Check::CLI
          proc: proc { |a| a.split(',') },
          default: []
 
-  def aws_config
-    { access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region] }
-  end
-
   # setup a redshift connection using aws-sdk
   def redshift
-    @redshift ||= AWS::Redshift::Client.new aws_config
+    @redshift ||= Aws::Redshift::Client.new aws_config
   end
 
   # fetch all clusters in the region from AWS

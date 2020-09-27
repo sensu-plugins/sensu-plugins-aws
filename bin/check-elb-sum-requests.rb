@@ -12,7 +12,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk-v1
+#   gem: aws-sdk
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -31,20 +31,11 @@
 #
 
 require 'sensu-plugin/check/cli'
-require 'aws-sdk-v1'
+require 'sensu-plugins-aws'
+require 'aws-sdk'
 
 class CheckELBSumRequests < Sensu::Plugin::Check::CLI
-  option :aws_access_key,
-         short:       '-a AWS_ACCESS_KEY',
-         long:        '--aws-access-key AWS_ACCESS_KEY',
-         description: "AWS Access Key. Either set ENV['AWS_ACCESS_KEY'] or provide it as an option",
-         default:     ENV['AWS_ACCESS_KEY']
-
-  option :aws_secret_access_key,
-         short:       '-k AWS_SECRET_KEY',
-         long:        '--aws-secret-access-key AWS_SECRET_KEY',
-         description: "AWS Secret Access Key. Either set ENV['AWS_SECRET_KEY'] or provide it as an option",
-         default:     ENV['AWS_SECRET_KEY']
+  include Common
 
   option :aws_region,
          short:       '-r AWS_REGION',
@@ -79,42 +70,40 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
            description: "Trigger a #{severity} if sum requests is over specified count"
   end
 
-  def aws_config
-    { access_key_id: config[:aws_access_key],
-      secret_access_key: config[:aws_secret_access_key],
-      region: config[:aws_region] }
-  end
-
   def elb
-    @elb ||= AWS::ELB.new aws_config
+    @elb ||= Aws::ElasticLoadBalancing::Client.new(aws_config)
   end
 
   def cloud_watch
-    @cloud_watch ||= AWS::CloudWatch.new aws_config
+    @cloud_watch ||= Aws::CloudWatch::Client.new
   end
 
   def elbs
     return @elbs if @elbs
-    @elbs = elb.load_balancers.to_a
-    @elbs.select! { |elb| config[:elb_names].include? elb.name } if config[:elb_names]
+    @elbs = elb.describe_load_balancers.load_balancer_descriptions.to_a
+    @elbs.select! { |elb| config[:elb_names].include? elb.load_balancer_name } if config[:elb_names]
     @elbs
   end
 
-  def latency_metric(elb_name)
-    cloud_watch.metrics.with_namespace('AWS/ELB').with_metric_name('RequestCount').with_dimensions(name: 'LoadBalancerName', value: elb_name).first
-  end
-
-  def statistics_options
-    {
+  def request_count_metric(elb_name)
+    cloud_watch.get_metric_statistics(
+      namespace: 'AWS/ELB',
+      metric_name: 'RequestCount',
+      dimensions: [
+        {
+          name: 'LoadBalancerName',
+          value: elb_name
+        }
+      ],
       start_time: config[:end_time] - config[:period],
-      end_time:   config[:end_time],
+      end_time: config[:end_time],
       statistics: ['Sum'],
-      period:     config[:period]
-    }
+      period: config[:period]
+    )
   end
 
   def latest_value(metric)
-    metric.statistics(statistics_options.merge(unit: 'Count')).datapoints.sort_by { |datapoint| datapoint[:timestamp] }.last[:sum]
+    metric.datapoints.sort_by { |datapoint| datapoint[:timestamp] }.last[:sum]
   end
 
   def flag_alert(severity, message)
@@ -123,7 +112,7 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
   end
 
   def check_sum_requests(elb)
-    metric        = latency_metric elb.name
+    metric        = request_count_metric elb.load_balancer_name
     metric_value  = begin
                       latest_value metric
                     rescue StandardError
@@ -132,18 +121,17 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
 
     @severities.each_key do |severity|
       threshold = config[:"#{severity}_over"]
-      puts metric_value
       next unless threshold
       next if metric_value < threshold
       flag_alert severity,
-                 "; #{elbs.size == 1 ? nil : "#{elb.inspect}'s"} Sum Requests is #{metric_value}. (expected lower than #{threshold})"
+                 "; #{elbs.size == 1 ? nil : "#{elb.load_balancer_name}'s"} Sum Requests is #{metric_value}. (expected lower than #{threshold})"
       break
     end
   end
 
   def run
     @message = if elbs.size == 1
-                 elbs.first.inspect
+                 elbs.first.load_balancer_name
                else
                  "#{elbs.size} load balancers total"
                end
@@ -155,7 +143,7 @@ class CheckELBSumRequests < Sensu::Plugin::Check::CLI
 
     elbs.each { |elb| check_sum_requests elb }
 
-    @message += "; (#{config[:statistics].to_s.capitalize} within #{config[:period]} seconds "
+    @message += "; (Sum within #{config[:period]} seconds "
     @message += "between #{config[:end_time] - config[:period]} to #{config[:end_time]})"
 
     if @severities[:critical]

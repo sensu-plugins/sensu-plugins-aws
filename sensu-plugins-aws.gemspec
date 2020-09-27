@@ -26,28 +26,27 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
   s.platform               = Gem::Platform::RUBY
   s.post_install_message   = 'You can use the embedded Ruby by setting EMBEDDED_RUBY=true in /etc/default/sensu'
   s.require_paths          = ['lib']
-  s.required_ruby_version  = '>= 2.1.0'
+  s.required_ruby_version  = '>= 2.3.0'
   s.summary                = 'Sensu plugins for working with an AWS environment'
   s.test_files             = s.files.grep(%r{^(test|spec|features)/})
   s.version                = SensuPluginsAWS::Version::VER_STRING
 
-  s.add_runtime_dependency 'sensu-plugin',      '~> 2.0'
+  s.add_runtime_dependency 'sensu-plugin',      '~> 4.0'
 
   s.add_runtime_dependency 'aws-sdk',           '~> 3.0'
-  s.add_runtime_dependency 'aws-sdk-v1',        '1.66.0'
   s.add_runtime_dependency 'erubis',            '2.7.0'
   s.add_runtime_dependency 'fog',               '1.32.0'
   # 1.44 requires xmlrpc which only supports >= ruby 2.3
   # https://github.com/fog/fog-core/issues/206
-  s.add_runtime_dependency 'fog-core',          '1.43.0'
-  s.add_runtime_dependency 'rest-client',       '1.8.0'
+  s.add_runtime_dependency 'fog-core',          '1.45.0'
+  s.add_runtime_dependency 'nokogiri',          ['>= 1.10.4', '< 2.0']
+  s.add_runtime_dependency 'rest-client',       '2.1.0'
   s.add_runtime_dependency 'right_aws',         '3.1.0'
 
-  s.add_development_dependency 'bundler',                   '~> 1.7'
-  s.add_development_dependency 'codeclimate-test-reporter', '~> 0.4'
-  s.add_development_dependency 'github-markup',             '~> 1.3'
+  s.add_development_dependency 'bundler',                   '~> 2.1'
+  s.add_development_dependency 'github-markup',             '~> 3.0'
   s.add_development_dependency 'pry',                       '~> 0.10'
-  s.add_development_dependency 'rake',                      '~> 10.5'
+  s.add_development_dependency 'rake',                      '~> 13.0'
   s.add_development_dependency 'redcarpet',                 '~> 3.2'
   s.add_development_dependency 'rspec',                     '~> 3.4'
   s.add_development_dependency 'rubocop',                   '~> 0.51.0'

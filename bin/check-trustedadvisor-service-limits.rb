@@ -45,29 +45,37 @@ class CheckTrustedAdvisorServiceLimits < Sensu::Plugin::Check::CLI
          description: "ISO 639-1 language code to be used when querying Trusted Advisor API. Only 'en' and 'ja' supported for now",
          default: 'en'
 
-  def run
+  def aws_support
     # The Support endpoint seems to only available in us-east-1 region
     # http://docs.aws.amazon.com/sdkforruby/api/Aws/Support.html
-    aws_support = Aws::Support::Client.new(region: 'us-east-1')
+    @aws_support ||= Aws::Support::Client.new(region: 'us-east-1')
+  end
 
+  def run
     service_limit_msg = []
 
     begin
-      # service limit check
-      # Perform a refresh to make sure the API result is not stale.
-      aws_support.refresh_trusted_advisor_check(check_id: 'eW7HH0l7J9')
-      sl = aws_support.describe_trusted_advisor_check_result(check_id: 'eW7HH0l7J9', language: config[:aws_language])
+      # Get all check IDs with category "service_limits"
+      check_ids = []
+      aws_support.describe_trusted_advisor_checks(language: config[:aws_language])[:checks].each { |c| check_ids << c.id if c.category == 'service_limits' }
 
-      sl[:result][:flagged_resources].each do |slr|
-        # Data structure will be as follow
-        # ["<region>", "<service>", "<description>", "<limit>", "<usage>", "<status>"]
-        sl_region, sl_service, sl_description, sl_limit, sl_usage, sl_status = slr[:metadata]
+      # Get all checks that are not "ok"
+      checks_not_ok = []
+      aws_support.describe_trusted_advisor_check_summaries(check_ids: check_ids)[:summaries].each { |c| checks_not_ok << c.check_id if c.status != 'ok' }
 
-        next if sl_status == 'Green'
-        sl_usage = 0 if sl_usage.nil?
+      checks_not_ok.each do |cno|
+        aws_support.describe_trusted_advisor_check_result(language: config[:aws_language], check_id: cno)[:result][:flagged_resources].each do |slr|
+          # Data structure will be as follow
+          # ["<region>", "<service>", "<description>", "<limit>", "<usage>", "<status>"]
+          sl_region, sl_service, sl_description, sl_limit, sl_usage, sl_status = slr[:metadata]
 
-        sl_msg = "#{sl_service} (#{sl_region}) #{sl_description} #{sl_usage} out of #{sl_limit}"
-        service_limit_msg.push(sl_msg)
+          next if slr.status == 'ok' || sl_status == 'Green'
+
+          sl_usage = 0 if sl_usage.nil?
+
+          sl_msg = "#{sl_service} (#{sl_region}) #{sl_description} #{sl_usage} out of #{sl_limit}"
+          service_limit_msg.push(sl_msg)
+        end
       end
     rescue StandardError => e
       unknown "An error occurred processing AWS TrustedAdvisor API: #{e.message}"
