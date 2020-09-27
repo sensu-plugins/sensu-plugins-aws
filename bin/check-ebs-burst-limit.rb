@@ -19,8 +19,10 @@
 # USAGE:
 #   ./check-ebs-burst-limit.rb -r ${you_region}
 #   ./check-ebs-burst-limit.rb -r ${you_region} -c 50
+#   ./check-ebs-burst-limit.rb -r ${you_region} -c 50 -t Name
 #   ./check-ebs-burst-limit.rb -r ${you_region} -w 50 -c 10
 #   ./check-ebs-burst-limit.rb -r ${you_region} -w 50 -c 10 -f "{name:tag-value,values:[infrastructure]}"
+#   ./check-ebs-burst-limit.rb -r ${you_region} -w 50 -c 10 -f "{name:tag-value,values:[infrastructure]}" -t Name
 #
 # LICENSE:
 #   Barry Martin <nyxcharon@gmail.com>
@@ -43,6 +45,11 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
          long:        '--region REGION',
          description: 'AWS region, will be overridden by the -s option',
          default: 'us-east-1'
+
+  option :tag,
+         description: 'Add volume TAG value to warn/critical message.',
+         short: '-t TAG',
+         long: '--tag TAG'
 
   option :critical,
          description: 'Trigger a critical when ebs burst limit is under VALUE',
@@ -69,6 +76,11 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
          long: '--filter FILTER',
          description: 'String representation of the filter to apply',
          default: '{}'
+
+  def volume_tag(volume, tag_name)
+    tag = volume.tags.select { |t| t.key == tag_name }.first
+    tag.nil? ? '' : tag.value
+  end
 
   def run
     errors = []
@@ -107,13 +119,14 @@ class CheckEbsBurstLimit < Sensu::Plugin::Check::CLI
     volumes[:volumes].each do |volume|
       config[:dimensions] = []
       config[:dimensions] << { name: 'VolumeId', value: volume[:volume_id] }
+      volume_tag = config[:tag] ? " (#{volume_tag(volume, config[:tag])})" : ''
       resp = client.get_metric_statistics(metrics_request(config))
       unless resp.datapoints.first.nil?
         if resp.datapoints.first[:average] < config[:critical]
-          errors << "#{volume[:volume_id]} #{resp.datapoints.first[:average]}"
+          errors << "#{volume[:volume_id]}#{volume_tag} #{resp.datapoints.first[:average]}"
           crit = true
         elsif config[:warning] && resp.datapoints.first[:average] < config[:warning]
-          errors << "#{volume[:volume_id]} #{resp.datapoints.first[:average]}"
+          errors << "#{volume[:volume_id]}#{volume_tag} #{resp.datapoints.first[:average]}"
           should_warn = true
         end
       end
