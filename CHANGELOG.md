@@ -12,6 +12,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 - check-instance-events.rb: re-instate assume-role functionality (@pmiles)
 - new `check-expiring-reservations.rb`: check instance reservations and warn about upcoming expiration. (@boutetnico)
 - check-cloudwatch-alarm-multi.rb: Add check that will raise a critical if one of cloud watch alarms are in given state, and a critical for each alarm in given state. (@stevenayers)
+- `check-cloudwatch-alarms.rb`: `--name-prefix`/`-p` option added to filter alarm names by a prefix. (@boutetnico)
 
 ### Fixed
 - `check-sqs-messages.rb`: properly surface false positives when pulling an unsupported metric (@majormoses)
