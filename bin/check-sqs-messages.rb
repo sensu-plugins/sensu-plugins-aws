@@ -118,7 +118,16 @@ class SQSMsgs < Sensu::Plugin::Check::CLI
       queues = config[:queues]
       queues.each do |q|
         url = sqs.get_queue_by_name(queue_name: q).url
-        messages = sqs.client.get_queue_attributes(queue_url: url, attribute_names: ['All']).attributes[config[:metric]].to_i
+        messages = sqs.client.get_queue_attributes(queue_url: url, attribute_names: ['All'])
+        if messages.attributes.key(config[:metric])
+          messages = messages.attributes([config[:metric]]).to_i
+        else
+          failure_msg = <<~MESSAGE
+            failed to pull metric #{config[:metric]} on queue: #{q}.
+            available attributes: #{messages.attributes}
+          MESSAGE
+          unknown failure_msg
+        end
 
         if (config[:crit_under] >= 0 && messages < config[:crit_under]) || (config[:crit_over] >= 0 && messages > config[:crit_over])
           crits << "#{messages} message(s) in #{q}"
