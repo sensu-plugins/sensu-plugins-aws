@@ -4,15 +4,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
-### Added
-- check-cloudwatch-alarm-multi.rb: Add check that will raise a critical if one of cloud watch alarms are in given state, and a critical for each alarm in given state. (@stevenayers)
-
 
 ### Added
 - `check-subnet-ip-consumption.rb` - Added `--warn-only` option (@ChrisCalavera)
 - new `metrics-reservation-utilization.rb`: retrieve metrics about reserved instances usage. (@boutetnico)
 - `check-ebs-burst-limit.rb`: add `--tag`/`-t` option to specify a volume tag to output in status message. (@boutetnico)
 - check-instance-events.rb: re-instate assume-role functionality (@pmiles)
+- new `check-expiring-reservations.rb`: check instance reservations and warn about upcoming expiration. (@boutetnico)
+- check-cloudwatch-alarm-multi.rb: Add check that will raise a critical if one of cloud watch alarms are in given state, and a critical for each alarm in given state. (@stevenayers)
 
 ### Fixed
 - `check-sqs-messages.rb`: properly surface false positives when pulling an unsupported metric (@majormoses)
