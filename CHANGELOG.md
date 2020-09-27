@@ -4,8 +4,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins/community/blob/master/HOW_WE_CHANGELOG.md)
 
 ## [Unreleased]
+
 ### Added
+- `check-subnet-ip-consumption.rb` - Added `--warn-only` option (@ChrisCalavera)
 - new `metrics-reservation-utilization.rb`: retrieve metrics about reserved instances usage. (@boutetnico)
+
+### Fixed
+- `check-sqs-messages.rb`: properly surface false positives when pulling an unsupported metric (@majormoses)
+- - Prevent the retrieval of all db instances when the `db_cluster_id` option is specified and the `db_instance_id` option is not specified
 
 ## [18.5.0] - 2020-01-28
 ### Changed

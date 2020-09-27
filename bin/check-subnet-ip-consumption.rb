@@ -74,6 +74,13 @@ class CheckSubnetIpConsumption < Sensu::Plugin::Check::CLI
          default:     0,
          description: 'Manipulate the verbosity of the alert output. Valid options are 0, 1, and 2 (from least to most verbose). Default is 0.'
 
+  option :warn_only,
+         short:       '-w',
+         long:        '--warn-only',
+         boolean:     true,
+         default:     false,
+         description: 'Warning only'
+
   def iam_client
     @iam_client ||= Aws::IAM::Client.new
   end
@@ -218,16 +225,23 @@ class CheckSubnetIpConsumption < Sensu::Plugin::Check::CLI
 
       case config[:show_account_alias]
       when true
-        critical(alert_prefix_with_alias % { count: alert_msg.length,
-                                             alias: account_alias,
-                                             region: config[:aws_region],
-                                             threshold: config[:alert_threshold],
-                                             alerts: alert_msg.join(', ') })
+        alert_msg = alert_prefix_with_alias % { count: alert_msg.length,
+                                                alias: account_alias,
+                                                region: config[:aws_region],
+                                                threshold: config[:alert_threshold],
+                                                alerts: alert_msg.join(', ') }
       when false
-        critical(alert_prefix % { count: alert_msg.length,
-                                  region: config[:aws_region],
-                                  threshold: config[:alert_threshold],
-                                  alerts: alert_msg.join(', ') })
+        alert_msg = alert_prefix % { count: alert_msg.length,
+                                     region: config[:aws_region],
+                                     threshold: config[:alert_threshold],
+                                     alerts: alert_msg.join(', ') }
+      end
+
+      case config[:warn_only]
+      when true
+        warning(alert_msg)
+      when false
+        critical(alert_msg)
       end
     end
   end
