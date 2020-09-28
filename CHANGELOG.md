@@ -18,6 +18,9 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 - `check-sqs-messages.rb`: properly surface false positives when pulling an unsupported metric (@majormoses)
 - - Prevent the retrieval of all db instances when the `db_cluster_id` option is specified and the `db_instance_id` option is not specified
 
+### Changed
+- Changed .bonsai.yml to match with other plugins (CentOS6 support, etc.) (@nixwiz)
+
 ## [18.5.0] - 2020-01-28
 ### Changed
 - `check-trustedadvisor-service-limits.rb`: Trusted Advisor combined Service Limits check ID 'eW7HH0l7J9' scheduled to be disabled on Feb 15 2020. Updated the script to go through every Service Limits checks and look for not 'ok' status. Outcome is the same. (@swibowo)
