@@ -89,11 +89,11 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
     role_config.delete(:access_key_id)
     role_config.delete(:secret_access_key)
 
-    Aws.config[:region]=role_config[:region]
+    Aws.config[:region] = role_config[:region]
 
     role_credentials = Aws::AssumeRoleCredentials.new(
       role_arn: config[:role],
-      role_session_name: "sensu-monitoring"
+      role_session_name: 'sensu-monitoring'
     )
 
     role_config.merge!(credentials: role_credentials)
