@@ -19,7 +19,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 - - Prevent the retrieval of all db instances when the `db_cluster_id` option is specified and the `db_instance_id` option is not specified
 
 ### Changed
-- Changed .bonsai.yml to match with other plugins (CentOS6 support, etc.) (@nixwiz)
+- Changed .bonsai.yml to match with other plugins (CentOS6/8 support, etc.) (@nixwiz)
 
 ## [18.5.0] - 2020-01-28
 ### Changed
