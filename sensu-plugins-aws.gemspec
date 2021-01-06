@@ -39,7 +39,7 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
   # 1.44 requires xmlrpc which only supports >= ruby 2.3
   # https://github.com/fog/fog-core/issues/206
   s.add_runtime_dependency 'fog-core',          '1.45.0'
-  s.add_runtime_dependency 'nokogiri',          ['>= 1.10.4', '< 2.0']
+  s.add_runtime_dependency 'nokogiri',          '1.10.10'
   s.add_runtime_dependency 'rest-client',       '2.1.0'
   s.add_runtime_dependency 'right_aws',         '3.1.0'
 
