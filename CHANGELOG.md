@@ -5,6 +5,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## 18.6.0
 ### Added
 - `check-subnet-ip-consumption.rb` - Added `--warn-only` option (@ChrisCalavera)
 - new `metrics-reservation-utilization.rb`: retrieve metrics about reserved instances usage. (@boutetnico)
@@ -17,9 +18,7 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Fixed
 - `check-sqs-messages.rb`: properly surface false positives when pulling an unsupported metric (@majormoses)
 - - Prevent the retrieval of all db instances when the `db_cluster_id` option is specified and the `db_instance_id` option is not specified
-
-### Changed
-- Changed .bonsai.yml to match with other plugins (CentOS6/8 support, etc.) (@nixwiz)
+- updated `.bonsai.yml` to match with other plugins (CentOS6/8 support, etc.) (@nixwiz)
 
 ## [18.5.0] - 2020-01-28
 ### Changed
@@ -616,7 +615,8 @@ WARNING:  This release contains major breaking changes that will impact all user
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.5.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.6.0...HEAD
+[18.6.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.5.0...18.6.0
 [18.5.0]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.2...18.5.0
 [18.4.2]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.1...18.4.2
 [18.4.1]: https://github.com/sensu-plugins/sensu-plugins-aws/compare/18.4.0...18.4.1
