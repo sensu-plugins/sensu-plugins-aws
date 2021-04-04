@@ -26,7 +26,7 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
   s.platform               = Gem::Platform::RUBY
   s.post_install_message   = 'You can use the embedded Ruby by setting EMBEDDED_RUBY=true in /etc/default/sensu'
   s.require_paths          = ['lib']
-  s.required_ruby_version  = '>= 2.3.0'
+  s.required_ruby_version  = '>= 2.4.1'
   s.summary                = 'Sensu plugins for working with an AWS environment'
   s.test_files             = s.files.grep(%r{^(test|spec|features)/})
   s.version                = SensuPluginsAWS::Version::VER_STRING
@@ -39,7 +39,8 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
   # 1.44 requires xmlrpc which only supports >= ruby 2.3
   # https://github.com/fog/fog-core/issues/206
   s.add_runtime_dependency 'fog-core',          '1.45.0'
-  s.add_runtime_dependency 'nokogiri',          ['>= 1.10.4', '< 2.0']
+  s.add_runtime_dependency 'nokogiri',          '1.10.10'
+  s.add_runtime_dependency 'ovirt-engine-sdk',  '4.3.1'
   s.add_runtime_dependency 'rest-client',       '2.1.0'
   s.add_runtime_dependency 'right_aws',         '3.1.0'
 
