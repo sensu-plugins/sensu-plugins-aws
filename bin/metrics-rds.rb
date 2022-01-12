@@ -123,7 +123,8 @@ class RDSMetrics < Sensu::Plugin::Metric::CLI::Graphite
       'ReplicaLag' => 'Average',
       'SwapUsage' => 'Average',
       'BinLogDiskUsage' => 'Average',
-      'DiskQueueDepth' => 'Average'
+      'DiskQueueDepth' => 'Average',
+      'FreeableMemory' => 'Average'
     }
 
     @db_instance  = find_db_instance config[:db_instance_id]
