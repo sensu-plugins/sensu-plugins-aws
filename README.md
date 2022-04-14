@@ -117,6 +117,8 @@ The Sensu assets packaged from this repository are built against the Sensu Ruby 
 
 **check-subnet-ip-consumption**
 
+**check-target-group-instance-count**
+
 **check-vpc-nameservers**
 
 **check-instances-count.rb**
