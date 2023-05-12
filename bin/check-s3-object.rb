@@ -108,6 +108,12 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
          long: '--ok-on-multiple-objects',
          boolean: true
 
+  option :ok_no_file,
+         description: 'OK if file with given prefix is not found',
+         long: '--ok-no-file',
+         boolean: true,
+         default: false
+
   def aws_config
     { access_key_id: config[:aws_access_key],
       secret_access_key: config[:aws_secret_access_key],
@@ -167,7 +173,12 @@ class CheckS3Object < Sensu::Plugin::Check::CLI
         output = output.next_page while output.next_page?
 
         if output.contents.size.to_i < 1
-          critical "Object with prefix \"#{key_search}\" not found in bucket #{config[:bucket_name]}"
+          object_not_found = "Object with prefix \"#{key_search}\" not found in bucket #{config[:bucket_name]}"
+          if config[:ok_no_file]
+            ok object_not_found
+          else
+            critical object_not_found
+          end
         end
 
         if output.contents.size.to_i > 1
